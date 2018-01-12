@@ -1,0 +1,22 @@
+{
+  "name": "alexa-skill-custom",
+  "version": "0.1.0",
+  "description": "Hello world sample skill",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mac0314/alexa-skill-custom.git"
+  },
+  "author": "Youngmin Kim",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mac0314/alexa-skill-custom/issues"
+  },
+  "dependencies": {
+    "alexa-sdk": "^1.0.25",
+    "config.json": "0.0.4"
+  }
+}
