@@ -97,7 +97,7 @@ const LightHandlers = {
 
         const deviceId = updatedIntent.slots.deviceId.value;
 
-        handlePower(deviceId, SL_API_POWER_ON, (function(error, resultObject){
+        handlePower(deviceId, SL_API_POWER_ON, DEFAULT_POWER_LEVEL, (function(error, resultObject){
           const speechOutput = 'turn on the device ' + deviceId;
           const reprompt = 'on';
 
@@ -123,14 +123,13 @@ const LightHandlers = {
 
         const deviceId = updatedIntent.slots.deviceId.value;
 
-        handlePower(deviceId, SL_API_POWER_OFF, (function(error, resultObject){
+        handlePower(deviceId, SL_API_POWER_OFF, DEFAULT_POWER_LEVEL, function(error, resultObject){
           const speechOutput = 'turn off the device ' + deviceId;
           const reprompt = 'off';
 
           this.response.speak(speechOutput).listen(reprompt);
           this.emit(':responseReady');
         }).bind(this));
-
       }
     },
     'AdjustPowerLevel': function () {
@@ -200,14 +199,12 @@ const LightHandlers = {
 
 
 
-function handlePower(deviceId, onoff, callback){
+function handlePower(deviceId, onoff, level, callback){
   console.log("handlePower");
   var resultObject = {};
 
   // make query
   const lightUrl = BASE_URL + "/device/" + deviceId + "/light";
-
-  var level = DEFAULT_POWER_LEVEL;
 
   var body = {};
   body.onoff = onoff;

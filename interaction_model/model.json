@@ -7,7 +7,17 @@
           "Adjust bright",
           "Adjust brightness"
         ],
-        "slots": []
+        "slots": [
+          {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{deviceId}",
+              "Device {deviceId}",
+              "{deviceId} device"
+            ]
+          }
+        ]
       },
       {
         "name": "AdjustPowerLevel",
@@ -15,7 +25,17 @@
           "Adjust power",
           "Adjust power level"
         ],
-        "slots": []
+        "slots": [
+          {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{deviceId}",
+              "Device {deviceId}",
+              "{deviceId} device"
+            ]
+          }
+        ]
       },
       {
         "name": "AMAZON.CancelIntent",
@@ -36,7 +56,17 @@
           "Decrease color temperature",
           "Decrease color"
         ],
-        "slots": []
+        "slots": [
+          {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{deviceId}",
+              "Device {deviceId}",
+              "{deviceId} device"
+            ]
+          }
+        ]
       },
       {
         "name": "Discover",
@@ -66,7 +96,17 @@
           "Increase color temper",
           "Increase color"
         ],
-        "slots": []
+        "slots": [
+          {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{deviceId}",
+              "Device {deviceId}",
+              "{deviceId} device"
+            ]
+          }
+        ]
       },
       {
         "name": "SetBrightness",
@@ -76,8 +116,20 @@
         ],
         "slots": [
           {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{deviceId}",
+              "Device {deviceId}",
+              "{deviceId} device"
+            ]
+          },
+          {
             "name": "brightness",
-            "type": "AMAZON.NUMBER"
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{brightness}"
+            ]
           }
         ]
       },
@@ -88,8 +140,20 @@
         ],
         "slots": [
           {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{deviceId}",
+              "Device {deviceId}",
+              "{deviceId} device"
+            ]
+          },
+          {
             "name": "color",
-            "type": "AMAZON.Color"
+            "type": "AMAZON.Color",
+            "samples": [
+              "{color}"
+            ]
           }
         ]
       },
@@ -102,8 +166,20 @@
         ],
         "slots": [
           {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{deviceId}",
+              "Device {deviceId}",
+              "{deviceId} device"
+            ]
+          },
+          {
             "name": "colorTemperature",
-            "type": "AMAZON.NUMBER"
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{colorTemperature}"
+            ]
           }
         ]
       },
@@ -114,6 +190,15 @@
           "Set power"
         ],
         "slots": [
+          {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{deviceId}",
+              "Device {deviceId}",
+              "{deviceId} device"
+            ]
+          },
           {
             "name": "powerLevel",
             "type": "AMAZON.NUMBER",
@@ -156,7 +241,12 @@
         "slots": [
           {
             "name": "deviceId",
-            "type": "AMAZON.NUMBER"
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{deviceId}",
+              "Device {deviceId}",
+              "{deviceId} device"
+            ]
           }
         ]
       }
@@ -164,6 +254,51 @@
     "invocationName": "system light"
   },
   "prompts": [
+    {
+      "id": "Elicit.Intent-AdjustBrightness.IntentSlot-deviceId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which device?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-AdjustPowerLevel.IntentSlot-deviceId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which device?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-DecreaseColorTemperature.IntentSlot-deviceId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which device?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-IncreaseColorTemperature.IntentSlot-deviceId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which device?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-SetBrightness.IntentSlot-deviceId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which device?"
+        }
+      ]
+    },
     {
       "id": "Elicit.Intent-SetBrightness.IntentSlot-brightness",
       "variations": [
@@ -174,11 +309,29 @@
       ]
     },
     {
+      "id": "Elicit.Intent-SetColor.IntentSlot-deviceId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which device?"
+        }
+      ]
+    },
+    {
       "id": "Elicit.Intent-SetColor.IntentSlot-color",
       "variations": [
         {
           "type": "PlainText",
           "value": "What color?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-SetColorTemperature.IntentSlot-deviceId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which device?"
         }
       ]
     },
@@ -200,11 +353,20 @@
       ]
     },
     {
+      "id": "Elicit.Intent-SetPowerLevel.IntentSlot-deviceId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which device?"
+        }
+      ]
+    },
+    {
       "id": "Elicit.Intent-SetPowerLevel.IntentSlot-powerLevel",
       "variations": [
         {
           "type": "PlainText",
-          "value": "What level?"
+          "value": "How much?"
         }
       ]
     },
@@ -227,6 +389,10 @@
         {
           "type": "PlainText",
           "value": "Which number of light?"
+        },
+        {
+          "type": "PlainText",
+          "value": "Which device?"
         }
       ]
     }
@@ -234,10 +400,83 @@
   "dialog": {
     "intents": [
       {
+        "name": "AdjustBrightness",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-AdjustBrightness.IntentSlot-deviceId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "AdjustPowerLevel",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-AdjustPowerLevel.IntentSlot-deviceId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "DecreaseColorTemperature",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-DecreaseColorTemperature.IntentSlot-deviceId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "IncreaseColorTemperature",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-IncreaseColorTemperature.IntentSlot-deviceId"
+            }
+          }
+        ]
+      },
+      {
         "name": "SetBrightness",
         "confirmationRequired": false,
         "prompts": {},
         "slots": [
+          {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-SetBrightness.IntentSlot-deviceId"
+            }
+          },
           {
             "name": "brightness",
             "type": "AMAZON.NUMBER",
@@ -255,6 +494,15 @@
         "prompts": {},
         "slots": [
           {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-SetColor.IntentSlot-deviceId"
+            }
+          },
+          {
             "name": "color",
             "type": "AMAZON.Color",
             "elicitationRequired": true,
@@ -271,6 +519,15 @@
         "prompts": {},
         "slots": [
           {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-SetColorTemperature.IntentSlot-deviceId"
+            }
+          },
+          {
             "name": "colorTemperature",
             "type": "AMAZON.NUMBER",
             "elicitationRequired": true,
@@ -286,6 +543,15 @@
         "confirmationRequired": false,
         "prompts": {},
         "slots": [
+          {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-SetPowerLevel.IntentSlot-deviceId"
+            }
+          },
           {
             "name": "powerLevel",
             "type": "AMAZON.NUMBER",
