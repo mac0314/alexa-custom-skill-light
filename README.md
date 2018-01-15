@@ -1,1 +1,1 @@
-# alexa-skill-custom
+# alexa-custom-skill-light
