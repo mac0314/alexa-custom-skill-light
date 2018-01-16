@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "alexa-sdk": "^1.0.25",
+    "color-convert": "^1.9.1",
     "config.json": "^0.0.4",
     "request": "^2.83.0"
   }
