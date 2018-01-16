@@ -6,9 +6,19 @@
  modules
 ********* */
 const Alexa = require("alexa-sdk");
+const async = require("async");
+const colorConverter = require("color-convert");
 const config = require("config.json")("./config/config.json");
 const request = require("request");
-const colorConverter = require("color-convert");
+
+
+// constant
+const INCREASE_CODE = 1;
+const DECREASE_CODE = -1;
+
+const INCREASE_RATE = 1.1;
+const DECREASE_RATE = 0.9;
+const DEFAULT_RATE = 1;
 
 // system light API parameters
 const SL_API_POWER_ON = "on";
@@ -24,9 +34,9 @@ const SL_API_FAILURE_CODE = 400;
 // TEMP Gateway IP URL
 const BASE_URL = config.sl.gw;
 
-// Alexa Skill App ID
-const appName = config.alexa.appName;
-const appId = config.alexa.appId;
+// Alexa Skill application
+const APP_NAME = config.alexa.appName;
+const APP_ID = config.alexa.appId;
 
 
 // entry
@@ -35,7 +45,7 @@ exports.handler = function(event, context, callback) {
 
   const alexa = Alexa.handler(event, context);
 
-  alexa.appId = appId;
+  alexa.appId = APP_ID;
 
   alexa.registerHandlers(sessionHandlers, builtInHandlers, LightHandlers);
 
@@ -46,7 +56,7 @@ const sessionHandlers ={
   'LaunchRequest': function () {
     console.log("LaunchRequest");
 
-    const speechOutput = 'Hi, there, This is ' + appName + ' skill app!';
+    const speechOutput = 'Hi, there, This is ' + APP_NAME + ' skill app!';
     const reprompt = 'Ask me.';
 
     this.response.speak(speechOutput).listen(reprompt);
@@ -65,7 +75,7 @@ const builtInHandlers = {
   'AMAZON.HelpIntent': function () {
     console.log("HelpIntent");
 
-    const speechOutput = 'This is alexa custom skill for ' + appName;
+    const speechOutput = 'This is alexa custom skill for ' + APP_NAME;
     const reprompt = 'Say hello, to hear me speak.';
 
     this.response.speak(speechOutput).listen(reprompt);
@@ -249,18 +259,58 @@ const LightHandlers = {
     'DecreaseColorTemperature': function () {
       console.log("DecreaseColorTemperature");
 
-      const speechOutput = 'OK';
+      if (this.event.request.dialogState === 'STARTED') {
+        var updatedIntent = this.event.request.intent;
+        console.log(updatedIntent.slots);
 
-      this.response.speak(speechOutput);
-      this.emit(':responseReady');
+        this.emit(':delegate', updatedIntent);
+      } else if (this.event.request.dialogState !== 'COMPLETED'){
+        this.emit(':delegate');
+      } else {
+        var updatedIntent = this.event.request.intent;
+
+        //console.log(updatedIntent.slots);
+
+        const deviceId = updatedIntent.slots.deviceId.value;
+
+        adjustColorTemperature(deviceId, DECREASE_CODE, (function(error, resultObject){
+          const colorTemperature = resultObject.data.colorTemperature;
+
+          const speechOutput = 'set the ' + deviceId + ' device color temperature ' + colorTemperature;
+          const reprompt = 'set';
+
+          this.response.speak(speechOutput).listen(reprompt);
+          this.emit(':responseReady');
+        }).bind(this));
+      }
     },// DecreaseColorTemperature
     'IncreaseColorTemperature': function () {
       console.log("IncreaseColorTemperature");
 
-      const speechOutput = 'OK';
+      if (this.event.request.dialogState === 'STARTED') {
+        var updatedIntent = this.event.request.intent;
+        console.log(updatedIntent.slots);
 
-      this.response.speak(speechOutput);
-      this.emit(':responseReady');
+        this.emit(':delegate', updatedIntent);
+      } else if (this.event.request.dialogState !== 'COMPLETED'){
+        this.emit(':delegate');
+      } else {
+        var updatedIntent = this.event.request.intent;
+
+        //console.log(updatedIntent.slots);
+
+        const deviceId = updatedIntent.slots.deviceId.value;
+
+        adjustColorTemperature(deviceId, INCREASE_CODE, (function(error, resultObject){
+          const colorTemperature = resultObject.data.colorTemperature;
+
+          const speechOutput = 'set the ' + deviceId + ' device color temperature ' + colorTemperature;
+          const reprompt = 'set';
+
+          this.response.speak(speechOutput).listen(reprompt);
+          this.emit(':responseReady');
+        }).bind(this));
+      }
     },// IncreaseColorTemperature
     'SetColorTemperature': function () {
       console.log("SetColorTemperature");
@@ -376,12 +426,13 @@ function handleColor(deviceId, color, callback){
   body.onoff = onoff;
   body.level = level;
 
-  const colorHSL = colorConverter.keyword.hsl(color);
-
-  console.log("colorHSL : ", colorHSL);
 
   // color
   try {
+    const colorHSL = colorConverter.keyword.hsl(color);
+
+    console.log("colorHSL : ", colorHSL);
+
     body.hue = colorHSL[0];
     body.saturation = colorHSL[1];
     body.brightness = colorHSL[2];
@@ -410,6 +461,91 @@ function handleColor(deviceId, color, callback){
     callback(true, resultObject);
   }
 }// handleColorControl
+
+function adjustColorTemperature(deviceId, code, callback) {
+  console.log("adjustColorTemperature");
+
+  var resultObject = {};
+
+  var colorTemperature = 0;
+  var preColorTemperature = 0;
+  var preOnOff = "on";
+  var prePowerLevel = 1000;
+
+  async.waterfall([
+    function(callback){
+      // Request query
+      const gatewayUrl = BASE_URL + "/device/" + deviceId + "/light";
+
+      var data = {
+        url: gatewayUrl
+      }
+
+      // request gateway
+      request.get(data, function(error, httpResponse, body){
+        console.log(body);
+        console.log(body.result_data);
+
+        var dataObject = JSON.parse(body);
+
+        preColorTemperature = dataObject.result_data.colorTemp;
+        preOnOff = dataObject.result_data.onoff;
+        prePowerLevel = dataObject.result_data.level;
+
+        callback(null, preColorTemperature);
+      });
+    },
+    function(preColorTemperature, callback){
+      // TODO modify equation
+      switch (code) {
+        case INCREASE_CODE:
+          colorTemperature = preColorTemperature * INCREASE_RATE;
+
+          break;
+        case DECREASE_CODE:
+          colorTemperature = preColorTemperature * DECREASE_RATE;
+
+          break;
+        default:
+          colorTemperature = preColorTemperature * DEFAULT_RATE;
+
+          break;
+      }
+
+      const gatewayUrl = BASE_URL + "/device/" + deviceId + "/light";
+
+      var body = {};
+      body.onoff = preOnOff;
+      body.level = prePowerLevel;
+
+      // color
+      body.colorTemp = colorTemperature;
+
+      var data = {
+        url: gatewayUrl,
+        form: body
+      }
+
+      // request gateway
+      request.put(data, function(error, httpResponse, body){
+        console.log(body);
+
+        callback(null, null);
+      });
+    }
+  ], function(error, result){
+    resultObject.code = SL_API_SUCCESS_CODE;
+    resultObject.message = "success";
+
+    var data = {
+      colorTemperature: colorTemperature
+    }
+
+    resultObject.data = data;
+
+    callback(null, resultObject);
+  });
+}// adjustColorTemperature
 
 function setColorTemperature(deviceId, colorTemperature, callback){
   console.log("setColorTemperature");
