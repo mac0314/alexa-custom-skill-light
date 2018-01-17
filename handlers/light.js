@@ -7,6 +7,7 @@ const config = require("config.json")("./config/config.json");
 const brightnessCTRL = require('../controllers/brightness');
 const colorTempCTRL = require('../controllers/color_temperature');
 const colorCTRL = require('../controllers/color');
+const discoverCTRL = require('../controllers/discover');
 const powerCTRL = require('../controllers/power');
 
 const constants = require('../lib/constants');
@@ -16,11 +17,29 @@ module.exports = {
   'Discover': function () {
     console.log("Discover");
 
-    const speechOutput = 'Which device?';
-    const reprompt = 'off';
+    if (this.event.request.dialogState === 'STARTED') {
+      var updatedIntent = this.event.request.intent;
 
-    this.response.speak(speechOutput).listen(reprompt);
-    this.emit(':responseReady');
+      this.emit(':delegate', updatedIntent);
+    } else if (this.event.request.dialogState !== 'COMPLETED'){
+      this.emit(':delegate');
+    } else {
+      discoverCTRL.discover(0, (function(error, resultObject){
+        var speechOutput = "";
+        var deviceNameList = resultObject.data.deviceNameList;
+
+        console.log(deviceNameList);
+
+        if(deviceNameList.length > 0){
+          speechOutput = "Find the devices, " + deviceNameList.join(" ") + "!";
+        }else{
+          speechOutput = "Don't find any device."
+        }
+
+        this.response.speak(speechOutput);
+        this.emit(':responseReady');
+      }).bind(this));
+    }
   },// Discover
   'TurnOn': function () {
     console.log("TurnOn");
