@@ -14,7 +14,12 @@
 - command에서 npm install로 모듈을 설치
 - 이 프로젝트 폴더를 압축해서 AWS 람다에 zip 형태로 올리면 실행 가능
   - [AWS CLI](https://docs.aws.amazon.com/ko_kr/cli/latest/userguide/cli-chap-welcome.html)를 활용하여 timeout에 걸리지 않고 zip파일을 올릴 수 있음
-    - 활용 방법 [링크](https://asyoulook.com/computers%20&%20internet/amazon-web-services-aws-lambda-timeout-while-trying-to-upload-updated-node-zip-file/915947)
+    - 기본 활용 방법
+      - [링크](https://asyoulook.com/computers%20&%20internet/amazon-web-services-aws-lambda-timeout-while-trying-to-upload-updated-node-zip-file/915947)
+    - 배치 파일 활용 방법
+      - 프로젝트 내 lambda_upload.bat 파일로 업로드 가능
+      - [AWS CLI](https://docs.aws.amazon.com/ko_kr/cli/latest/userguide/cli-chap-welcome.html)와 [7zip](http://www.7-zip.org/)가 설치되어 있어야 함.
+
 
 #### 알렉사 skill 구성하기
 
