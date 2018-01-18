@@ -10,9 +10,9 @@ exports.adjustPowerLevel = function(deviceId, command, callback){
 
   var resultObject = {};
 
-  var powerLevel = 1000;
-  var preOnOff = "on";
-  var prePowerLevel = 1000;
+  var powerLevel = constants.DEFAULT_POWER_LEVEL;
+  var preOnOff = constants.DEFAULT_POWER;
+  var prePowerLevel = constants.DEFAULT_POWER_LEVEL;
   var code = 0;
 
   switch (command) {

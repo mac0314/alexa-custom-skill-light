@@ -13,8 +13,8 @@ exports.adjustBrightness = function(deviceId, command, callback){
 
   var brightness = 0;
   var preBrightness = 0;
-  var preOnOff = "on";
-  var prePowerLevel = 1000;
+  var preOnOff = constants.DEFAULT_POWER;
+  var prePowerLevel = constants.DEFAULT_POWER_LEVEL;
   var code = 0;
 
   switch (command) {
