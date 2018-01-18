@@ -1,12 +1,18 @@
 
+const constants = require('../lib/constants');
+
+
 module.exports = {
   'LaunchRequest': function () {
     console.log("LaunchRequest");
 
     const speechOutput = 'Hi, there, This is ' + global.APP_NAME + ' skill app!';
-    const reprompt = 'Ask me.';
+    const reprompt = 'What can I help you?'
+
 
     this.response.speak(speechOutput).listen(reprompt);
+    this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
     this.emit(':responseReady');
   },// LaunchRequest
   'SessionEndedRequest': function () {

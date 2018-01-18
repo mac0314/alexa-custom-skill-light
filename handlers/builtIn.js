@@ -3,8 +3,8 @@ module.exports = {
   'AMAZON.HelpIntent': function () {
     console.log("HelpIntent");
 
-    const speechOutput = 'This is alexa custom skill for ' + global.APP_NAME;
-    const reprompt = 'Say hello, to hear me speak.';
+    const speechOutput = 'This is alexa custom skill for ' + global.APP_NAME + '. You can order for me to discover, light on, light off, set color, adjust power level, adjust brightness, adjust color temperature';
+    const reprompt = "Can I help you with anything else?"
 
     this.response.speak(speechOutput).listen(reprompt);
     this.emit(':responseReady');

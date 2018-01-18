@@ -30,13 +30,25 @@ module.exports = {
 
         console.log(deviceNameList);
 
-        if(deviceNameList.length > 0){
-          speechOutput = "Find the devices, " + deviceNameList.join(" ") + "!";
-        }else{
-          speechOutput = "Don't find any device."
-        }
+        const deviceNum = deviceNameList.length;
 
-        this.response.speak(speechOutput);
+        if(deviceNum > 1){
+          speechOutput = "Find the devices, " + deviceNameList.join(" ") + "!";
+          const reprompt = 'Do you want to control the devices?';
+
+          this.response.speak(speechOutput).listen(reprompt);
+        }else if(deviceNum == 1){
+          speechOutput = "Find the device, " + deviceNameList[0] + "!";
+          const reprompt = 'Do you want to control the device?';
+
+          this.response.speak(speechOutput).listen(reprompt);
+        }else{
+          speechOutput = "Don't find any device.";
+
+          this.response.speak(speechOutput);
+        }
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
       }).bind(this));
     }
@@ -60,9 +72,10 @@ module.exports = {
 
       powerCTRL.handlePower(deviceId, constants.SL_API_POWER_ON, constants.DEFAULT_POWER_LEVEL, (function(error, resultObject){
         const speechOutput = 'turn on the ' + deviceId + ' device';
-        const reprompt = 'on';
 
-        this.response.speak(speechOutput).listen(reprompt);
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
       }).bind(this));
     }
@@ -86,9 +99,10 @@ module.exports = {
 
       powerCTRL.handlePower(deviceId, constants.SL_API_POWER_OFF, constants.DEFAULT_POWER_LEVEL, (function(error, resultObject){
         const speechOutput = 'turn off the ' + deviceId + ' device';
-        const reprompt = 'off';
 
-        this.response.speak(speechOutput).listen(reprompt);
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
       }).bind(this));
     }
@@ -116,9 +130,11 @@ module.exports = {
         const powerLevel = resultObject.data.powerLevel;
 
         const speechOutput = command + ', set the ' + deviceId + ' device power level ' + powerLevel;
-        const reprompt = 'set';
+        const reprompt = 'Do you want to Change more?'
 
         this.response.speak(speechOutput).listen(reprompt);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
       }).bind(this));
     }
@@ -143,9 +159,10 @@ module.exports = {
 
       powerCTRL.handlePower(deviceId, constants.SL_API_POWER_ON, powerLevel, (function(error, resultObject){
         const speechOutput = 'set the ' + deviceId + ' device power level ' + powerLevel;
-        const reprompt = 'set';
 
-        this.response.speak(speechOutput).listen(reprompt);
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
       }).bind(this));
     }
@@ -173,9 +190,11 @@ module.exports = {
         const brightness = resultObject.data.brightness;
 
         const speechOutput = command + ', set the ' + deviceId + ' device brightness ' + brightness;
-        const reprompt = 'set';
+        const reprompt = 'Do you want to Change more?'
 
         this.response.speak(speechOutput).listen(reprompt);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
       }).bind(this));
     }
@@ -200,9 +219,10 @@ module.exports = {
 
       brightnessCTRL.setBrightness(deviceId, brightness, (function(error, resultObject){
         const speechOutput = 'set the ' + deviceId + ' device brightness ' + brightness;
-        const reprompt = 'set';
 
-        this.response.speak(speechOutput).listen(reprompt);
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
       }).bind(this));
     }
@@ -227,9 +247,10 @@ module.exports = {
 
       colorCTRL.handleColor(deviceId, color, (function(error, resultObject){
         const speechOutput = 'set the ' + deviceId + ' device color ' + color;
-        const reprompt = 'set';
 
-        this.response.speak(speechOutput).listen(reprompt);
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
       }).bind(this));
     }
@@ -254,9 +275,11 @@ module.exports = {
         const colorTemperature = resultObject.data.colorTemperature;
 
         const speechOutput = command + ', set the ' + deviceId + ' device color temperature ' + colorTemperature;
-        const reprompt = 'set';
+        const reprompt = 'Do you want to Change more?'
 
         this.response.speak(speechOutput).listen(reprompt);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
       }).bind(this));
     }
@@ -281,9 +304,10 @@ module.exports = {
 
       colorTempCTRL.setColorTemperature(deviceId, colorTemperature, (function(error, resultObject){
         const speechOutput = 'set the ' + deviceId + ' device color temperature ' + colorTemperature;
-        const reprompt = 'set';
 
-        this.response.speak(speechOutput).listen(reprompt);
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
       }).bind(this));
     }
