@@ -1,11 +1,83 @@
 {
   "languageModel": {
+    "types": [
+      {
+        "name": "Command",
+        "values": [
+          {
+            "id": "1",
+            "name": {
+              "value": "increase",
+              "synonyms": [
+                "up",
+                "rise",
+                "raise",
+                "high",
+                "more",
+                "better",
+                "grow",
+                "growth",
+                "uprise",
+                "inc"
+              ]
+            }
+          },
+          {
+            "id": "2",
+            "name": {
+              "value": "decrease",
+              "synonyms": [
+                "down",
+                "less",
+                "dec",
+                "lower",
+                "low"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Unit",
+        "values": [
+          {
+            "id": null,
+            "name": {
+              "value": "Group",
+              "synonyms": [
+                "A group",
+                "A set",
+                "The set",
+                "Set"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "Device",
+              "synonyms": [
+                "Light",
+                "A Light",
+                "The Light",
+                "One Light",
+                "One"
+              ]
+            }
+          }
+        ]
+      }
+    ],
     "intents": [
       {
         "name": "AdjustBrightness",
         "samples": [
           "Adjust bright",
-          "Adjust brightness"
+          "Adjust brightness",
+          "{command} brightness",
+          "{command} bright",
+          "brightness {command}",
+          "bright {command}"
         ],
         "slots": [
           {
@@ -16,14 +88,29 @@
               "Device {deviceId}",
               "{deviceId} device"
             ]
+          },
+          {
+            "name": "command",
+            "type": "Command",
+            "samples": [
+              "{command}",
+              "get {command}"
+            ]
           }
         ]
       },
       {
-        "name": "AdjustPowerLevel",
+        "name": "AdjustColorTemperature",
         "samples": [
-          "Adjust power",
-          "Adjust power level"
+          "Adjust color temp",
+          "Adjust color temperature",
+          "Adjust color temper",
+          "{command} color temper",
+          "{command} color temp",
+          "{command} color temperature",
+          "color temp {command}",
+          "color temper {command}",
+          "color temperature {command}"
         ],
         "slots": [
           {
@@ -33,6 +120,40 @@
               "{deviceId}",
               "Device {deviceId}",
               "{deviceId} device"
+            ]
+          },
+          {
+            "name": "command",
+            "type": "Command"
+          }
+        ]
+      },
+      {
+        "name": "AdjustPowerLevel",
+        "samples": [
+          "Adjust power",
+          "Adjust power level",
+          "{command} power",
+          "{command} power level",
+          "power {command}",
+          "power level {command}"
+        ],
+        "slots": [
+          {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{deviceId}",
+              "Device {deviceId}",
+              "{deviceId} device"
+            ]
+          },
+          {
+            "name": "command",
+            "type": "Command",
+            "samples": [
+              "{command}",
+              "get {command}"
             ]
           }
         ]
@@ -46,27 +167,48 @@
         "samples": []
       },
       {
-        "name": "AMAZON.StopIntent",
+        "name": "AMAZON.MoreIntent",
         "samples": []
       },
       {
-        "name": "DecreaseColorTemperature",
-        "samples": [
-          "Decrease color temper",
-          "Decrease color temperature",
-          "Decrease color"
-        ],
-        "slots": [
-          {
-            "name": "deviceId",
-            "type": "AMAZON.NUMBER",
-            "samples": [
-              "{deviceId}",
-              "Device {deviceId}",
-              "{deviceId} device"
-            ]
-          }
-        ]
+        "name": "AMAZON.NavigateSettingsIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.NextIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.PageDownIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.PageUpIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.PreviousIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.ScrollDownIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.ScrollLeftIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.ScrollRightIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.ScrollUpIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.StopIntent",
+        "samples": []
       },
       {
         "name": "Discover",
@@ -85,28 +227,16 @@
           "Discover my lights",
           "I want to discover",
           "I wanna discover",
-          "I hope to discover"
+          "I hope to discover",
+          "Discovery",
+          "Discovery device",
+          "Discovery devices",
+          "Descover",
+          "Deskover",
+          "Diskover",
+          "Discoval"
         ],
         "slots": []
-      },
-      {
-        "name": "IncreaseColorTemperature",
-        "samples": [
-          "Increase color temperature",
-          "Increase color temper",
-          "Increase color"
-        ],
-        "slots": [
-          {
-            "name": "deviceId",
-            "type": "AMAZON.NUMBER",
-            "samples": [
-              "{deviceId}",
-              "Device {deviceId}",
-              "{deviceId} device"
-            ]
-          }
-        ]
       },
       {
         "name": "SetBrightness",
@@ -264,6 +394,53 @@
       ]
     },
     {
+      "id": "Elicit.Intent-AdjustBrightness.IntentSlot-command",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "high or low?"
+        },
+        {
+          "type": "PlainText",
+          "value": "increase or decrease?"
+        },
+        {
+          "type": "PlainText",
+          "value": "More or less?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-AdjustColorTemperature.IntentSlot-deviceId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "What device?"
+        },
+        {
+          "type": "PlainText",
+          "value": "Which device?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-AdjustColorTemperature.IntentSlot-command",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Increase or decrease?"
+        },
+        {
+          "type": "PlainText",
+          "value": "more or less?"
+        },
+        {
+          "type": "PlainText",
+          "value": "high or low?"
+        }
+      ]
+    },
+    {
       "id": "Elicit.Intent-AdjustPowerLevel.IntentSlot-deviceId",
       "variations": [
         {
@@ -273,20 +450,15 @@
       ]
     },
     {
-      "id": "Elicit.Intent-DecreaseColorTemperature.IntentSlot-deviceId",
+      "id": "Elicit.Intent-AdjustPowerLevel.IntentSlot-command",
       "variations": [
         {
           "type": "PlainText",
-          "value": "Which device?"
-        }
-      ]
-    },
-    {
-      "id": "Elicit.Intent-IncreaseColorTemperature.IntentSlot-deviceId",
-      "variations": [
+          "value": "increase or decrease?"
+        },
         {
           "type": "PlainText",
-          "value": "Which device?"
+          "value": "high or low"
         }
       ]
     },
@@ -412,6 +584,40 @@
             "prompts": {
               "elicitation": "Elicit.Intent-AdjustBrightness.IntentSlot-deviceId"
             }
+          },
+          {
+            "name": "command",
+            "type": "Command",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-AdjustBrightness.IntentSlot-command"
+            }
+          }
+        ]
+      },
+      {
+        "name": "AdjustColorTemperature",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "deviceId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-AdjustColorTemperature.IntentSlot-deviceId"
+            }
+          },
+          {
+            "name": "command",
+            "type": "Command",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-AdjustColorTemperature.IntentSlot-command"
+            }
           }
         ]
       },
@@ -428,37 +634,14 @@
             "prompts": {
               "elicitation": "Elicit.Intent-AdjustPowerLevel.IntentSlot-deviceId"
             }
-          }
-        ]
-      },
-      {
-        "name": "DecreaseColorTemperature",
-        "confirmationRequired": false,
-        "prompts": {},
-        "slots": [
+          },
           {
-            "name": "deviceId",
-            "type": "AMAZON.NUMBER",
+            "name": "command",
+            "type": "Command",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Intent-DecreaseColorTemperature.IntentSlot-deviceId"
-            }
-          }
-        ]
-      },
-      {
-        "name": "IncreaseColorTemperature",
-        "confirmationRequired": false,
-        "prompts": {},
-        "slots": [
-          {
-            "name": "deviceId",
-            "type": "AMAZON.NUMBER",
-            "elicitationRequired": true,
-            "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-IncreaseColorTemperature.IntentSlot-deviceId"
+              "elicitation": "Elicit.Intent-AdjustPowerLevel.IntentSlot-command"
             }
           }
         ]
