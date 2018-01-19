@@ -9,6 +9,7 @@ const colorTempCTRL = require('../controllers/color_temperature');
 const colorCTRL = require('../controllers/color');
 const discoverCTRL = require('../controllers/discover');
 const powerCTRL = require('../controllers/power');
+const unitCTRL = require('../controllers/unit');
 
 const constants = require('../lib/constants');
 
@@ -62,6 +63,36 @@ module.exports = {
       }).bind(this));
     }
   },// Discover
+  'ManageUnit': function () {
+    console.log("ManageUnit");
+
+    if (this.event.request.dialogState === 'STARTED') {
+      var updatedIntent = this.event.request.intent;
+      console.log(updatedIntent.slots);
+
+      this.emit(':delegate', updatedIntent);
+    } else if (this.event.request.dialogState !== 'COMPLETED'){
+      this.emit(':delegate');
+    } else {
+      var updatedIntent = this.event.request.intent;
+
+      console.log(updatedIntent.slots);
+
+      const crudType = updatedIntent.slots.crudType.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+      const unitId = updatedIntent.slots.unitId.value;
+
+
+      unitCTRL.manageUnit(unit, unitId, crudType, (function(error, resultObject){
+        const speechOutput = crudType + ' the ' + unitId + ' ' + unit;
+
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+        this.emit(':responseReady');
+      }).bind(this));
+    }
+  },// ManageUnit
   'TurnOn': function () {
     console.log("TurnOn");
 
@@ -77,10 +108,12 @@ module.exports = {
 
       console.log(updatedIntent.slots);
 
-      const deviceId = updatedIntent.slots.deviceId.value;
+      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+      const unitId = updatedIntent.slots.unitId.value;
 
-      powerCTRL.handlePower(deviceId, constants.SL_API_POWER_ON, constants.DEFAULT_POWER_LEVEL, (function(error, resultObject){
-        const speechOutput = 'turn on the ' + deviceId + ' device';
+
+      powerCTRL.handlePower(unit, unitId, constants.SL_API_POWER_ON, constants.DEFAULT_POWER_LEVEL, (function(error, resultObject){
+        const speechOutput = 'turn on the ' + unitId + ' ' + unit;
 
         this.response.speak(speechOutput);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
@@ -104,10 +137,11 @@ module.exports = {
 
       console.log(updatedIntent.slots);
 
-      const deviceId = updatedIntent.slots.deviceId.value;
+      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+      const unitId = updatedIntent.slots.unitId.value;
 
-      powerCTRL.handlePower(deviceId, constants.SL_API_POWER_OFF, constants.DEFAULT_POWER_LEVEL, (function(error, resultObject){
-        const speechOutput = 'turn off the ' + deviceId + ' device';
+      powerCTRL.handlePower(unit, unitId, constants.SL_API_POWER_OFF, constants.DEFAULT_POWER_LEVEL, (function(error, resultObject){
+        const speechOutput = 'turn off the ' + unitId + ' ' + unit;
 
         this.response.speak(speechOutput);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
@@ -131,14 +165,15 @@ module.exports = {
 
       console.log(updatedIntent.slots);
 
-      const deviceId = updatedIntent.slots.deviceId.value;
       const command = updatedIntent.slots.command.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+      const unitId = updatedIntent.slots.unitId.value;
 
 
-      powerCTRL.adjustPowerLevel(deviceId, command, (function(error, resultObject){
+      powerCTRL.adjustPowerLevel(unit, unitId, command, (function(error, resultObject){
         const powerLevel = resultObject.data.powerLevel;
 
-        const speechOutput = command + ', set the ' + deviceId + ' device power level ' + powerLevel;
+        const speechOutput = command + ', set the ' + unitId + ' ' + unit + ' power level ' + powerLevel;
         const reprompt = 'Do you want to Change more?'
 
         this.response.speak(speechOutput).listen(reprompt);
@@ -163,11 +198,12 @@ module.exports = {
 
       console.log(updatedIntent.slots);
 
-      const deviceId = updatedIntent.slots.deviceId.value;
+      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+      const unitId = updatedIntent.slots.unitId.value;
       const powerLevel = updatedIntent.slots.powerLevel.value;
 
-      powerCTRL.handlePower(deviceId, constants.SL_API_POWER_ON, powerLevel, (function(error, resultObject){
-        const speechOutput = 'set the ' + deviceId + ' device power level ' + powerLevel;
+      powerCTRL.handlePower(unit, unitId, constants.SL_API_POWER_ON, powerLevel, (function(error, resultObject){
+        const speechOutput = 'set the ' + unitId + ' ' + unit + ' power level ' + powerLevel;
 
         this.response.speak(speechOutput);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
@@ -191,14 +227,15 @@ module.exports = {
 
       console.log(updatedIntent.slots);
 
-      const deviceId = updatedIntent.slots.deviceId.value;
       const command = updatedIntent.slots.command.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+      const unitId = updatedIntent.slots.unitId.value;
 
 
-      brightnessCTRL.adjustBrightness(deviceId, command, (function(error, resultObject){
+      brightnessCTRL.adjustBrightness(unit, unitId, command, (function(error, resultObject){
         const brightness = resultObject.data.brightness;
 
-        const speechOutput = command + ', set the ' + deviceId + ' device brightness ' + brightness;
+        const speechOutput = command + ', set the ' + unitId + ' ' + unit + ' brightness ' + brightness;
         const reprompt = 'Do you want to Change more?'
 
         this.response.speak(speechOutput).listen(reprompt);
@@ -223,11 +260,12 @@ module.exports = {
 
       console.log(updatedIntent.slots);
 
-      const deviceId = updatedIntent.slots.deviceId.value;
+      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+      const unitId = updatedIntent.slots.unitId.value;
       const brightness = updatedIntent.slots.brightness.value;
 
-      brightnessCTRL.setBrightness(deviceId, brightness, (function(error, resultObject){
-        const speechOutput = 'set the ' + deviceId + ' device brightness ' + brightness;
+      brightnessCTRL.setBrightness(unit, unitId, brightness, (function(error, resultObject){
+        const speechOutput = 'set the ' + unitId + ' ' + unit + ' brightness ' + brightness;
 
         this.response.speak(speechOutput);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
@@ -251,11 +289,12 @@ module.exports = {
 
       console.log(updatedIntent.slots);
 
-      const deviceId = updatedIntent.slots.deviceId.value;
+      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+      const unitId = updatedIntent.slots.unitId.value;
       const color = updatedIntent.slots.color.value;
 
-      colorCTRL.handleColor(deviceId, color, (function(error, resultObject){
-        const speechOutput = 'set the ' + deviceId + ' device color ' + color;
+      colorCTRL.handleColor(unit, unitId, color, (function(error, resultObject){
+        const speechOutput = 'set the ' + unitId + ' ' + unit + ' color ' + color;
 
         this.response.speak(speechOutput);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
@@ -277,13 +316,14 @@ module.exports = {
     } else {
       var updatedIntent = this.event.request.intent;
 
-      const deviceId = updatedIntent.slots.deviceId.value;
       const command = updatedIntent.slots.command.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+      const unitId = updatedIntent.slots.unitId.value;
 
-      colorTempCTRL.adjustColorTemperature(deviceId, command, (function(error, resultObject){
+      colorTempCTRL.adjustColorTemperature(unit, unitId, command, (function(error, resultObject){
         const colorTemperature = resultObject.data.colorTemperature;
 
-        const speechOutput = command + ', set the ' + deviceId + ' device color temperature ' + colorTemperature;
+        const speechOutput = command + ', set the ' + unitId + ' ' + unit + ' color temperature ' + colorTemperature;
         const reprompt = 'Do you want to Change more?'
 
         this.response.speak(speechOutput).listen(reprompt);
@@ -308,11 +348,12 @@ module.exports = {
 
       console.log(updatedIntent.slots);
 
-      const deviceId = updatedIntent.slots.deviceId.value;
+      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+      const unitId = updatedIntent.slots.unitId.value;
       const colorTemperature = updatdIntent.slots.colorTemperature.value;
 
-      colorTempCTRL.setColorTemperature(deviceId, colorTemperature, (function(error, resultObject){
-        const speechOutput = 'set the ' + deviceId + ' device color temperature ' + colorTemperature;
+      colorTempCTRL.setColorTemperature(unit, unitId, colorTemperature, (function(error, resultObject){
+        const speechOutput = 'set the ' + unitId + ' ' + unit + ' color temperature ' + colorTemperature;
 
         this.response.speak(speechOutput);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);

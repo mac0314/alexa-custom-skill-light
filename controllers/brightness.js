@@ -6,7 +6,7 @@ const request = require("request");
 const constants = require('../lib/constants');
 
 
-exports.adjustBrightness = function(deviceId, command, callback){
+exports.adjustBrightness = function(unit, unitId, command, callback){
   console.log("adjustBrightness");
 
   var resultObject = {};
@@ -31,7 +31,16 @@ exports.adjustBrightness = function(deviceId, command, callback){
   async.waterfall([
     function(callback){
       // Request query
-      const gatewayUrl = global.BASE_URL + "/device/" + deviceId + "/light";
+      var gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId;
+      switch (unit) {
+        case constants.UNIT_DEVICE:
+          gatewayUrl += "/light";
+          break;
+        case constants.UNIT_GROUP:
+          gatewayUrl += "/dstatus";
+          break;
+        default:
+      }
 
       var data = {
         url: gatewayUrl,
@@ -46,9 +55,23 @@ exports.adjustBrightness = function(deviceId, command, callback){
 
         var dataObject = JSON.parse(body);
 
-        preBrightness = dataObject.result_data.brightness;
-        preOnOff = dataObject.result_data.onoff;
-        prePowerLevel = dataObject.result_data.level;
+
+        switch (unit) {
+          case constants.UNIT_DEVICE:
+            preOnOff = dataObject.result_data.onoff;
+            prePowerLevel = dataObject.result_data.level;
+            preBrightness = dataObject.result_data.brightness;
+
+            break;
+          case constants.UNIT_GROUP:
+            preOnOff = dataObject.result_data.device_list[0].onoff;
+            prePowerLevel = dataObject.result_data.device_list[0].level;
+            preBrightness = dataObject.result_data.device_list[0].brightness;
+
+            break;
+          default:
+            break;
+        }
 
         callback(null);
       });
@@ -70,7 +93,7 @@ exports.adjustBrightness = function(deviceId, command, callback){
           break;
       }
 
-      const gatewayUrl = global.BASE_URL + "/device/" + deviceId + "/light";
+      const gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
 
       var body = {};
       body.onoff = preOnOff;
@@ -78,6 +101,10 @@ exports.adjustBrightness = function(deviceId, command, callback){
 
       // color
       body.brightness = brightness;
+
+      if(unit == constants.UNIT_GROUP){
+        body.onlevel = constants.DEFAULT_POWER_LEVEL;
+      }
 
       var data = {
         url: gatewayUrl,
@@ -108,13 +135,13 @@ exports.adjustBrightness = function(deviceId, command, callback){
   });
 }// adjustColorTemperature
 
-exports.setBrightness = function(deviceId, brightness, callback){
+exports.setBrightness = function(unit, unitId, brightness, callback){
   console.log("setBrightness");
 
   var resultObject = {};
 
   // Request query
-  const gatewayUrl = global.BASE_URL + "/device/" + deviceId + "/light";
+  var gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
 
   const onoff = constants.SL_API_POWER_ON;
   const level = constants.DEFAULT_POWER_LEVEL;
@@ -125,6 +152,10 @@ exports.setBrightness = function(deviceId, brightness, callback){
 
   // brightness
   body.brightness = brightness;
+
+  if(unit == constants.UNIT_GROUP){
+    body.onlevel = constants.DEFAULT_POWER_LEVEL;
+  }
 
   var data = {
     url: gatewayUrl,

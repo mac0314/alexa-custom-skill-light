@@ -6,7 +6,7 @@ const request = require("request");
 const constants = require('../lib/constants');
 
 
-exports.adjustColorTemperature = function(deviceId, command, callback){
+exports.adjustColorTemperature = function(unit, unitId, command, callback){
   console.log("adjustColorTemperature");
 
   var resultObject = {};
@@ -32,7 +32,16 @@ exports.adjustColorTemperature = function(deviceId, command, callback){
   async.waterfall([
     function(callback){
       // Request query
-      const gatewayUrl = global.BASE_URL + "/device/" + deviceId + "/light";
+      var gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId;
+      switch (unit) {
+        case constants.UNIT_DEVICE:
+          gatewayUrl += "/light";
+          break;
+        case constants.UNIT_GROUP:
+          gatewayUrl += "/dstatus";
+          break;
+        default:
+      }
 
       var data = {
         url: gatewayUrl,
@@ -47,9 +56,22 @@ exports.adjustColorTemperature = function(deviceId, command, callback){
 
         var dataObject = JSON.parse(body);
 
-        preColorTemperature = dataObject.result_data.colorTemp;
-        preOnOff = dataObject.result_data.onoff;
-        prePowerLevel = dataObject.result_data.level;
+        switch (unit) {
+          case constants.UNIT_DEVICE:
+            preOnOff = dataObject.result_data.onoff;
+            prePowerLevel = dataObject.result_data.level;
+            preColorTemperature = dataObject.result_data.colorTemp;
+
+            break;
+          case constants.UNIT_GROUP:
+            preOnOff = dataObject.result_data.device_list[0].onoff;
+            prePowerLevel = dataObject.result_data.device_list[0].level;
+            preColorTemperature = dataObject.result_data.device_list[0].colorTemp;
+
+            break;
+          default:
+            break;
+        }
 
         callback(null);
       });
@@ -71,7 +93,7 @@ exports.adjustColorTemperature = function(deviceId, command, callback){
           break;
       }
 
-      const gatewayUrl = global.BASE_URL + "/device/" + deviceId + "/light";
+      const gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
 
       var body = {};
       body.onoff = preOnOff;
@@ -79,6 +101,10 @@ exports.adjustColorTemperature = function(deviceId, command, callback){
 
       // color
       body.colorTemp = colorTemperature;
+
+      if(unit == constants.UNIT_GROUP){
+        body.onlevel = constants.DEFAULT_POWER_LEVEL;
+      }
 
       var data = {
         url: gatewayUrl,
@@ -114,13 +140,13 @@ exports.adjustColorTemperature = function(deviceId, command, callback){
 
 
 
-exports.setColorTemperature = function(deviceId, colorTemperature, callback){
+exports.setColorTemperature = function(unit, unitId, colorTemperature, callback){
   console.log("setColorTemperature");
 
   var resultObject = {};
 
   // Request query
-  const gatewayUrl = global.BASE_URL + "/device/" + deviceId + "/light";
+  const gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
 
   const onoff = SL_API_POWER_ON;
   const level = DEFAULT_POWER_LEVEL;
@@ -133,6 +159,10 @@ exports.setColorTemperature = function(deviceId, colorTemperature, callback){
 
   // color
   body.colorTemp = colorTemperatureInKelvin;
+
+  if(unit == constants.UNIT_GROUP){
+    body.onlevel = constants.DEFAULT_POWER_LEVEL;
+  }
 
   var data = {
     url: gatewayUrl,

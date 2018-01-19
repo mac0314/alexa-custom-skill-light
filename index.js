@@ -27,13 +27,11 @@ global.BASE_URL = config.sl.gw;
 
 // entry
 exports.handler = function(event, context, callback) {
-  //console.log(event);
+  console.log(event);
 
   const alexa = Alexa.handler(event, context);
 
   alexa.appId = APP_ID;
-
-  console.log(tableName);
 
   alexa.dynamoDBTableName = tableName;
 

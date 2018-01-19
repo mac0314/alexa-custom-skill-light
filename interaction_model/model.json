@@ -2,7 +2,7 @@
   "languageModel": {
     "types": [
       {
-        "name": "Command",
+        "name": "ADJUST_CMD",
         "values": [
           {
             "id": "1",
@@ -38,12 +38,78 @@
         ]
       },
       {
-        "name": "Unit",
+        "name": "MANAGE_CMD",
         "values": [
           {
             "id": null,
             "name": {
-              "value": "Group",
+              "value": "create",
+              "synonyms": [
+                "register",
+                "add",
+                "plus",
+                "creates",
+                "adds",
+                "registers"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "read",
+              "synonyms": [
+                "reads",
+                "load",
+                "loads",
+                "get",
+                "gets"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "update",
+              "synonyms": [
+                "update",
+                "reset",
+                "upgrade",
+                "modify",
+                "change",
+                "changes",
+                "modifys",
+                "modifies",
+                "upgrades",
+                "updates",
+                "resets"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "delete",
+              "synonyms": [
+                "deletes",
+                "remove",
+                "removes",
+                "throw out",
+                "throw up",
+                "trash",
+                "garage"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "UNIT_TYPE",
+        "values": [
+          {
+            "id": null,
+            "name": {
+              "value": "group",
               "synonyms": [
                 "A group",
                 "A set",
@@ -55,13 +121,29 @@
           {
             "id": null,
             "name": {
-              "value": "Device",
+              "value": "device",
               "synonyms": [
                 "Light",
                 "A Light",
                 "The Light",
                 "One Light",
-                "One"
+                "One",
+                "Single",
+                "Single device",
+                "Single light",
+                "Singular light",
+                "Singular device"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "unit",
+              "synonyms": [
+                "unit space",
+                "unit spaces",
+                "units"
               ]
             }
           }
@@ -81,20 +163,27 @@
         ],
         "slots": [
           {
-            "name": "deviceId",
-            "type": "AMAZON.NUMBER",
-            "samples": [
-              "{deviceId}",
-              "Device {deviceId}",
-              "{deviceId} device"
-            ]
-          },
-          {
             "name": "command",
-            "type": "Command",
+            "type": "ADJUST_CMD",
             "samples": [
               "{command}",
               "get {command}"
+            ]
+          },
+          {
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "samples": [
+              "{unit}"
+            ]
+          },
+          {
+            "name": "unitId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{unitId}",
+              "Device {unitId}",
+              "{unitId} device"
             ]
           }
         ]
@@ -114,17 +203,24 @@
         ],
         "slots": [
           {
-            "name": "deviceId",
-            "type": "AMAZON.NUMBER",
+            "name": "command",
+            "type": "ADJUST_CMD"
+          },
+          {
+            "name": "unit",
+            "type": "UNIT_TYPE",
             "samples": [
-              "{deviceId}",
-              "Device {deviceId}",
-              "{deviceId} device"
+              "{unit}"
             ]
           },
           {
-            "name": "command",
-            "type": "Command"
+            "name": "unitId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{unitId}",
+              "Device {unitId}",
+              "{unitId} device"
+            ]
           }
         ]
       },
@@ -140,20 +236,27 @@
         ],
         "slots": [
           {
-            "name": "deviceId",
-            "type": "AMAZON.NUMBER",
-            "samples": [
-              "{deviceId}",
-              "Device {deviceId}",
-              "{deviceId} device"
-            ]
-          },
-          {
             "name": "command",
-            "type": "Command",
+            "type": "ADJUST_CMD",
             "samples": [
               "{command}",
               "get {command}"
+            ]
+          },
+          {
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "samples": [
+              "{unit}"
+            ]
+          },
+          {
+            "name": "unitId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{unitId}",
+              "Device {unitId}",
+              "{unitId} device"
             ]
           }
         ]
@@ -234,9 +337,92 @@
           "Descover",
           "Deskover",
           "Diskover",
-          "Discoval"
+          "Discoval",
+          "Find my device",
+          "Find my devices",
+          "Find a device",
+          "Find devices",
+          "Find the device",
+          "Find the devices",
+          "Find a devices",
+          "Search a device",
+          "Search a devices",
+          "Search devices",
+          "Search the device",
+          "Search the devices",
+          "Discover my list",
+          "Discover the list",
+          "Discover a list",
+          "Discover a device list",
+          "Discover the device list"
         ],
         "slots": []
+      },
+      {
+        "name": "ManageUnit",
+        "samples": [
+          "Manage",
+          "Manage my device",
+          "Manage a device",
+          "Manage my devices",
+          "Manage devices",
+          "Manage the device",
+          "Manage the devices"
+        ],
+        "slots": [
+          {
+            "name": "crudType",
+            "type": "MANAGE_CMD",
+            "samples": [
+              "{crudType}",
+              "{crudType} a device",
+              "{crudType} devices",
+              "{crudType} my device",
+              "{crudType} my devices",
+              "{crudType} the device",
+              "{crudType} the devices",
+              "device {crudType}",
+              "a device {crudType}",
+              "devices {crudType}",
+              "my device {crudType}",
+              "my devices {crudType}",
+              "the device {crudType}",
+              "the devices {crudType}",
+              "light {crudType}",
+              "a light {crudType}",
+              "lights {crudType}",
+              "the light {crudType}",
+              "the lights {crudType}"
+            ]
+          },
+          {
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "samples": [
+              "{unit}"
+            ]
+          },
+          {
+            "name": "unitId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{unitId}",
+              "Device {unitId}",
+              "Group {unitId}",
+              "Unit space {unitId}",
+              "{unitId} unit",
+              "{unitId} unit space",
+              "{unitId} group",
+              "{unitId} device",
+              "light {unitId}",
+              "lights {unitId}",
+              "a light {unitId}",
+              "the light {unitId}",
+              "{unitId} light",
+              "{unitId} lights"
+            ]
+          }
+        ]
       },
       {
         "name": "SetBrightness",
@@ -246,12 +432,19 @@
         ],
         "slots": [
           {
-            "name": "deviceId",
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "samples": [
+              "{unit}"
+            ]
+          },
+          {
+            "name": "unitId",
             "type": "AMAZON.NUMBER",
             "samples": [
-              "{deviceId}",
-              "Device {deviceId}",
-              "{deviceId} device"
+              "{unitId}",
+              "Device {unitId}",
+              "{unitId} device"
             ]
           },
           {
@@ -270,12 +463,19 @@
         ],
         "slots": [
           {
-            "name": "deviceId",
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "samples": [
+              "{unit}"
+            ]
+          },
+          {
+            "name": "unitId",
             "type": "AMAZON.NUMBER",
             "samples": [
-              "{deviceId}",
-              "Device {deviceId}",
-              "{deviceId} device"
+              "{unitId}",
+              "Device {unitId}",
+              "{unitId} device"
             ]
           },
           {
@@ -296,12 +496,19 @@
         ],
         "slots": [
           {
-            "name": "deviceId",
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "samples": [
+              "{unit}"
+            ]
+          },
+          {
+            "name": "unitId",
             "type": "AMAZON.NUMBER",
             "samples": [
-              "{deviceId}",
-              "Device {deviceId}",
-              "{deviceId} device"
+              "{unitId}",
+              "Device {unitId}",
+              "{unitId} device"
             ]
           },
           {
@@ -321,12 +528,19 @@
         ],
         "slots": [
           {
-            "name": "deviceId",
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "samples": [
+              "{unit}"
+            ]
+          },
+          {
+            "name": "unitId",
             "type": "AMAZON.NUMBER",
             "samples": [
-              "{deviceId}",
-              "Device {deviceId}",
-              "{deviceId} device"
+              "{unitId}",
+              "Device {unitId}",
+              "{unitId} device"
             ]
           },
           {
@@ -343,17 +557,24 @@
         "samples": [
           "Light off",
           "I want to turn off my light",
-          "Light off {deviceId}",
-          "Turn off {deviceId}"
+          "Light off {unitId}",
+          "Turn off {unitId}"
         ],
         "slots": [
           {
-            "name": "deviceId",
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "samples": [
+              "{unit}"
+            ]
+          },
+          {
+            "name": "unitId",
             "type": "AMAZON.NUMBER",
             "samples": [
-              "{deviceId}",
-              "Device {deviceId}",
-              "{deviceId} device"
+              "{unitId}",
+              "Device {unitId}",
+              "{unitId} device"
             ]
           }
         ]
@@ -363,19 +584,26 @@
         "samples": [
           "I want to turn on my light",
           "light on",
-          "turn on {deviceId}",
-          "turn on device {deviceId}",
+          "turn on {unitId}",
+          "turn on device {unitId}",
           "turn on",
           "light up"
         ],
         "slots": [
           {
-            "name": "deviceId",
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "samples": [
+              "{unit}"
+            ]
+          },
+          {
+            "name": "unitId",
             "type": "AMAZON.NUMBER",
             "samples": [
-              "{deviceId}",
-              "Device {deviceId}",
-              "{deviceId} device"
+              "{unitId}",
+              "Device {unitId}",
+              "{unitId} device"
             ]
           }
         ]
@@ -384,15 +612,6 @@
     "invocationName": "system light"
   },
   "prompts": [
-    {
-      "id": "Elicit.Intent-AdjustBrightness.IntentSlot-deviceId",
-      "variations": [
-        {
-          "type": "PlainText",
-          "value": "Which device?"
-        }
-      ]
-    },
     {
       "id": "Elicit.Intent-AdjustBrightness.IntentSlot-command",
       "variations": [
@@ -411,15 +630,20 @@
       ]
     },
     {
-      "id": "Elicit.Intent-AdjustColorTemperature.IntentSlot-deviceId",
+      "id": "Elicit.Intent-AdjustBrightness.IntentSlot-unit",
       "variations": [
         {
           "type": "PlainText",
-          "value": "What device?"
-        },
+          "value": "Single device, Group or Unit space?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-AdjustBrightness.IntentSlot-unitId",
+      "variations": [
         {
           "type": "PlainText",
-          "value": "Which device?"
+          "value": "Which number of {unit}?"
         }
       ]
     },
@@ -441,11 +665,20 @@
       ]
     },
     {
-      "id": "Elicit.Intent-AdjustPowerLevel.IntentSlot-deviceId",
+      "id": "Elicit.Intent-AdjustColorTemperature.IntentSlot-unit",
       "variations": [
         {
           "type": "PlainText",
-          "value": "Which device?"
+          "value": "Single device, Group or Unit space?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-AdjustColorTemperature.IntentSlot-unitId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which number of {unit}?"
         }
       ]
     },
@@ -463,11 +696,65 @@
       ]
     },
     {
-      "id": "Elicit.Intent-SetBrightness.IntentSlot-deviceId",
+      "id": "Elicit.Intent-AdjustPowerLevel.IntentSlot-unit",
       "variations": [
         {
           "type": "PlainText",
-          "value": "Which device?"
+          "value": "Single device, Group or Unit space?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-AdjustPowerLevel.IntentSlot-unitId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which number of {unit}?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-ManageUnit.IntentSlot-crudType",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "What do you want to do?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-ManageUnit.IntentSlot-unit",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Single device, Group or Unit space?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-ManageUnit.IntentSlot-unitId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which number of {unit}?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-SetBrightness.IntentSlot-unit",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Single device, Group or Unit space?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-SetBrightness.IntentSlot-unitId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which number of {unit}?"
         }
       ]
     },
@@ -481,11 +768,20 @@
       ]
     },
     {
-      "id": "Elicit.Intent-SetColor.IntentSlot-deviceId",
+      "id": "Elicit.Intent-SetColor.IntentSlot-unit",
       "variations": [
         {
           "type": "PlainText",
-          "value": "Which device?"
+          "value": "Single device, Group or Unit space?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-SetColor.IntentSlot-unitId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which number of {unit}?"
         }
       ]
     },
@@ -499,11 +795,20 @@
       ]
     },
     {
-      "id": "Elicit.Intent-SetColorTemperature.IntentSlot-deviceId",
+      "id": "Elicit.Intent-SetColorTemperature.IntentSlot-unit",
       "variations": [
         {
           "type": "PlainText",
-          "value": "Which device?"
+          "value": "Single device, Group or Unit space?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-SetColorTemperature.IntentSlot-unitId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which number of {unit}?"
         }
       ]
     },
@@ -525,11 +830,20 @@
       ]
     },
     {
-      "id": "Elicit.Intent-SetPowerLevel.IntentSlot-deviceId",
+      "id": "Elicit.Intent-SetPowerLevel.IntentSlot-unit",
       "variations": [
         {
           "type": "PlainText",
-          "value": "Which device?"
+          "value": "Single device, Group or Unit space?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-SetPowerLevel.IntentSlot-unitId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which number of {unit}?"
         }
       ]
     },
@@ -543,28 +857,38 @@
       ]
     },
     {
-      "id": "Elicit.Intent-TurnOff.IntentSlot-deviceId",
+      "id": "Elicit.Intent-TurnOff.IntentSlot-unit",
       "variations": [
         {
           "type": "PlainText",
-          "value": "Which device?"
+          "value": "Single, Group or Unit space?"
         }
       ]
     },
     {
-      "id": "Elicit.Intent-TurnOn.IntentSlot-deviceId",
+      "id": "Elicit.Intent-TurnOff.IntentSlot-unitId",
       "variations": [
         {
           "type": "PlainText",
-          "value": "What is the light number?"
-        },
+          "value": "Which number of {unit}?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-TurnOn.IntentSlot-unit",
+      "variations": [
         {
           "type": "PlainText",
-          "value": "Which number of light?"
-        },
+          "value": "Single device, Group or Unit space?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-TurnOn.IntentSlot-unitId",
+      "variations": [
         {
           "type": "PlainText",
-          "value": "Which device?"
+          "value": "Which number of {unit}?"
         }
       ]
     }
@@ -577,21 +901,30 @@
         "prompts": {},
         "slots": [
           {
-            "name": "deviceId",
-            "type": "AMAZON.NUMBER",
-            "elicitationRequired": true,
-            "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-AdjustBrightness.IntentSlot-deviceId"
-            }
-          },
-          {
             "name": "command",
-            "type": "Command",
+            "type": "ADJUST_CMD",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
               "elicitation": "Elicit.Intent-AdjustBrightness.IntentSlot-command"
+            }
+          },
+          {
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-AdjustBrightness.IntentSlot-unit"
+            }
+          },
+          {
+            "name": "unitId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-AdjustBrightness.IntentSlot-unitId"
             }
           }
         ]
@@ -602,21 +935,30 @@
         "prompts": {},
         "slots": [
           {
-            "name": "deviceId",
-            "type": "AMAZON.NUMBER",
-            "elicitationRequired": true,
-            "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-AdjustColorTemperature.IntentSlot-deviceId"
-            }
-          },
-          {
             "name": "command",
-            "type": "Command",
+            "type": "ADJUST_CMD",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
               "elicitation": "Elicit.Intent-AdjustColorTemperature.IntentSlot-command"
+            }
+          },
+          {
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-AdjustColorTemperature.IntentSlot-unit"
+            }
+          },
+          {
+            "name": "unitId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-AdjustColorTemperature.IntentSlot-unitId"
             }
           }
         ]
@@ -627,21 +969,64 @@
         "prompts": {},
         "slots": [
           {
-            "name": "deviceId",
-            "type": "AMAZON.NUMBER",
-            "elicitationRequired": true,
-            "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-AdjustPowerLevel.IntentSlot-deviceId"
-            }
-          },
-          {
             "name": "command",
-            "type": "Command",
+            "type": "ADJUST_CMD",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
               "elicitation": "Elicit.Intent-AdjustPowerLevel.IntentSlot-command"
+            }
+          },
+          {
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-AdjustPowerLevel.IntentSlot-unit"
+            }
+          },
+          {
+            "name": "unitId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-AdjustPowerLevel.IntentSlot-unitId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "ManageUnit",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "crudType",
+            "type": "MANAGE_CMD",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-ManageUnit.IntentSlot-crudType"
+            }
+          },
+          {
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-ManageUnit.IntentSlot-unit"
+            }
+          },
+          {
+            "name": "unitId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-ManageUnit.IntentSlot-unitId"
             }
           }
         ]
@@ -652,12 +1037,21 @@
         "prompts": {},
         "slots": [
           {
-            "name": "deviceId",
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-SetBrightness.IntentSlot-unit"
+            }
+          },
+          {
+            "name": "unitId",
             "type": "AMAZON.NUMBER",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Intent-SetBrightness.IntentSlot-deviceId"
+              "elicitation": "Elicit.Intent-SetBrightness.IntentSlot-unitId"
             }
           },
           {
@@ -677,12 +1071,21 @@
         "prompts": {},
         "slots": [
           {
-            "name": "deviceId",
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-SetColor.IntentSlot-unit"
+            }
+          },
+          {
+            "name": "unitId",
             "type": "AMAZON.NUMBER",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Intent-SetColor.IntentSlot-deviceId"
+              "elicitation": "Elicit.Intent-SetColor.IntentSlot-unitId"
             }
           },
           {
@@ -702,12 +1105,21 @@
         "prompts": {},
         "slots": [
           {
-            "name": "deviceId",
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-SetColorTemperature.IntentSlot-unit"
+            }
+          },
+          {
+            "name": "unitId",
             "type": "AMAZON.NUMBER",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Intent-SetColorTemperature.IntentSlot-deviceId"
+              "elicitation": "Elicit.Intent-SetColorTemperature.IntentSlot-unitId"
             }
           },
           {
@@ -727,12 +1139,21 @@
         "prompts": {},
         "slots": [
           {
-            "name": "deviceId",
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-SetPowerLevel.IntentSlot-unit"
+            }
+          },
+          {
+            "name": "unitId",
             "type": "AMAZON.NUMBER",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Intent-SetPowerLevel.IntentSlot-deviceId"
+              "elicitation": "Elicit.Intent-SetPowerLevel.IntentSlot-unitId"
             }
           },
           {
@@ -752,12 +1173,21 @@
         "prompts": {},
         "slots": [
           {
-            "name": "deviceId",
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-TurnOff.IntentSlot-unit"
+            }
+          },
+          {
+            "name": "unitId",
             "type": "AMAZON.NUMBER",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Intent-TurnOff.IntentSlot-deviceId"
+              "elicitation": "Elicit.Intent-TurnOff.IntentSlot-unitId"
             }
           }
         ]
@@ -768,12 +1198,21 @@
         "prompts": {},
         "slots": [
           {
-            "name": "deviceId",
+            "name": "unit",
+            "type": "UNIT_TYPE",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-TurnOn.IntentSlot-unit"
+            }
+          },
+          {
+            "name": "unitId",
             "type": "AMAZON.NUMBER",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Intent-TurnOn.IntentSlot-deviceId"
+              "elicitation": "Elicit.Intent-TurnOn.IntentSlot-unitId"
             }
           }
         ]

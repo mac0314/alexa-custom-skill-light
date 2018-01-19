@@ -5,7 +5,7 @@ const request = require("request");
 const constants = require('../lib/constants');
 
 
-exports.adjustPowerLevel = function(deviceId, command, callback){
+exports.adjustPowerLevel = function(unit, unitId, command, callback){
   console.log("adjustPowerLevel");
 
   var resultObject = {};
@@ -29,7 +29,16 @@ exports.adjustPowerLevel = function(deviceId, command, callback){
   async.waterfall([
     function(callback){
       // Request query
-      const gatewayUrl = global.BASE_URL + "/device/" + deviceId + "/light";
+      var gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId;
+      switch (unit) {
+        case constants.UNIT_DEVICE:
+          gatewayUrl += "/light";
+          break;
+        case constants.UNIT_GROUP:
+          gatewayUrl += "/dstatus";
+          break;
+        default:
+      }
 
       var data = {
         url: gatewayUrl,
@@ -45,8 +54,20 @@ exports.adjustPowerLevel = function(deviceId, command, callback){
 
         var dataObject = JSON.parse(body);
 
-        preOnOff = dataObject.result_data.onoff;
-        prePowerLevel = dataObject.result_data.level;
+        switch (unit) {
+          case constants.UNIT_DEVICE:
+            preOnOff = dataObject.result_data.onoff;
+            prePowerLevel = dataObject.result_data.level;
+
+            break;
+          case constants.UNIT_GROUP:
+            preOnOff = dataObject.result_data.device_list[0].onoff;
+            prePowerLevel = dataObject.result_data.device_list[0].level;
+
+            break;
+          default:
+            break;
+        }
 
         callback(null);
       });
@@ -68,12 +89,16 @@ exports.adjustPowerLevel = function(deviceId, command, callback){
           break;
       }
 
-      const gatewayUrl = global.BASE_URL + "/device/" + deviceId + "/light";
+      const gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
 
       var body = {};
       body.onoff = preOnOff;
       body.level = powerLevel;
 
+
+      if(unit == constants.UNIT_GROUP){
+        body.onlevel = constants.DEFAULT_POWER_LEVEL;
+      }
 
       var data = {
         url: gatewayUrl,
@@ -105,17 +130,21 @@ exports.adjustPowerLevel = function(deviceId, command, callback){
 }// handlePower
 
 
-exports.handlePower = function(deviceId, onoff, powerLevel, callback){
+exports.handlePower = function(unit, unitId, onoff, powerLevel, callback){
   console.log("handlePower");
 
   var resultObject = {};
 
   // make query
-  const gatewayUrl = global.BASE_URL + "/device/" + deviceId + "/light";
+  const gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
 
   var body = {};
   body.onoff = onoff;
   body.level = powerLevel;
+
+  if(unit == constants.UNIT_GROUP){
+    body.onlevel = constants.DEFAULT_POWER_LEVEL;
+  }
 
   var data = {
     url: gatewayUrl,
