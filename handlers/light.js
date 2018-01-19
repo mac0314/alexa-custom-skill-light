@@ -49,7 +49,16 @@ module.exports = {
         }
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-        this.emit(':responseReady');
+        const key = constants.TABLE_USER_DEVICES;
+
+        console.log(this.attributes);
+
+
+        this.attributes[key] = deviceNameList;
+
+        console.log(this.attributes[key]);
+
+        this.emit(':saveState', true);
       }).bind(this));
     }
   },// Discover

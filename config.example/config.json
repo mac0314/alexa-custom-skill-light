@@ -1,4 +1,11 @@
 {
+  "aws": {
+    "dynamoDB":{
+      "table":{
+        "name":"context"
+      }
+    }
+  },
   "alexa": {
     "appId":"amzn1.ask.skill",
     "appName":"System light 2.0"

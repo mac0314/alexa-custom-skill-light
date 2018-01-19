@@ -19,6 +19,7 @@ const sessionHandler = require('./handlers/session');
 global.APP_NAME = config.alexa.appName;
 const APP_ID = config.alexa.appId;
 
+const tableName = config.aws.dynamoDB.table.name;
 
 // TEMP Gateway IP URL
 global.BASE_URL = config.sl.gw;
@@ -31,6 +32,10 @@ exports.handler = function(event, context, callback) {
   const alexa = Alexa.handler(event, context);
 
   alexa.appId = APP_ID;
+
+  console.log(tableName);
+
+  alexa.dynamoDBTableName = tableName;
 
   alexa.registerHandlers(sessionHandler, builtInHandler, lightHandler);
 
