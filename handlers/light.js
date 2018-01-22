@@ -15,49 +15,77 @@ const constants = require('../lib/constants');
 
 
 module.exports = {
-  'Discover': function () {
-    console.log("Discover");
+  'DiscoverGateway': function () {
+    console.log("DiscoverGateway");
 
-    if (this.event.request.dialogState === 'STARTED') {
-      var updatedIntent = this.event.request.intent;
+    discoverCTRL.discoverGateway((function(error, resultObject){
+      const response = resultObject.data.response;
+      const gateway = resultObject.data.gateway;
 
-      this.emit(':delegate', updatedIntent);
-    } else if (this.event.request.dialogState !== 'COMPLETED'){
-      this.emit(':delegate');
-    } else {
-      discoverCTRL.discover(0, (function(error, resultObject){
-        var speechOutput = "";
-        var deviceNameList = resultObject.data.deviceNameList;
+      switch (response.type) {
+        case constants.RESPONSE_SPEAK:
+          this.response.speak(response.speechOutput);
+          break;
+        case constants.RESPONSE_SPEAK_AND_LISTEN:
+          this.response.speak(response.speechOutput).listen(response.reprompt);
+          break;
+        default:
+          break;
+      }
+      this.response.cardRenderer(global.APP_NAME, response.speechOutput, constants.BACKGROUND_IMAGE);
 
-        console.log(deviceNameList);
+      var key = constants.TABLE_USER_GATEWAY_FLAG;
+      if(gateway === null){
+        this.attributes[key] = false;
+      }else{
+        this.attributes[key] = true;
 
-        const deviceNum = deviceNameList.length;
+        key = constants.TABLE_USER_GATEWAY;
+        this.attributes[key] = gateway;
+      }
 
-        if(deviceNum > 1){
-          speechOutput = "Find the devices, " + deviceNameList.join(" ") + "!";
-          const reprompt = 'Do you want to control the devices?';
+      this.emit(':saveState', true);
+    }).bind(this));
+  },// discoverGateway
+  'DiscoverDevices': function () {
+    console.log("DiscoverDevices");
 
-          this.response.speak(speechOutput).listen(reprompt);
-        }else if(deviceNum == 1){
-          speechOutput = "Find the device, " + deviceNameList[0] + "!";
-          const reprompt = 'Do you want to control the device?';
+    var key = constants.TABLE_USER_GATEWAY;
+    const gatewayObject = this.attributes[key];
 
-          this.response.speak(speechOutput).listen(reprompt);
-        }else{
-          speechOutput = "Don't find any device.";
+    if(gatewayObject === undefined){
+      const speechOutput = "First, you must discover your gateway!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-          this.response.speak(speechOutput);
+      this.emit(':responseReady');
+    }else{
+      discoverCTRL.discoverDevices(gatewayObject, (function(error, resultObject){
+        const response = resultObject.data.response;
+        const deviceList = resultObject.data.deviceList;
+
+        switch (response.type) {
+          case constants.RESPONSE_SPEAK:
+            this.response.speak(response.speechOutput);
+            break;
+          case constants.RESPONSE_SPEAK_AND_LISTEN:
+            this.response.speak(response.speechOutput).listen(response.reprompt);
+            break;
+          default:
+            break;
         }
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
-
-        const key = constants.TABLE_USER_DEVICES;
-
-        console.log(this.attributes);
+        this.response.cardRenderer(global.APP_NAME, response.speechOutput, constants.BACKGROUND_IMAGE);
 
 
-        this.attributes[key] = deviceNameList;
+        key = constants.TABLE_USER_DEVICES_FLAG;
+        if(deviceList.length === 0){
+          this.attributes[key] = false;
+        }else{
+          this.attributes[key] = true;
 
-        console.log(this.attributes[key]);
+          key = constants.TABLE_USER_DEVICES;
+          this.attributes[key] = deviceList;
+        }
 
         this.emit(':saveState', true);
       }).bind(this));
@@ -96,30 +124,41 @@ module.exports = {
   'TurnOn': function () {
     console.log("TurnOn");
 
-    if (this.event.request.dialogState === 'STARTED') {
-      var updatedIntent = this.event.request.intent;
-      console.log(updatedIntent.slots);
+    var key = constants.TABLE_USER_DEVICES_FLAG;
+    const flag = this.attributes[key];
 
-      this.emit(':delegate', updatedIntent);
-    } else if (this.event.request.dialogState !== 'COMPLETED'){
-      this.emit(':delegate');
-    } else {
-      var updatedIntent = this.event.request.intent;
+    if(flag){
+      if (this.event.request.dialogState === 'STARTED') {
+        var updatedIntent = this.event.request.intent;
+        console.log(updatedIntent.slots);
 
-      console.log(updatedIntent.slots);
+        this.emit(':delegate', updatedIntent);
+      } else if (this.event.request.dialogState !== 'COMPLETED'){
+        this.emit(':delegate');
+      } else {
+        var updatedIntent = this.event.request.intent;
 
-      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-      const unitId = updatedIntent.slots.unitId.value;
+        console.log(updatedIntent.slots);
+
+        const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+        const unitId = updatedIntent.slots.unitId.value;
 
 
-      powerCTRL.handlePower(unit, unitId, constants.SL_API_POWER_ON, constants.DEFAULT_POWER_LEVEL, (function(error, resultObject){
-        const speechOutput = 'turn on the ' + unitId + ' ' + unit;
+        powerCTRL.handlePower(unit, unitId, constants.SL_API_POWER_ON, constants.DEFAULT_POWER_LEVEL, (function(error, resultObject){
+          const speechOutput = 'turn on the ' + unitId + ' ' + unit;
 
-        this.response.speak(speechOutput);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+          this.response.speak(speechOutput);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-        this.emit(':responseReady');
-      }).bind(this));
+          this.emit(':responseReady');
+        }).bind(this));
+      }
+    }else{
+      const speechOutput = "First, you must discover your devices!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.emit(':responseReady');
     }
   },// TurnOn
   'TurnOff': function () {

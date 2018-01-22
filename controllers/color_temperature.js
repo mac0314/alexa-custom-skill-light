@@ -11,11 +11,11 @@ exports.adjustColorTemperature = function(unit, unitId, command, callback){
 
   var resultObject = {};
 
-  var colorTemperature = 0;
-  var preColorTemperature = 0;
+  var colorTemperature = constants.DEFAULT_COLOR_TEMPERATURE;
+  var preColorTemperature = constants.DEFAULT_COLOR_TEMPERATURE;
   var preOnOff = constants.DEFAULT_POWER;
   var prePowerLevel = constants.DEFAULT_POWER_LEVEL;
-  var code = 0;
+  var code = constants.DEFAULT_CODE;
 
   switch (command) {
     case constants.INCREASE_COMMAND:
@@ -148,8 +148,8 @@ exports.setColorTemperature = function(unit, unitId, colorTemperature, callback)
   // Request query
   const gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
 
-  const onoff = SL_API_POWER_ON;
-  const level = DEFAULT_POWER_LEVEL;
+  const onoff = constants.SL_API_POWER_ON;
+  const level = constants.DEFAULT_POWER_LEVEL;
 
   const colorTemperatureInKelvin = colorTemperature;
 

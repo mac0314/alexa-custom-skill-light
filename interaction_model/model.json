@@ -135,17 +135,6 @@
                 "Singular device"
               ]
             }
-          },
-          {
-            "id": null,
-            "name": {
-              "value": "unit",
-              "synonyms": [
-                "unit space",
-                "unit spaces",
-                "units"
-              ]
-            }
           }
         ]
       }
@@ -314,7 +303,7 @@
         "samples": []
       },
       {
-        "name": "Discover",
+        "name": "DiscoverDevices",
         "samples": [
           "Discover",
           "Discover my devices",
@@ -359,6 +348,16 @@
         "slots": []
       },
       {
+        "name": "DiscoverGateway",
+        "samples": [
+          "Discover gateway",
+          "Discover a gateway",
+          "Discover the gateway",
+          "Discover my gateway"
+        ],
+        "slots": []
+      },
+      {
         "name": "ManageUnit",
         "samples": [
           "Manage",
@@ -371,28 +370,28 @@
         ],
         "slots": [
           {
-            "name": "crudType",
+            "name": "manageType",
             "type": "MANAGE_CMD",
             "samples": [
-              "{crudType}",
-              "{crudType} a device",
-              "{crudType} devices",
-              "{crudType} my device",
-              "{crudType} my devices",
-              "{crudType} the device",
-              "{crudType} the devices",
-              "device {crudType}",
-              "a device {crudType}",
-              "devices {crudType}",
-              "my device {crudType}",
-              "my devices {crudType}",
-              "the device {crudType}",
-              "the devices {crudType}",
-              "light {crudType}",
-              "a light {crudType}",
-              "lights {crudType}",
-              "the light {crudType}",
-              "the lights {crudType}"
+              "{manageType}",
+              "{manageType} a device",
+              "{manageType} devices",
+              "{manageType} my device",
+              "{manageType} my devices",
+              "{manageType} the device",
+              "{manageType} the devices",
+              "device {manageType}",
+              "a device {manageType}",
+              "devices {manageType}",
+              "my device {manageType}",
+              "my devices {manageType}",
+              "the device {manageType}",
+              "the devices {manageType}",
+              "light {manageType}",
+              "a light {manageType}",
+              "lights {manageType}",
+              "the light {manageType}",
+              "the lights {manageType}"
             ]
           },
           {
@@ -634,7 +633,7 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "Single device, Group or Unit space?"
+          "value": "Single device or Group?"
         }
       ]
     },
@@ -669,7 +668,7 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "Single device, Group or Unit space?"
+          "value": "Single device or Group?"
         }
       ]
     },
@@ -700,7 +699,7 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "Single device, Group or Unit space?"
+          "value": "Single device or Group?"
         }
       ]
     },
@@ -714,7 +713,7 @@
       ]
     },
     {
-      "id": "Elicit.Intent-ManageUnit.IntentSlot-crudType",
+      "id": "Elicit.Intent-ManageUnit.IntentSlot-manageType",
       "variations": [
         {
           "type": "PlainText",
@@ -727,7 +726,7 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "Single device, Group or Unit space?"
+          "value": "Single device or Group?"
         }
       ]
     },
@@ -745,7 +744,7 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "Single device, Group or Unit space?"
+          "value": "Single device or Group?"
         }
       ]
     },
@@ -772,7 +771,7 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "Single device, Group or Unit space?"
+          "value": "Single device or Group?"
         }
       ]
     },
@@ -799,7 +798,7 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "Single device, Group or Unit space?"
+          "value": "Single device or Group?"
         }
       ]
     },
@@ -834,7 +833,7 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "Single device, Group or Unit space?"
+          "value": "Single device or Group?"
         }
       ]
     },
@@ -861,7 +860,7 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "Single, Group or Unit space?"
+          "value": "Single device or Group?"
         }
       ]
     },
@@ -879,7 +878,7 @@
       "variations": [
         {
           "type": "PlainText",
-          "value": "Single device, Group or Unit space?"
+          "value": "Single device or Group?"
         }
       ]
     },
@@ -1003,12 +1002,12 @@
         "prompts": {},
         "slots": [
           {
-            "name": "crudType",
+            "name": "manageType",
             "type": "MANAGE_CMD",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Intent-ManageUnit.IntentSlot-crudType"
+              "elicitation": "Elicit.Intent-ManageUnit.IntentSlot-manageType"
             }
           },
           {

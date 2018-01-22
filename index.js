@@ -22,7 +22,7 @@ const APP_ID = config.alexa.appId;
 const tableName = config.aws.dynamoDB.table.name;
 
 // TEMP Gateway IP URL
-global.BASE_URL = config.sl.gw;
+global.BASE_URL = config.sl.gw.ip + ":" + config.sl.gw.port + "/" + config.sl.gw.version;
 
 
 // entry

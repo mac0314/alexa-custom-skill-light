@@ -13,7 +13,7 @@ exports.adjustPowerLevel = function(unit, unitId, command, callback){
   var powerLevel = constants.DEFAULT_POWER_LEVEL;
   var preOnOff = constants.DEFAULT_POWER;
   var prePowerLevel = constants.DEFAULT_POWER_LEVEL;
-  var code = 0;
+  var code = constants.DEFAULT_CODE;
 
   switch (command) {
     case constants.INCREASE_COMMAND:

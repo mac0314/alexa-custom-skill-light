@@ -48,7 +48,7 @@ exports.handleColor = function(unit, unitId, color, callback){
       console.log(body);
 
       resultObject.code = constants.SL_API_SUCCESS_CODE;
-      resultObject.message = "success";
+      resultObject.message = "Success";
 
       callback(null, resultObject);
     });
@@ -57,7 +57,7 @@ exports.handleColor = function(unit, unitId, color, callback){
     console.log("Error", error);
 
     resultObject.code = constants.SL_API_FAILURE_CODE;
-    resultObject.message = "failure";
+    resultObject.message = "Failure";
 
     callback(true, resultObject);
   }
