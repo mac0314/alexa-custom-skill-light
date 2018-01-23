@@ -12,12 +12,13 @@ exports.discoverGateway = function(callback){
   var resultObject = {};
 
   // TODO Add multicast request
+  // TEMP data
   var responseDemo = require('../response/gateway/discovery.json');
 
   var gatewayObject = responseDemo.result_data;
+  gatewayObject.ip = config.sl.gw.ip;
+  gatewayObject.tcp_port = config.sl.gw.port;
 
-  resultObject.code = constants.SL_API_SUCCESS_CODE;
-  resultObject.message = "Success";
 
   var response = {};
 
@@ -35,6 +36,8 @@ exports.discoverGateway = function(callback){
   data.gateway = gatewayObject;
   data.response = response;
 
+  resultObject.code = constants.SL_API_SUCCESS_CODE;
+  resultObject.message = "Success";
   resultObject.data = data;
 
 

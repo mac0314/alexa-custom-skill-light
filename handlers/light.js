@@ -35,8 +35,19 @@ module.exports = {
       this.response.cardRenderer(global.APP_NAME, response.speechOutput, constants.BACKGROUND_IMAGE);
 
       var key = constants.TABLE_USER_GATEWAY_FLAG;
+
       if(gateway === null){
         this.attributes[key] = false;
+
+        key = constants.TABLE_USER_DEVICES_FLAG;
+        this.attributes[key] = false;
+        key = constants.TABLE_USER_GATEWAY;
+        delete this.attributes[key];
+        key = constants.TABLE_USER_DEVICES;
+        delete this.attributes[key];
+        key = constants.TABLE_USER_GROUP;
+        delete this.attributes[key];
+
       }else{
         this.attributes[key] = true;
 
@@ -164,241 +175,329 @@ module.exports = {
   'TurnOff': function () {
     console.log("TurnOff");
 
-    if (this.event.request.dialogState === 'STARTED') {
-      var updatedIntent = this.event.request.intent;
-      console.log(updatedIntent.slots);
+    var key = constants.TABLE_USER_DEVICES_FLAG;
+    const flag = this.attributes[key];
 
-      this.emit(':delegate', updatedIntent);
-    } else if (this.event.request.dialogState !== 'COMPLETED'){
-      this.emit(':delegate');
-    } else {
-      var updatedIntent = this.event.request.intent;
+    if(flag){
+      if (this.event.request.dialogState === 'STARTED') {
+        var updatedIntent = this.event.request.intent;
+        console.log(updatedIntent.slots);
 
-      console.log(updatedIntent.slots);
+        this.emit(':delegate', updatedIntent);
+      } else if (this.event.request.dialogState !== 'COMPLETED'){
+        this.emit(':delegate');
+      } else {
+        var updatedIntent = this.event.request.intent;
 
-      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-      const unitId = updatedIntent.slots.unitId.value;
+        console.log(updatedIntent.slots);
 
-      powerCTRL.handlePower(unit, unitId, constants.SL_API_POWER_OFF, constants.DEFAULT_POWER_LEVEL, (function(error, resultObject){
-        const speechOutput = 'turn off the ' + unitId + ' ' + unit;
+        const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+        const unitId = updatedIntent.slots.unitId.value;
 
-        this.response.speak(speechOutput);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+        powerCTRL.handlePower(unit, unitId, constants.SL_API_POWER_OFF, constants.DEFAULT_POWER_LEVEL, (function(error, resultObject){
+          const speechOutput = 'turn off the ' + unitId + ' ' + unit;
 
-        this.emit(':responseReady');
-      }).bind(this));
+          this.response.speak(speechOutput);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.emit(':responseReady');
+        }).bind(this));
+      }
+    }else{
+      const speechOutput = "First, you must discover your devices!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.emit(':responseReady');
     }
   },// TurnOff
   'AdjustPowerLevel': function () {
     console.log("AdjustPowerLevel");
 
-    if (this.event.request.dialogState === 'STARTED') {
-      var updatedIntent = this.event.request.intent;
-      console.log(updatedIntent.slots);
+    var key = constants.TABLE_USER_DEVICES_FLAG;
+    const flag = this.attributes[key];
 
-      this.emit(':delegate', updatedIntent);
-    } else if (this.event.request.dialogState !== 'COMPLETED'){
-      this.emit(':delegate');
-    } else {
-      var updatedIntent = this.event.request.intent;
+    if(flag){
+      if (this.event.request.dialogState === 'STARTED') {
+        var updatedIntent = this.event.request.intent;
+        console.log(updatedIntent.slots);
 
-      console.log(updatedIntent.slots);
+        this.emit(':delegate', updatedIntent);
+      } else if (this.event.request.dialogState !== 'COMPLETED'){
+        this.emit(':delegate');
+      } else {
+        var updatedIntent = this.event.request.intent;
 
-      const command = updatedIntent.slots.command.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-      const unitId = updatedIntent.slots.unitId.value;
+        console.log(updatedIntent.slots);
+
+        const command = updatedIntent.slots.command.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+        const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+        const unitId = updatedIntent.slots.unitId.value;
 
 
-      powerCTRL.adjustPowerLevel(unit, unitId, command, (function(error, resultObject){
-        const powerLevel = resultObject.data.powerLevel;
+        powerCTRL.adjustPowerLevel(unit, unitId, command, (function(error, resultObject){
+          const powerLevel = resultObject.data.powerLevel;
 
-        const speechOutput = command + ', set the ' + unitId + ' ' + unit + ' power level ' + powerLevel;
-        const reprompt = 'Do you want to Change more?'
+          const speechOutput = command + ', set the ' + unitId + ' ' + unit + ' power level ' + powerLevel;
+          const reprompt = 'Do you want to Change more?'
 
-        this.response.speak(speechOutput).listen(reprompt);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+          this.response.speak(speechOutput).listen(reprompt);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-        this.emit(':responseReady');
-      }).bind(this));
+          this.emit(':responseReady');
+        }).bind(this));
+      }
+    }else{
+      const speechOutput = "First, you must discover your devices!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.emit(':responseReady');
     }
   },// AdjustPowerLevel
   'SetPowerLevel': function () {
     console.log("SetPowerLevel");
 
-    if (this.event.request.dialogState === 'STARTED') {
-      var updatedIntent = this.event.request.intent;
-      console.log(updatedIntent.slots);
+    var key = constants.TABLE_USER_DEVICES_FLAG;
+    const flag = this.attributes[key];
 
-      this.emit(':delegate', updatedIntent);
-    } else if (this.event.request.dialogState !== 'COMPLETED'){
-      this.emit(':delegate');
-    } else {
-      var updatedIntent = this.event.request.intent;
+    if(flag){
+      if (this.event.request.dialogState === 'STARTED') {
+        var updatedIntent = this.event.request.intent;
+        console.log(updatedIntent.slots);
 
-      console.log(updatedIntent.slots);
+        this.emit(':delegate', updatedIntent);
+      } else if (this.event.request.dialogState !== 'COMPLETED'){
+        this.emit(':delegate');
+      } else {
+        var updatedIntent = this.event.request.intent;
 
-      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-      const unitId = updatedIntent.slots.unitId.value;
-      const powerLevel = updatedIntent.slots.powerLevel.value;
+        console.log(updatedIntent.slots);
 
-      powerCTRL.handlePower(unit, unitId, constants.SL_API_POWER_ON, powerLevel, (function(error, resultObject){
-        const speechOutput = 'set the ' + unitId + ' ' + unit + ' power level ' + powerLevel;
+        const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+        const unitId = updatedIntent.slots.unitId.value;
+        const powerLevel = updatedIntent.slots.powerLevel.value;
 
-        this.response.speak(speechOutput);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+        powerCTRL.handlePower(unit, unitId, constants.SL_API_POWER_ON, powerLevel, (function(error, resultObject){
+          const speechOutput = 'set the ' + unitId + ' ' + unit + ' power level ' + powerLevel;
 
-        this.emit(':responseReady');
-      }).bind(this));
+          this.response.speak(speechOutput);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.emit(':responseReady');
+        }).bind(this));
+      }
+    }else{
+      const speechOutput = "First, you must discover your devices!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.emit(':responseReady');
     }
   },// SetPowerLevel
   'AdjustBrightness': function () {
     console.log("AdjustBrightness");
 
-    if (this.event.request.dialogState === 'STARTED') {
-      var updatedIntent = this.event.request.intent;
-      console.log(updatedIntent.slots);
+    var key = constants.TABLE_USER_DEVICES_FLAG;
+    const flag = this.attributes[key];
 
-      this.emit(':delegate', updatedIntent);
-    } else if (this.event.request.dialogState !== 'COMPLETED'){
-      this.emit(':delegate');
-    } else {
-      var updatedIntent = this.event.request.intent;
+    if(flag){
+      if (this.event.request.dialogState === 'STARTED') {
+        var updatedIntent = this.event.request.intent;
+        console.log(updatedIntent.slots);
 
-      console.log(updatedIntent.slots);
+        this.emit(':delegate', updatedIntent);
+      } else if (this.event.request.dialogState !== 'COMPLETED'){
+        this.emit(':delegate');
+      } else {
+        var updatedIntent = this.event.request.intent;
 
-      const command = updatedIntent.slots.command.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-      const unitId = updatedIntent.slots.unitId.value;
+        console.log(updatedIntent.slots);
+
+        const command = updatedIntent.slots.command.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+        const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+        const unitId = updatedIntent.slots.unitId.value;
 
 
-      brightnessCTRL.adjustBrightness(unit, unitId, command, (function(error, resultObject){
-        const brightness = resultObject.data.brightness;
+        brightnessCTRL.adjustBrightness(unit, unitId, command, (function(error, resultObject){
+          const brightness = resultObject.data.brightness;
 
-        const speechOutput = command + ', set the ' + unitId + ' ' + unit + ' brightness ' + brightness;
-        const reprompt = 'Do you want to Change more?'
+          const speechOutput = command + ', set the ' + unitId + ' ' + unit + ' brightness ' + brightness;
+          const reprompt = 'Do you want to Change more?'
 
-        this.response.speak(speechOutput).listen(reprompt);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+          this.response.speak(speechOutput).listen(reprompt);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-        this.emit(':responseReady');
-      }).bind(this));
+          this.emit(':responseReady');
+        }).bind(this));
+      }
+    }else{
+      const speechOutput = "First, you must discover your devices!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.emit(':responseReady');
     }
   },// AdjustBrightness
   'SetBrightness': function () {
     console.log("SetBrightness");
 
-    if (this.event.request.dialogState === 'STARTED') {
-      var updatedIntent = this.event.request.intent;
-      console.log(updatedIntent.slots);
+    var key = constants.TABLE_USER_DEVICES_FLAG;
+    const flag = this.attributes[key];
 
-      this.emit(':delegate', updatedIntent);
-    } else if (this.event.request.dialogState !== 'COMPLETED'){
-      this.emit(':delegate');
-    } else {
-      var updatedIntent = this.event.request.intent;
+    if(flag){
+      if (this.event.request.dialogState === 'STARTED') {
+        var updatedIntent = this.event.request.intent;
+        console.log(updatedIntent.slots);
 
-      console.log(updatedIntent.slots);
+        this.emit(':delegate', updatedIntent);
+      } else if (this.event.request.dialogState !== 'COMPLETED'){
+        this.emit(':delegate');
+      } else {
+        var updatedIntent = this.event.request.intent;
 
-      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-      const unitId = updatedIntent.slots.unitId.value;
-      const brightness = updatedIntent.slots.brightness.value;
+        console.log(updatedIntent.slots);
 
-      brightnessCTRL.setBrightness(unit, unitId, brightness, (function(error, resultObject){
-        const speechOutput = 'set the ' + unitId + ' ' + unit + ' brightness ' + brightness;
+        const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+        const unitId = updatedIntent.slots.unitId.value;
+        const brightness = updatedIntent.slots.brightness.value;
 
-        this.response.speak(speechOutput);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+        brightnessCTRL.setBrightness(unit, unitId, brightness, (function(error, resultObject){
+          const speechOutput = 'set the ' + unitId + ' ' + unit + ' brightness ' + brightness;
 
-        this.emit(':responseReady');
-      }).bind(this));
+          this.response.speak(speechOutput);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.emit(':responseReady');
+        }).bind(this));
+      }
+    }else{
+      const speechOutput = "First, you must discover your devices!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.emit(':responseReady');
     }
   },// SetBrightness
   'SetColor': function () {
     console.log("SetColor");
 
-    if (this.event.request.dialogState === 'STARTED') {
-      var updatedIntent = this.event.request.intent;
-      console.log(updatedIntent.slots);
+    var key = constants.TABLE_USER_DEVICES_FLAG;
+    const flag = this.attributes[key];
 
-      this.emit(':delegate', updatedIntent);
-    } else if (this.event.request.dialogState !== 'COMPLETED'){
-      this.emit(':delegate');
-    } else {
-      var updatedIntent = this.event.request.intent;
+    if(flag){
+      if (this.event.request.dialogState === 'STARTED') {
+        var updatedIntent = this.event.request.intent;
+        console.log(updatedIntent.slots);
 
-      console.log(updatedIntent.slots);
+        this.emit(':delegate', updatedIntent);
+      } else if (this.event.request.dialogState !== 'COMPLETED'){
+        this.emit(':delegate');
+      } else {
+        var updatedIntent = this.event.request.intent;
 
-      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-      const unitId = updatedIntent.slots.unitId.value;
-      const color = updatedIntent.slots.color.value;
+        console.log(updatedIntent.slots);
 
-      colorCTRL.handleColor(unit, unitId, color, (function(error, resultObject){
-        const speechOutput = 'set the ' + unitId + ' ' + unit + ' color ' + color;
+        const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+        const unitId = updatedIntent.slots.unitId.value;
+        const color = updatedIntent.slots.color.value;
 
-        this.response.speak(speechOutput);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+        colorCTRL.handleColor(unit, unitId, color, (function(error, resultObject){
+          const speechOutput = 'set the ' + unitId + ' ' + unit + ' color ' + color;
 
-        this.emit(':responseReady');
-      }).bind(this));
+          this.response.speak(speechOutput);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.emit(':responseReady');
+        }).bind(this));
+      }
+    }else{
+      const speechOutput = "First, you must discover your devices!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.emit(':responseReady');
     }
   },// SetColor
   'AdjustColorTemperature': function () {
     console.log("AdjustColorTemperature");
 
-    if (this.event.request.dialogState === 'STARTED') {
-      var updatedIntent = this.event.request.intent;
-      console.log(updatedIntent.slots);
+    var key = constants.TABLE_USER_DEVICES_FLAG;
+    const flag = this.attributes[key];
 
-      this.emit(':delegate', updatedIntent);
-    } else if (this.event.request.dialogState !== 'COMPLETED'){
-      this.emit(':delegate');
-    } else {
-      var updatedIntent = this.event.request.intent;
+    if(flag){
+      if (this.event.request.dialogState === 'STARTED') {
+        var updatedIntent = this.event.request.intent;
+        console.log(updatedIntent.slots);
 
-      const command = updatedIntent.slots.command.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-      const unitId = updatedIntent.slots.unitId.value;
+        this.emit(':delegate', updatedIntent);
+      } else if (this.event.request.dialogState !== 'COMPLETED'){
+        this.emit(':delegate');
+      } else {
+        var updatedIntent = this.event.request.intent;
 
-      colorTempCTRL.adjustColorTemperature(unit, unitId, command, (function(error, resultObject){
-        const colorTemperature = resultObject.data.colorTemperature;
+        const command = updatedIntent.slots.command.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+        const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+        const unitId = updatedIntent.slots.unitId.value;
 
-        const speechOutput = command + ', set the ' + unitId + ' ' + unit + ' color temperature ' + colorTemperature;
-        const reprompt = 'Do you want to Change more?'
+        colorTempCTRL.adjustColorTemperature(unit, unitId, command, (function(error, resultObject){
+          const colorTemperature = resultObject.data.colorTemperature;
 
-        this.response.speak(speechOutput).listen(reprompt);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+          const speechOutput = command + ', set the ' + unitId + ' ' + unit + ' color temperature ' + colorTemperature;
+          const reprompt = 'Do you want to Change more?'
 
-        this.emit(':responseReady');
-      }).bind(this));
+          this.response.speak(speechOutput).listen(reprompt);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.emit(':responseReady');
+        }).bind(this));
+      }
+    }else{
+      const speechOutput = "First, you must discover your devices!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.emit(':responseReady');
     }
   },// AdjustColorTemperature
   'SetColorTemperature': function () {
     console.log("SetColorTemperature");
 
-    if (this.event.request.dialogState === 'STARTED') {
-      var updatedIntent = this.event.request.intent;
-      console.log(updatedIntent.slots);
+    var key = constants.TABLE_USER_DEVICES_FLAG;
+    const flag = this.attributes[key];
 
-      this.emit(':delegate', updatedIntent);
-    } else if (this.event.request.dialogState !== 'COMPLETED'){
-      this.emit(':delegate');
-    } else {
-      var updatedIntent = this.event.request.intent;
+    if(flag){
+      if (this.event.request.dialogState === 'STARTED') {
+        var updatedIntent = this.event.request.intent;
+        console.log(updatedIntent.slots);
 
-      console.log(updatedIntent.slots);
+        this.emit(':delegate', updatedIntent);
+      } else if (this.event.request.dialogState !== 'COMPLETED'){
+        this.emit(':delegate');
+      } else {
+        var updatedIntent = this.event.request.intent;
 
-      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-      const unitId = updatedIntent.slots.unitId.value;
-      const colorTemperature = updatdIntent.slots.colorTemperature.value;
+        console.log(updatedIntent.slots);
 
-      colorTempCTRL.setColorTemperature(unit, unitId, colorTemperature, (function(error, resultObject){
-        const speechOutput = 'set the ' + unitId + ' ' + unit + ' color temperature ' + colorTemperature;
+        const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+        const unitId = updatedIntent.slots.unitId.value;
+        const colorTemperature = updatdIntent.slots.colorTemperature.value;
 
-        this.response.speak(speechOutput);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+        colorTempCTRL.setColorTemperature(unit, unitId, colorTemperature, (function(error, resultObject){
+          const speechOutput = 'set the ' + unitId + ' ' + unit + ' color temperature ' + colorTemperature;
 
-        this.emit(':responseReady');
-      }).bind(this));
+          this.response.speak(speechOutput);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.emit(':responseReady');
+        }).bind(this));
+      }
+    }else{
+      const speechOutput = "First, you must discover your devices!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.emit(':responseReady');
     }
   },// SetColorTemperature
   'Unhandled': function () {
