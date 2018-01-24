@@ -102,3 +102,39 @@ exports.discoverUnitSpaces = function(gatewayObject, callback){
     callback(null, resultObject);
   });
 }// discoverUnitSpaces
+
+
+exports.removeUnitSpace = function(groupId, callback){
+  console.log("removeUnitSpace");
+
+  var resultObject = {};
+
+  callback(null, resultObject);
+}// removeUnitSpace
+
+
+exports.addLightToUnitSpace = function(deviceObject, groupId, callback){
+  console.log("addLightToUnitSpace");
+
+  var resultObject = {};
+
+  callback(null, resultObject);
+}// addLightToUnitSpace
+
+
+exports.loadLightFromUnitSpace = function(groupId, callback){
+  console.log("loadLightFromUnitSpace");
+
+  var resultObject = {};
+
+  callback(null, resultObject);
+}// loadLightFromUnitSpace
+
+
+exports.removeLightFromUnitSpace = function(deviceId, groupId, callback){
+  console.log("removeLightFromUnitSpace");
+
+  var resultObject = {};
+
+  callback(null, resultObject);
+}// removeLightFromUnitSpace

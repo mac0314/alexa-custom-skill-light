@@ -69,6 +69,41 @@ module.exports = {
   'RemoveUnitSpace': function () {
     console.log("RemoveUnitSpace");
 
+    var key = constants.TABLE_USER_GATEWAY;
+    const gatewayObject = this.attributes[key];
+
+    if(gatewayObject === undefined){
+      const speechOutput = "First, you must discover your gateway!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.emit(':responseReady');
+    }else{
+      const uSpaceName = this.event.request.intent.slots.uSpaceName.value;
+
+      var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
+
+      var uSpaceId = this.attributes[key];
+
+      unitSpaceCTRL.removeUnitSpace(uSpaceId, (function(error, resultObject){
+
+        var key = constants.TABLE_USER_UNIT_SPACE_LIST;
+        var unitSpaceList = this.attributes[key];
+
+        console.log(key, unitSpaceList);
+
+        var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
+        var uSpaceId = this.attributes[key];
+
+        console.log(key, uSpaceId);
+
+        delete this.attributes[key];
+
+        this.response.speak(`Remove unit space ${uSpaceId}!`);
+        this.emit(':saveState', true);
+      }).bind(this));
+    }
+
     this.response.speak('Remove unit space!');
     this.emit(':responseReady');
   },// RemoveUnitSpace

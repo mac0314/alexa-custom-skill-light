@@ -54,11 +54,12 @@
           {
             "id": null,
             "name": {
-              "value": "light",
+              "value": "device",
               "synonyms": [
                 "Light",
                 "One",
-                "Single"
+                "Single",
+                "device"
               ]
             }
           }
@@ -70,9 +71,7 @@
         "name": "AddLightToGroup",
         "samples": [
           "Add device {lightId} to group {groupId}",
-          "Add light {lightId} to group {groupId}",
-          "Add device to group",
-          "Add light to group"
+          "Add light {lightId} to group {groupId}"
         ],
         "slots": [
           {
@@ -94,12 +93,12 @@
       {
         "name": "AdjustBrightness",
         "samples": [
-          "Adjust bright",
-          "Adjust brightness",
-          "{command} brightness",
-          "{command} bright",
-          "brightness {command}",
-          "bright {command}"
+          "Adjust bright {uSpaceName}",
+          "Adjust brightness {uSpaceName}",
+          "{command} brightness {unit} number {unitId}",
+          "{command} bright {unit} number {unitId}",
+          "brightness {command} {unit} number {unitId}",
+          "bright {command} {unit} number {unitId}"
         ],
         "slots": [
           {
@@ -112,10 +111,7 @@
           },
           {
             "name": "unit",
-            "type": "UNIT",
-            "samples": [
-              "{unit}"
-            ]
+            "type": "UNIT"
           },
           {
             "name": "unitId",
@@ -135,15 +131,15 @@
       {
         "name": "AdjustColorTemperature",
         "samples": [
-          "Adjust color temp",
-          "Adjust color temperature",
-          "Adjust color temper",
-          "{command} color temper",
-          "{command} color temp",
-          "{command} color temperature",
-          "color temp {command}",
-          "color temper {command}",
-          "color temperature {command}"
+          "Adjust color temp {uSpaceName}",
+          "Adjust color temperature {uSpaceName}",
+          "Adjust color temper {uSpaceName}",
+          "{command} color temper {unit} number {unitId}",
+          "{command} color temp {unit} number {unitId}",
+          "{command} color temperature {unit} number {unitId}",
+          "color temp {command} color temperature {unit} number {unitId}",
+          "color temper {command} {unit} number {unitId}",
+          "color temperature {command} {unit} number {unitId}"
         ],
         "slots": [
           {
@@ -152,10 +148,7 @@
           },
           {
             "name": "unit",
-            "type": "UNIT",
-            "samples": [
-              "{unit}"
-            ]
+            "type": "UNIT"
           },
           {
             "name": "unitId",
@@ -175,12 +168,12 @@
       {
         "name": "AdjustPowerLevel",
         "samples": [
-          "Adjust power",
-          "Adjust power level",
-          "{command} power",
-          "{command} power level",
-          "power {command}",
-          "power level {command}"
+          "Adjust power {uSpaceName}",
+          "Adjust power level {uSpaceName}",
+          "{command} power {unit} number {unitId}",
+          "{command} power level {unit} number {unitId}",
+          "power {command} {unit} number {unitId}",
+          "power level {command} {unit} number {unitId}"
         ],
         "slots": [
           {
@@ -193,10 +186,7 @@
           },
           {
             "name": "unit",
-            "type": "UNIT",
-            "samples": [
-              "{unit}"
-            ]
+            "type": "UNIT"
           },
           {
             "name": "unitId",
@@ -269,8 +259,7 @@
         "name": "CreateGroup",
         "samples": [
           "Create group {groupId}",
-          "Make group {groupId}",
-          "Create group"
+          "Make group {groupId}"
         ],
         "slots": [
           {
@@ -381,8 +370,6 @@
         "name": "LoadLight",
         "samples": [
           "Load device {lightId}",
-          "Load device",
-          "Load light",
           "Load light {lightId}"
         ],
         "slots": [
@@ -399,8 +386,7 @@
         "name": "LoadLightFromUnitSpace",
         "samples": [
           "Load device from {uSpaceName}",
-          "Load light from {uSpaceName}",
-          "Load device from unit space"
+          "Load light from {uSpaceName}"
         ],
         "slots": [
           {
@@ -430,9 +416,7 @@
       {
         "name": "LoadLightListFromUnitSpace",
         "samples": [
-          "Load device list from {uSpaceName}",
-          "Load device list from unitspace",
-          "Load device list from unit space"
+          "Load device list from {uSpaceName}"
         ],
         "slots": [
           {
@@ -449,8 +433,7 @@
         "samples": [
           "Remove group {groupId}",
           "Remove the group {groupId}",
-          "Remove a group {groupId}",
-          "Remove group"
+          "Remove a group {groupId}"
         ],
         "slots": [
           {
@@ -511,8 +494,8 @@
         "name": "RemoveUnitSpace",
         "samples": [
           "Remove {uSpaceName}",
-          "Remove unitspace",
-          "Remove unit space"
+          "Remove unit space {uSpaceName}",
+          "Remove unitspace {uSpaceName}"
         ],
         "slots": [
           {
@@ -527,16 +510,17 @@
       {
         "name": "SetBrightness",
         "samples": [
-          "Set brightness",
-          "Set bright"
+          "Set brightness {unit} number {unitId}",
+          "Set bright {unit} number {unitId}",
+          "Set brightness {unitId} {unit}",
+          "Set bright {unitId} {unit}",
+          "Set brightness {uSpaceName}",
+          "Set bright {uSpaceName}"
         ],
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT",
-            "samples": [
-              "{unit}"
-            ]
+            "type": "UNIT"
           },
           {
             "name": "unitId",
@@ -563,15 +547,14 @@
       {
         "name": "SetColor",
         "samples": [
-          "Set color"
+          "Set color {unit} number {unitId}",
+          "Set color {unitId} {unit}",
+          "Set color {uSpaceName}"
         ],
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT",
-            "samples": [
-              "{unit}"
-            ]
+            "type": "UNIT"
           },
           {
             "name": "unitId",
@@ -598,17 +581,20 @@
       {
         "name": "SetColorTemperature",
         "samples": [
-          "Set color temperature",
-          "Set color temper",
-          "Set color temp"
+          "Set color temperature {unit} number {unitId}",
+          "Set color temper {unit} number {unitId}",
+          "Set color temp {unit} number {unitId}",
+          "Set color temperature {unitId} {unit}",
+          "Set color temper {unitId} {unit}",
+          "Set color temp {unitId} {unit}",
+          "Set color temp {uSpaceName}",
+          "Set color temper {uSpaceName}",
+          "Set color temperature {uSpaceName}"
         ],
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT",
-            "samples": [
-              "{unit}"
-            ]
+            "type": "UNIT"
           },
           {
             "name": "unitId",
@@ -635,16 +621,15 @@
       {
         "name": "SetPowerLevel",
         "samples": [
-          "Set power level",
-          "Set power"
+          "Set power level {uSpaceName}",
+          "Set power {uSpaceName}",
+          "Set power level {unitId} {unit}",
+          "Set power level {unit} number {unitId}"
         ],
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT",
-            "samples": [
-              "{unit}"
-            ]
+            "type": "UNIT"
           },
           {
             "name": "unitId",
@@ -671,19 +656,14 @@
       {
         "name": "TurnOff",
         "samples": [
-          "Light off",
-          "I want to turn off my light",
           "Light off {unitId} {unit}",
           "Turn off {unit} number {unitId}",
-          "Light off {unit}"
+          "Light off {uSpaceName}"
         ],
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT",
-            "samples": [
-              "{unit}"
-            ]
+            "type": "UNIT"
           },
           {
             "name": "unitId",
@@ -707,15 +687,13 @@
           "light on {unitId} {unit}",
           "light up {unitId} {unit}",
           "light on {unit} number {unitId}",
-          "turn on {unit} number {unitId}"
+          "turn on {unit} number {unitId}",
+          "turn on {uSpaceName}"
         ],
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT",
-            "samples": [
-              "{unit}"
-            ]
+            "type": "UNIT"
           },
           {
             "name": "unitId",
@@ -772,15 +750,6 @@
       ]
     },
     {
-      "id": "Elicit.Intent-AdjustBrightness.IntentSlot-unit",
-      "variations": [
-        {
-          "type": "PlainText",
-          "value": "Single device or Group?"
-        }
-      ]
-    },
-    {
       "id": "Elicit.Intent-AdjustBrightness.IntentSlot-unitId",
       "variations": [
         {
@@ -807,15 +776,6 @@
       ]
     },
     {
-      "id": "Elicit.Intent-AdjustColorTemperature.IntentSlot-unit",
-      "variations": [
-        {
-          "type": "PlainText",
-          "value": "Single device or Group?"
-        }
-      ]
-    },
-    {
       "id": "Elicit.Intent-AdjustColorTemperature.IntentSlot-unitId",
       "variations": [
         {
@@ -834,15 +794,6 @@
         {
           "type": "PlainText",
           "value": "high or low"
-        }
-      ]
-    },
-    {
-      "id": "Elicit.Intent-AdjustPowerLevel.IntentSlot-unit",
-      "variations": [
-        {
-          "type": "PlainText",
-          "value": "Single device or Group?"
         }
       ]
     },
@@ -964,15 +915,6 @@
       ]
     },
     {
-      "id": "Elicit.Intent-SetBrightness.IntentSlot-unit",
-      "variations": [
-        {
-          "type": "PlainText",
-          "value": "Single device or Group?"
-        }
-      ]
-    },
-    {
       "id": "Elicit.Intent-SetBrightness.IntentSlot-unitId",
       "variations": [
         {
@@ -991,15 +933,6 @@
       ]
     },
     {
-      "id": "Elicit.Intent-SetColor.IntentSlot-unit",
-      "variations": [
-        {
-          "type": "PlainText",
-          "value": "Single device or Group?"
-        }
-      ]
-    },
-    {
       "id": "Elicit.Intent-SetColor.IntentSlot-unitId",
       "variations": [
         {
@@ -1014,15 +947,6 @@
         {
           "type": "PlainText",
           "value": "What color?"
-        }
-      ]
-    },
-    {
-      "id": "Elicit.Intent-SetColorTemperature.IntentSlot-unit",
-      "variations": [
-        {
-          "type": "PlainText",
-          "value": "Single device or Group?"
         }
       ]
     },
@@ -1053,15 +977,6 @@
       ]
     },
     {
-      "id": "Elicit.Intent-SetPowerLevel.IntentSlot-unit",
-      "variations": [
-        {
-          "type": "PlainText",
-          "value": "Single device or Group?"
-        }
-      ]
-    },
-    {
       "id": "Elicit.Intent-SetPowerLevel.IntentSlot-unitId",
       "variations": [
         {
@@ -1080,29 +995,11 @@
       ]
     },
     {
-      "id": "Elicit.Intent-TurnOff.IntentSlot-unit",
-      "variations": [
-        {
-          "type": "PlainText",
-          "value": "Single device or Group?"
-        }
-      ]
-    },
-    {
       "id": "Elicit.Intent-TurnOff.IntentSlot-unitId",
       "variations": [
         {
           "type": "PlainText",
           "value": "Which number of {unit}?"
-        }
-      ]
-    },
-    {
-      "id": "Elicit.Intent-TurnOn.IntentSlot-unit",
-      "variations": [
-        {
-          "type": "PlainText",
-          "value": "Single device or Group?"
         }
       ]
     },
@@ -1160,11 +1057,9 @@
           {
             "name": "unit",
             "type": "UNIT",
-            "elicitationRequired": true,
+            "elicitationRequired": false,
             "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-AdjustBrightness.IntentSlot-unit"
-            }
+            "prompts": {}
           },
           {
             "name": "unitId",
@@ -1201,11 +1096,9 @@
           {
             "name": "unit",
             "type": "UNIT",
-            "elicitationRequired": true,
+            "elicitationRequired": false,
             "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-AdjustColorTemperature.IntentSlot-unit"
-            }
+            "prompts": {}
           },
           {
             "name": "unitId",
@@ -1242,11 +1135,9 @@
           {
             "name": "unit",
             "type": "UNIT",
-            "elicitationRequired": true,
+            "elicitationRequired": false,
             "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-AdjustPowerLevel.IntentSlot-unit"
-            }
+            "prompts": {}
           },
           {
             "name": "unitId",
@@ -1452,11 +1343,9 @@
           {
             "name": "unit",
             "type": "UNIT",
-            "elicitationRequired": true,
+            "elicitationRequired": false,
             "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-SetBrightness.IntentSlot-unit"
-            }
+            "prompts": {}
           },
           {
             "name": "unitId",
@@ -1493,11 +1382,9 @@
           {
             "name": "unit",
             "type": "UNIT",
-            "elicitationRequired": true,
+            "elicitationRequired": false,
             "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-SetColor.IntentSlot-unit"
-            }
+            "prompts": {}
           },
           {
             "name": "unitId",
@@ -1534,11 +1421,9 @@
           {
             "name": "unit",
             "type": "UNIT",
-            "elicitationRequired": true,
+            "elicitationRequired": false,
             "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-SetColorTemperature.IntentSlot-unit"
-            }
+            "prompts": {}
           },
           {
             "name": "unitId",
@@ -1575,11 +1460,9 @@
           {
             "name": "unit",
             "type": "UNIT",
-            "elicitationRequired": true,
+            "elicitationRequired": false,
             "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-SetPowerLevel.IntentSlot-unit"
-            }
+            "prompts": {}
           },
           {
             "name": "unitId",
@@ -1616,11 +1499,9 @@
           {
             "name": "unit",
             "type": "UNIT",
-            "elicitationRequired": true,
+            "elicitationRequired": false,
             "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-TurnOff.IntentSlot-unit"
-            }
+            "prompts": {}
           },
           {
             "name": "unitId",
@@ -1648,11 +1529,9 @@
           {
             "name": "unit",
             "type": "UNIT",
-            "elicitationRequired": true,
+            "elicitationRequired": false,
             "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-TurnOn.IntentSlot-unit"
-            }
+            "prompts": {}
           },
           {
             "name": "unitId",

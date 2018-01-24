@@ -97,3 +97,37 @@ exports.discoverGroups = function(gatewayObject, callback){
     callback(null, resultObject);
   });
 }// discoverGroups
+
+exports.removeGroup = function(groupId, callback){
+  console.log("removeGroup");
+
+  var resultObject = {};
+
+  callback(null, resultObject);
+}// removeGroup
+
+exports.addLightToGroup = function(deviceObject, groupId, callback){
+  console.log("addLightToGroup");
+
+  var resultObject = {};
+
+  callback(null, resultObject);
+}// addLightToGroup
+
+
+exports.loadLightFromGroup = function(groupId, callback){
+  console.log("loadLightFromGroup");
+
+  var resultObject = {};
+
+  callback(null, resultObject);
+}// loadLightFromGroup
+
+
+exports.removeLightFromGroup = function(deviceId, groupId, callback){
+  console.log("removeLightFromGroup");
+
+  var resultObject = {};
+
+  callback(null, resultObject);
+}// removeLightFromGroup

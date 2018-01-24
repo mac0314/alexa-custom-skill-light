@@ -1,14 +1,22 @@
 
 const async = require("async");
+const config = require("config.json")("./config/config.json");
 const request = require("request");
 
 const constants = require('../../lib/constants');
+const makeGatewayURL = require('../../js/make_gateway_URL');
 
-
-exports.adjustPowerLevel = function(unit, unitId, command, callback){
+exports.adjustPowerLevel = function(gatewayObject, unit, unitId, command, callback){
   console.log("adjustPowerLevel");
 
   var resultObject = {};
+
+  const ip = gatewayObject.ip;
+  const port = gatewayObject.tcp_port;
+  const version = config.sl.gw.version;
+
+  const gatewayURL = makeGatewayURL(ip, port, version);
+
 
   var powerLevel = constants.DEFAULT_POWER_LEVEL;
   var preOnOff = constants.DEFAULT_POWER;
@@ -29,19 +37,19 @@ exports.adjustPowerLevel = function(unit, unitId, command, callback){
   async.waterfall([
     function(callback){
       // Request query
-      var gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId;
+      var requestURL = gatewayURL + "/" + unit + "/" + unitId;
       switch (unit) {
         case constants.UNIT_LIGHT:
-          gatewayUrl += "/light";
+          requestURL += "/light";
           break;
         case constants.UNIT_GROUP:
-          gatewayUrl += "/dstatus";
+          requestURL += "/dstatus";
           break;
         default:
       }
 
       var data = {
-        url: gatewayUrl,
+        url: requestURL,
         headers: {
           'content-type': 'application/json'
         }
@@ -89,7 +97,8 @@ exports.adjustPowerLevel = function(unit, unitId, command, callback){
           break;
       }
 
-      const gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
+      var requestURL = gatewayURL + "/" + unit + "/" + unitId + "/light";
+
 
       var body = {};
       body.onoff = preOnOff;
@@ -101,7 +110,7 @@ exports.adjustPowerLevel = function(unit, unitId, command, callback){
       }
 
       var data = {
-        url: gatewayUrl,
+        url: requestURL,
         headers: {
           'content-type': 'application/json'
         },
@@ -130,13 +139,23 @@ exports.adjustPowerLevel = function(unit, unitId, command, callback){
 }// handlePower
 
 
-exports.handlePower = function(unit, unitId, onoff, powerLevel, callback){
+exports.handlePower = function(gatewayObject, uSpaceId, unit, unitId, onoff, powerLevel, callback){
   console.log("handlePower");
 
   var resultObject = {};
 
-  // make query
-  const gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
+  const ip = gatewayObject.ip;
+  const port = gatewayObject.tcp_port;
+  const version = config.sl.gw.version;
+
+  const gatewayURL = makeGatewayURL(ip, port, version);
+  var requestURL = gatewayURL;
+
+  if(uSpaceId == undefined){
+    requestURL += "/" + unit + "/" + unitId + "/light";
+  }else{
+    requestURL += "/uspace/" + uSpaceId + "/" + unit + "/" + unitId + "/light"
+  }
 
   var body = {};
   body.onoff = onoff;
@@ -147,12 +166,14 @@ exports.handlePower = function(unit, unitId, onoff, powerLevel, callback){
   }
 
   var data = {
-    url: gatewayUrl,
+    url: requestURL,
     headers: {
       'content-type': 'application/json'
     },
     json: JSON.stringify(body)
   }
+
+  console.log(data);
 
   // request gateway
   request.put(data, function(error, httpResponse, body){
