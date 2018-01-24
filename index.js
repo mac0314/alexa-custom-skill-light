@@ -10,8 +10,10 @@ const config = require("config.json")("./config/config.json");
 
 
 const builtInHandler = require('./handlers/builtIn');
+const groupHandler = require('./handlers/group');
 const lightHandler = require('./handlers/light');
 const sessionHandler = require('./handlers/session');
+const unitSpaceHandler = require('./handlers/unit_space');
 
 const makeGatewayURL = require('./js/make_gateway_URL');
 
@@ -36,7 +38,7 @@ exports.handler = function(event, context, callback) {
 
   alexa.dynamoDBTableName = tableName;
 
-  alexa.registerHandlers(sessionHandler, builtInHandler, lightHandler);
+  alexa.registerHandlers(sessionHandler, builtInHandler, lightHandler, groupHandler, unitSpaceHandler);
 
   alexa.execute();
 };// exports.handler

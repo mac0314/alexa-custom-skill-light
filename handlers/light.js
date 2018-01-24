@@ -4,21 +4,21 @@
 ********* */
 const config = require("config.json")("./config/config.json");
 
-const brightnessCTRL = require('../controllers/brightness');
-const colorTempCTRL = require('../controllers/color_temperature');
-const colorCTRL = require('../controllers/color');
-const discoverCTRL = require('../controllers/discover');
-const powerCTRL = require('../controllers/power');
-const unitCTRL = require('../controllers/unit');
+const brightnessCTRL = require('../controllers/light/brightness');
+const colorTempCTRL = require('../controllers/light/color_temperature');
+const colorCTRL = require('../controllers/light/color');
+const discoverCTRL = require('../controllers/light/discover');
+const powerCTRL = require('../controllers/light/power');
+const lightCTRL = require('../controllers/light/index');
 
 const constants = require('../lib/constants');
 
 
 module.exports = {
-  'DiscoverGateway': function () {
+  'DiscoverGateways': function () {
     console.log("DiscoverGateway");
 
-    discoverCTRL.discoverGateway((function(error, resultObject){
+    discoverCTRL.discoverGateways((function(error, resultObject){
       const response = resultObject.data.response;
       const gateway = resultObject.data.gateway;
 
@@ -39,13 +39,13 @@ module.exports = {
       if(gateway === null){
         this.attributes[key] = false;
 
-        key = constants.TABLE_USER_DEVICES_FLAG;
+        key = constants.TABLE_USER_LIGHTS_FLAG;
         this.attributes[key] = false;
         key = constants.TABLE_USER_GATEWAY;
         delete this.attributes[key];
-        key = constants.TABLE_USER_DEVICES;
+        key = constants.TABLE_USER_LIGHTS;
         delete this.attributes[key];
-        key = constants.TABLE_USER_GROUP;
+        key = constants.TABLE_USER_GROUP_LIST;
         delete this.attributes[key];
 
       }else{
@@ -57,9 +57,9 @@ module.exports = {
 
       this.emit(':saveState', true);
     }).bind(this));
-  },// discoverGateway
-  'DiscoverDevices': function () {
-    console.log("DiscoverDevices");
+  },// DiscoverGateways
+  'DiscoverLights': function () {
+    console.log("DiscoverLights");
 
     var key = constants.TABLE_USER_GATEWAY;
     const gatewayObject = this.attributes[key];
@@ -71,9 +71,9 @@ module.exports = {
 
       this.emit(':responseReady');
     }else{
-      discoverCTRL.discoverDevices(gatewayObject, (function(error, resultObject){
+      discoverCTRL.discoverLights(gatewayObject, (function(error, resultObject){
         const response = resultObject.data.response;
-        const deviceList = resultObject.data.deviceList;
+        const lightList = resultObject.data.lightList;
 
         switch (response.type) {
           case constants.RESPONSE_SPEAK:
@@ -88,54 +88,24 @@ module.exports = {
         this.response.cardRenderer(global.APP_NAME, response.speechOutput, constants.BACKGROUND_IMAGE);
 
 
-        key = constants.TABLE_USER_DEVICES_FLAG;
-        if(deviceList.length === 0){
+        key = constants.TABLE_USER_LIGHTS_FLAG;
+        if(lightList.length === 0){
           this.attributes[key] = false;
         }else{
           this.attributes[key] = true;
 
-          key = constants.TABLE_USER_DEVICES;
-          this.attributes[key] = deviceList;
+          key = constants.TABLE_USER_LIGHTS;
+          this.attributes[key] = lightList;
         }
 
         this.emit(':saveState', true);
       }).bind(this));
     }
-  },// Discover
-  'ManageUnit': function () {
-    console.log("ManageUnit");
-
-    if (this.event.request.dialogState === 'STARTED') {
-      var updatedIntent = this.event.request.intent;
-      console.log(updatedIntent.slots);
-
-      this.emit(':delegate', updatedIntent);
-    } else if (this.event.request.dialogState !== 'COMPLETED'){
-      this.emit(':delegate');
-    } else {
-      var updatedIntent = this.event.request.intent;
-
-      console.log(updatedIntent.slots);
-
-      const crudType = updatedIntent.slots.crudType.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-      const unit = updatedIntent.slots.unit.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-      const unitId = updatedIntent.slots.unitId.value;
-
-
-      unitCTRL.manageUnit(unit, unitId, crudType, (function(error, resultObject){
-        const speechOutput = crudType + ' the ' + unitId + ' ' + unit;
-
-        this.response.speak(speechOutput);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
-
-        this.emit(':responseReady');
-      }).bind(this));
-    }
-  },// ManageUnit
+  },// DiscoverLights
   'TurnOn': function () {
     console.log("TurnOn");
 
-    var key = constants.TABLE_USER_DEVICES_FLAG;
+    var key = constants.TABLE_USER_LIGHTS_FLAG;
     const flag = this.attributes[key];
 
     if(flag){
@@ -165,7 +135,7 @@ module.exports = {
         }).bind(this));
       }
     }else{
-      const speechOutput = "First, you must discover your devices!";
+      const speechOutput = "First, you must discover your lights!";
       this.response.speak(speechOutput);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
@@ -175,7 +145,7 @@ module.exports = {
   'TurnOff': function () {
     console.log("TurnOff");
 
-    var key = constants.TABLE_USER_DEVICES_FLAG;
+    var key = constants.TABLE_USER_LIGHTS_FLAG;
     const flag = this.attributes[key];
 
     if(flag){
@@ -204,7 +174,7 @@ module.exports = {
         }).bind(this));
       }
     }else{
-      const speechOutput = "First, you must discover your devices!";
+      const speechOutput = "First, you must discover your lights!";
       this.response.speak(speechOutput);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
@@ -214,7 +184,7 @@ module.exports = {
   'AdjustPowerLevel': function () {
     console.log("AdjustPowerLevel");
 
-    var key = constants.TABLE_USER_DEVICES_FLAG;
+    var key = constants.TABLE_USER_LIGHTS_FLAG;
     const flag = this.attributes[key];
 
     if(flag){
@@ -248,7 +218,7 @@ module.exports = {
         }).bind(this));
       }
     }else{
-      const speechOutput = "First, you must discover your devices!";
+      const speechOutput = "First, you must discover your lights!";
       this.response.speak(speechOutput);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
@@ -258,7 +228,7 @@ module.exports = {
   'SetPowerLevel': function () {
     console.log("SetPowerLevel");
 
-    var key = constants.TABLE_USER_DEVICES_FLAG;
+    var key = constants.TABLE_USER_LIGHTS_FLAG;
     const flag = this.attributes[key];
 
     if(flag){
@@ -288,7 +258,7 @@ module.exports = {
         }).bind(this));
       }
     }else{
-      const speechOutput = "First, you must discover your devices!";
+      const speechOutput = "First, you must discover your lights!";
       this.response.speak(speechOutput);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
@@ -298,7 +268,7 @@ module.exports = {
   'AdjustBrightness': function () {
     console.log("AdjustBrightness");
 
-    var key = constants.TABLE_USER_DEVICES_FLAG;
+    var key = constants.TABLE_USER_LIGHTS_FLAG;
     const flag = this.attributes[key];
 
     if(flag){
@@ -332,7 +302,7 @@ module.exports = {
         }).bind(this));
       }
     }else{
-      const speechOutput = "First, you must discover your devices!";
+      const speechOutput = "First, you must discover your lights!";
       this.response.speak(speechOutput);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
@@ -342,7 +312,7 @@ module.exports = {
   'SetBrightness': function () {
     console.log("SetBrightness");
 
-    var key = constants.TABLE_USER_DEVICES_FLAG;
+    var key = constants.TABLE_USER_LIGHTS_FLAG;
     const flag = this.attributes[key];
 
     if(flag){
@@ -372,7 +342,7 @@ module.exports = {
         }).bind(this));
       }
     }else{
-      const speechOutput = "First, you must discover your devices!";
+      const speechOutput = "First, you must discover your lights!";
       this.response.speak(speechOutput);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
@@ -382,7 +352,7 @@ module.exports = {
   'SetColor': function () {
     console.log("SetColor");
 
-    var key = constants.TABLE_USER_DEVICES_FLAG;
+    var key = constants.TABLE_USER_LIGHTS_FLAG;
     const flag = this.attributes[key];
 
     if(flag){
@@ -412,7 +382,7 @@ module.exports = {
         }).bind(this));
       }
     }else{
-      const speechOutput = "First, you must discover your devices!";
+      const speechOutput = "First, you must discover your lights!";
       this.response.speak(speechOutput);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
@@ -422,7 +392,7 @@ module.exports = {
   'AdjustColorTemperature': function () {
     console.log("AdjustColorTemperature");
 
-    var key = constants.TABLE_USER_DEVICES_FLAG;
+    var key = constants.TABLE_USER_LIGHTS_FLAG;
     const flag = this.attributes[key];
 
     if(flag){
@@ -453,7 +423,7 @@ module.exports = {
         }).bind(this));
       }
     }else{
-      const speechOutput = "First, you must discover your devices!";
+      const speechOutput = "First, you must discover your lights!";
       this.response.speak(speechOutput);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
@@ -463,7 +433,7 @@ module.exports = {
   'SetColorTemperature': function () {
     console.log("SetColorTemperature");
 
-    var key = constants.TABLE_USER_DEVICES_FLAG;
+    var key = constants.TABLE_USER_LIGHTS_FLAG;
     const flag = this.attributes[key];
 
     if(flag){
@@ -493,7 +463,7 @@ module.exports = {
         }).bind(this));
       }
     }else{
-      const speechOutput = "First, you must discover your devices!";
+      const speechOutput = "First, you must discover your lights!";
       this.response.speak(speechOutput);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 

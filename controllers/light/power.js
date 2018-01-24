@@ -2,7 +2,7 @@
 const async = require("async");
 const request = require("request");
 
-const constants = require('../lib/constants');
+const constants = require('../../lib/constants');
 
 
 exports.adjustPowerLevel = function(unit, unitId, command, callback){
@@ -31,7 +31,7 @@ exports.adjustPowerLevel = function(unit, unitId, command, callback){
       // Request query
       var gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId;
       switch (unit) {
-        case constants.UNIT_DEVICE:
+        case constants.UNIT_LIGHT:
           gatewayUrl += "/light";
           break;
         case constants.UNIT_GROUP:
@@ -55,7 +55,7 @@ exports.adjustPowerLevel = function(unit, unitId, command, callback){
         var dataObject = JSON.parse(body);
 
         switch (unit) {
-          case constants.UNIT_DEVICE:
+          case constants.UNIT_LIGHT:
             preOnOff = dataObject.result_data.onoff;
             prePowerLevel = dataObject.result_data.level;
 

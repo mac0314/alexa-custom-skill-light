@@ -38,101 +38,27 @@
         ]
       },
       {
-        "name": "MANAGE_CMD",
-        "values": [
-          {
-            "id": null,
-            "name": {
-              "value": "create",
-              "synonyms": [
-                "register",
-                "add",
-                "plus",
-                "creates",
-                "adds",
-                "registers"
-              ]
-            }
-          },
-          {
-            "id": null,
-            "name": {
-              "value": "read",
-              "synonyms": [
-                "reads",
-                "load",
-                "loads",
-                "get",
-                "gets"
-              ]
-            }
-          },
-          {
-            "id": null,
-            "name": {
-              "value": "update",
-              "synonyms": [
-                "update",
-                "reset",
-                "upgrade",
-                "modify",
-                "change",
-                "changes",
-                "modifys",
-                "modifies",
-                "upgrades",
-                "updates",
-                "resets"
-              ]
-            }
-          },
-          {
-            "id": null,
-            "name": {
-              "value": "delete",
-              "synonyms": [
-                "deletes",
-                "remove",
-                "removes",
-                "throw out",
-                "throw up",
-                "trash",
-                "garage"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "name": "UNIT_TYPE",
+        "name": "UNIT",
         "values": [
           {
             "id": null,
             "name": {
               "value": "group",
               "synonyms": [
-                "A group",
-                "A set",
-                "The set",
-                "Set"
+                "Set",
+                "list",
+                "devices"
               ]
             }
           },
           {
             "id": null,
             "name": {
-              "value": "device",
+              "value": "light",
               "synonyms": [
                 "Light",
-                "A Light",
-                "The Light",
-                "One Light",
                 "One",
-                "Single",
-                "Single device",
-                "Single light",
-                "Singular light",
-                "Singular device"
+                "Single"
               ]
             }
           }
@@ -140,6 +66,31 @@
       }
     ],
     "intents": [
+      {
+        "name": "AddLightToGroup",
+        "samples": [
+          "Add device {lightId} to group {groupId}",
+          "Add light {lightId} to group {groupId}",
+          "Add device to group",
+          "Add light to group"
+        ],
+        "slots": [
+          {
+            "name": "lightId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{lightId}"
+            ]
+          },
+          {
+            "name": "groupId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{groupId}"
+            ]
+          }
+        ]
+      },
       {
         "name": "AdjustBrightness",
         "samples": [
@@ -161,7 +112,7 @@
           },
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "samples": [
               "{unit}"
             ]
@@ -174,6 +125,10 @@
               "Device {unitId}",
               "{unitId} device"
             ]
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room"
           }
         ]
       },
@@ -197,7 +152,7 @@
           },
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "samples": [
               "{unit}"
             ]
@@ -210,6 +165,10 @@
               "Device {unitId}",
               "{unitId} device"
             ]
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room"
           }
         ]
       },
@@ -234,7 +193,7 @@
           },
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "samples": [
               "{unit}"
             ]
@@ -247,6 +206,10 @@
               "Device {unitId}",
               "{unitId} device"
             ]
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room"
           }
         ]
       },
@@ -303,7 +266,61 @@
         "samples": []
       },
       {
-        "name": "DiscoverDevices",
+        "name": "CreateGroup",
+        "samples": [
+          "Create group {groupId}",
+          "Make group {groupId}",
+          "Create group"
+        ],
+        "slots": [
+          {
+            "name": "groupId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{groupId}"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "CreateUnitSpace",
+        "samples": [
+          "Create space {uSpaceName}",
+          "Register space {uSpaceName}",
+          "Create unitspace {uSpaceName}",
+          "Create unit space {uSpaceName}"
+        ],
+        "slots": [
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "samples": [
+              "{uSpaceName}"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "DiscoverGateways",
+        "samples": [
+          "Discover gateway",
+          "Discover a gateway",
+          "Discover the gateway",
+          "Discover my gateway"
+        ],
+        "slots": []
+      },
+      {
+        "name": "DiscoverGroups",
+        "samples": [
+          "Tell me group",
+          "Load group",
+          "Discover group"
+        ],
+        "slots": []
+      },
+      {
+        "name": "DiscoverLights",
         "samples": [
           "Discover",
           "Discover my devices",
@@ -343,82 +360,166 @@
           "Discover the list",
           "Discover a list",
           "Discover a device list",
-          "Discover the device list"
+          "Discover the device list",
+          "Load lights"
         ],
         "slots": []
       },
       {
-        "name": "DiscoverGateway",
+        "name": "DiscoverUnitSpaces",
         "samples": [
-          "Discover gateway",
-          "Discover a gateway",
-          "Discover the gateway",
-          "Discover my gateway"
+          "Tell me unit space",
+          "Tell me unitspace",
+          "Load unit space",
+          "Load unitspace",
+          "Discover unitspace",
+          "Discover unit space"
         ],
         "slots": []
       },
       {
-        "name": "ManageUnit",
+        "name": "LoadLight",
         "samples": [
-          "Manage",
-          "Manage my device",
-          "Manage a device",
-          "Manage my devices",
-          "Manage devices",
-          "Manage the device",
-          "Manage the devices"
+          "Load device {lightId}",
+          "Load device",
+          "Load light",
+          "Load light {lightId}"
         ],
         "slots": [
           {
-            "name": "manageType",
-            "type": "MANAGE_CMD",
-            "samples": [
-              "{manageType}",
-              "{manageType} a device",
-              "{manageType} devices",
-              "{manageType} my device",
-              "{manageType} my devices",
-              "{manageType} the device",
-              "{manageType} the devices",
-              "device {manageType}",
-              "a device {manageType}",
-              "devices {manageType}",
-              "my device {manageType}",
-              "my devices {manageType}",
-              "the device {manageType}",
-              "the devices {manageType}",
-              "light {manageType}",
-              "a light {manageType}",
-              "lights {manageType}",
-              "the light {manageType}",
-              "the lights {manageType}"
-            ]
-          },
-          {
-            "name": "unit",
-            "type": "UNIT_TYPE",
-            "samples": [
-              "{unit}"
-            ]
-          },
-          {
-            "name": "unitId",
+            "name": "lightId",
             "type": "AMAZON.NUMBER",
             "samples": [
-              "{unitId}",
-              "Device {unitId}",
-              "Group {unitId}",
-              "Unit space {unitId}",
-              "{unitId} unit",
-              "{unitId} unit space",
-              "{unitId} group",
-              "{unitId} device",
-              "light {unitId}",
-              "lights {unitId}",
-              "a light {unitId}",
-              "the light {unitId}",
-              "{unitId} light",
-              "{unitId} lights"
+              "{lightId}"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "LoadLightFromUnitSpace",
+        "samples": [
+          "Load device from {uSpaceName}",
+          "Load light from {uSpaceName}",
+          "Load device from unit space"
+        ],
+        "slots": [
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "samples": [
+              "{uSpaceName}"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "LoadLightListFromGroup",
+        "samples": [
+          "Load device from group {groupId}"
+        ],
+        "slots": [
+          {
+            "name": "groupId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{groupId}"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "LoadLightListFromUnitSpace",
+        "samples": [
+          "Load device list from {uSpaceName}",
+          "Load device list from unitspace",
+          "Load device list from unit space"
+        ],
+        "slots": [
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "samples": [
+              "{uSpaceName}"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "RemoveGroup",
+        "samples": [
+          "Remove group {groupId}",
+          "Remove the group {groupId}",
+          "Remove a group {groupId}",
+          "Remove group"
+        ],
+        "slots": [
+          {
+            "name": "groupId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{groupId}"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "RemoveLightFromGroup",
+        "samples": [
+          "Remove device {lightId} from group {groupId}",
+          "Remove light {lightId} from group {groupId}"
+        ],
+        "slots": [
+          {
+            "name": "groupId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{groupId}"
+            ]
+          },
+          {
+            "name": "lightId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{lightId}"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "RemoveLightFromUnitSpace",
+        "samples": [
+          "Remove device {lightId} from {uSpaceName}"
+        ],
+        "slots": [
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "samples": [
+              "{uSpaceName}"
+            ]
+          },
+          {
+            "name": "lightId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{lightId}"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "RemoveUnitSpace",
+        "samples": [
+          "Remove {uSpaceName}",
+          "Remove unitspace",
+          "Remove unit space"
+        ],
+        "slots": [
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "samples": [
+              "{uSpaceName}"
             ]
           }
         ]
@@ -432,7 +533,7 @@
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "samples": [
               "{unit}"
             ]
@@ -452,6 +553,10 @@
             "samples": [
               "{brightness}"
             ]
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room"
           }
         ]
       },
@@ -463,7 +568,7 @@
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "samples": [
               "{unit}"
             ]
@@ -483,6 +588,10 @@
             "samples": [
               "{color}"
             ]
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room"
           }
         ]
       },
@@ -496,7 +605,7 @@
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "samples": [
               "{unit}"
             ]
@@ -516,6 +625,10 @@
             "samples": [
               "{colorTemperature}"
             ]
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room"
           }
         ]
       },
@@ -528,7 +641,7 @@
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "samples": [
               "{unit}"
             ]
@@ -548,6 +661,10 @@
             "samples": [
               "{powerLevel}"
             ]
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room"
           }
         ]
       },
@@ -556,13 +673,14 @@
         "samples": [
           "Light off",
           "I want to turn off my light",
-          "Light off {unitId}",
-          "Turn off {unitId}"
+          "Light off {unitId} {unit}",
+          "Turn off {unit} number {unitId}",
+          "Light off {unit}"
         ],
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "samples": [
               "{unit}"
             ]
@@ -575,23 +693,26 @@
               "Device {unitId}",
               "{unitId} device"
             ]
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room"
           }
         ]
       },
       {
         "name": "TurnOn",
         "samples": [
-          "I want to turn on my light",
-          "light on",
-          "turn on {unitId}",
-          "turn on device {unitId}",
-          "turn on",
-          "light up"
+          "turn on {unitId} {unit}",
+          "light on {unitId} {unit}",
+          "light up {unitId} {unit}",
+          "light on {unit} number {unitId}",
+          "turn on {unit} number {unitId}"
         ],
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "samples": [
               "{unit}"
             ]
@@ -604,6 +725,10 @@
               "Device {unitId}",
               "{unitId} device"
             ]
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room"
           }
         ]
       }
@@ -611,6 +736,24 @@
     "invocationName": "system light"
   },
   "prompts": [
+    {
+      "id": "Elicit.Intent-AddLightToGroup.IntentSlot-lightId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which number of device?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-AddLightToGroup.IntentSlot-groupId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which number of group?"
+        }
+      ]
+    },
     {
       "id": "Elicit.Intent-AdjustBrightness.IntentSlot-command",
       "variations": [
@@ -713,29 +856,110 @@
       ]
     },
     {
-      "id": "Elicit.Intent-ManageUnit.IntentSlot-manageType",
+      "id": "Elicit.Intent-CreateGroup.IntentSlot-groupId",
       "variations": [
         {
           "type": "PlainText",
-          "value": "What do you want to do?"
+          "value": "Which number of group?"
         }
       ]
     },
     {
-      "id": "Elicit.Intent-ManageUnit.IntentSlot-unit",
+      "id": "Elicit.Intent-CreateUnitSpace.IntentSlot-uSpaceName",
       "variations": [
         {
           "type": "PlainText",
-          "value": "Single device or Group?"
+          "value": "Which space?"
         }
       ]
     },
     {
-      "id": "Elicit.Intent-ManageUnit.IntentSlot-unitId",
+      "id": "Elicit.Intent-LoadLight.IntentSlot-lightId",
       "variations": [
         {
           "type": "PlainText",
-          "value": "Which number of {unit}?"
+          "value": "Which number of device?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-LoadLightFromUnitSpace.IntentSlot-uSpaceName",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which space?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-LoadLightListFromGroup.IntentSlot-groupId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which number of group?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-LoadLightListFromUnitSpace.IntentSlot-uSpaceName",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which space?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-RemoveGroup.IntentSlot-groupId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which number of group?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-RemoveLightFromGroup.IntentSlot-groupId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which number of group?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-RemoveLightFromGroup.IntentSlot-lightId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which number of device?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-RemoveLightFromUnitSpace.IntentSlot-uSpaceName",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which space?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-RemoveLightFromUnitSpace.IntentSlot-lightId",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which number of device?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-RemoveUnitSpace.IntentSlot-uSpaceName",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which space?"
         }
       ]
     },
@@ -895,6 +1119,31 @@
   "dialog": {
     "intents": [
       {
+        "name": "AddLightToGroup",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "lightId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-AddLightToGroup.IntentSlot-lightId"
+            }
+          },
+          {
+            "name": "groupId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-AddLightToGroup.IntentSlot-groupId"
+            }
+          }
+        ]
+      },
+      {
         "name": "AdjustBrightness",
         "confirmationRequired": false,
         "prompts": {},
@@ -910,7 +1159,7 @@
           },
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
@@ -925,6 +1174,13 @@
             "prompts": {
               "elicitation": "Elicit.Intent-AdjustBrightness.IntentSlot-unitId"
             }
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
           }
         ]
       },
@@ -944,7 +1200,7 @@
           },
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
@@ -959,6 +1215,13 @@
             "prompts": {
               "elicitation": "Elicit.Intent-AdjustColorTemperature.IntentSlot-unitId"
             }
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
           }
         ]
       },
@@ -978,7 +1241,7 @@
           },
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
@@ -993,39 +1256,190 @@
             "prompts": {
               "elicitation": "Elicit.Intent-AdjustPowerLevel.IntentSlot-unitId"
             }
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
           }
         ]
       },
       {
-        "name": "ManageUnit",
+        "name": "CreateGroup",
         "confirmationRequired": false,
         "prompts": {},
         "slots": [
           {
-            "name": "manageType",
-            "type": "MANAGE_CMD",
-            "elicitationRequired": true,
-            "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-ManageUnit.IntentSlot-manageType"
-            }
-          },
-          {
-            "name": "unit",
-            "type": "UNIT_TYPE",
-            "elicitationRequired": true,
-            "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-ManageUnit.IntentSlot-unit"
-            }
-          },
-          {
-            "name": "unitId",
+            "name": "groupId",
             "type": "AMAZON.NUMBER",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
-              "elicitation": "Elicit.Intent-ManageUnit.IntentSlot-unitId"
+              "elicitation": "Elicit.Intent-CreateGroup.IntentSlot-groupId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "CreateUnitSpace",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-CreateUnitSpace.IntentSlot-uSpaceName"
+            }
+          }
+        ]
+      },
+      {
+        "name": "LoadLight",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "lightId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-LoadLight.IntentSlot-lightId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "LoadLightFromUnitSpace",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-LoadLightFromUnitSpace.IntentSlot-uSpaceName"
+            }
+          }
+        ]
+      },
+      {
+        "name": "LoadLightListFromGroup",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "groupId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-LoadLightListFromGroup.IntentSlot-groupId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "LoadLightListFromUnitSpace",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-LoadLightListFromUnitSpace.IntentSlot-uSpaceName"
+            }
+          }
+        ]
+      },
+      {
+        "name": "RemoveGroup",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "groupId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-RemoveGroup.IntentSlot-groupId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "RemoveLightFromGroup",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "groupId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-RemoveLightFromGroup.IntentSlot-groupId"
+            }
+          },
+          {
+            "name": "lightId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-RemoveLightFromGroup.IntentSlot-lightId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "RemoveLightFromUnitSpace",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-RemoveLightFromUnitSpace.IntentSlot-uSpaceName"
+            }
+          },
+          {
+            "name": "lightId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-RemoveLightFromUnitSpace.IntentSlot-lightId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "RemoveUnitSpace",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-RemoveUnitSpace.IntentSlot-uSpaceName"
             }
           }
         ]
@@ -1037,7 +1451,7 @@
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
@@ -1061,6 +1475,13 @@
             "prompts": {
               "elicitation": "Elicit.Intent-SetBrightness.IntentSlot-brightness"
             }
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
           }
         ]
       },
@@ -1071,7 +1492,7 @@
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
@@ -1095,6 +1516,13 @@
             "prompts": {
               "elicitation": "Elicit.Intent-SetColor.IntentSlot-color"
             }
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
           }
         ]
       },
@@ -1105,7 +1533,7 @@
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
@@ -1129,6 +1557,13 @@
             "prompts": {
               "elicitation": "Elicit.Intent-SetColorTemperature.IntentSlot-colorTemperature"
             }
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
           }
         ]
       },
@@ -1139,7 +1574,7 @@
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
@@ -1163,6 +1598,13 @@
             "prompts": {
               "elicitation": "Elicit.Intent-SetPowerLevel.IntentSlot-powerLevel"
             }
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
           }
         ]
       },
@@ -1173,7 +1615,7 @@
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
@@ -1188,6 +1630,13 @@
             "prompts": {
               "elicitation": "Elicit.Intent-TurnOff.IntentSlot-unitId"
             }
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
           }
         ]
       },
@@ -1198,7 +1647,7 @@
         "slots": [
           {
             "name": "unit",
-            "type": "UNIT_TYPE",
+            "type": "UNIT",
             "elicitationRequired": true,
             "confirmationRequired": false,
             "prompts": {
@@ -1213,6 +1662,13 @@
             "prompts": {
               "elicitation": "Elicit.Intent-TurnOn.IntentSlot-unitId"
             }
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
           }
         ]
       }

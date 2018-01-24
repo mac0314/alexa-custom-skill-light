@@ -3,7 +3,7 @@ const async = require("async");
 const request = require("request");
 
 
-const constants = require('../lib/constants');
+const constants = require('../../lib/constants');
 
 
 exports.loadData = function(unit, unitId, callback){
@@ -12,7 +12,7 @@ exports.loadData = function(unit, unitId, callback){
   // Request query
   var gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId;
   switch (unit) {
-    case constants.UNIT_DEVICE:
+    case constants.UNIT_LIGHT:
       gatewayUrl += "/light";
       break;
     case constants.UNIT_GROUP:
@@ -36,4 +36,5 @@ exports.loadData = function(unit, unitId, callback){
     var dataObject = JSON.parse(body);
 
     callback(null, dataObject);
-});
+  });
+};

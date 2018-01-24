@@ -3,19 +3,23 @@ const async = require("async");
 const config = require("config.json")("./config/config.json");
 const request = require("request");
 
-const constants = require('../lib/constants');
-const makeGatewayURL = require('../js/make_gateway_URL');
+const constants = require('../../lib/constants');
+const makeGatewayURL = require('../../js/make_gateway_URL');
 
-exports.discoverGateway = function(callback){
+var responseDemo = require('../../response/gateway/discovery.json');
+
+exports.discoverGateways = function(callback){
   console.log("discoverGateway");
 
   var resultObject = {};
 
   // TODO Add multicast request
   // TEMP data
-  var responseDemo = require('../response/gateway/discovery.json');
 
-  var gatewayObject = responseDemo.result_data;
+
+  var response = responseDemo;
+
+  var gatewayObject = response.result_data;
   gatewayObject.ip = config.sl.gw.ip;
   gatewayObject.tcp_port = config.sl.gw.port;
 
@@ -45,8 +49,8 @@ exports.discoverGateway = function(callback){
 };// discoverGateways
 
 
-exports.discoverDevices = function(gatewayObject, callback){
-  console.log("discoverDevices");
+exports.discoverLights = function(gatewayObject, callback){
+  console.log("discoverLights");
 
   var resultObject = {};
 
@@ -59,7 +63,6 @@ exports.discoverDevices = function(gatewayObject, callback){
     response.type = constants.RESPONSE_SPEAK_AND_LISTEN;
     response.speechOutput = "Find the gateway, " + gatewayObject.gid + "!";
     response.reprompt = 'What do you want to control the gateway?';
-
   }
 
   const ip = gatewayObject.ip;
@@ -82,36 +85,36 @@ exports.discoverDevices = function(gatewayObject, callback){
 
     var dataObject = JSON.parse(body);
 
-    var deviceList = dataObject.result_data.device_list;
+    var lightList = dataObject.result_data.device_list;
 
-    const deviceNum = deviceList.length;
+    const lightNum = lightList.length;
 
     var response = {};
 
-    if(deviceNum > 1){
+    if(lightNum > 1){
       response.type = constants.RESPONSE_SPEAK_AND_LISTEN;
-      response.speechOutput = "Find the devices";
+      response.speechOutput = "Find the lights";
 
-      for(let i = 0; i < deviceList.length; i++){
-        response.speechOutput += ", " + deviceList[i].did;
+      for(let i = 0; i < lightList.length; i++){
+        response.speechOutput += ", " + lightList[i].did;
       }
       response.speechOutput += "!";
 
-      response.reprompt = 'What do you want to control the devices?';
-    }else if(deviceNum == 1){
+      response.reprompt = 'What do you want to control the lights?';
+    }else if(lightNum == 1){
       response.type = constants.RESPONSE_SPEAK_AND_LISTEN;
-      response.speechOutput = "Find the device, " + deviceList[0].did + "!";
-      response.reprompt = 'What do you want to control the device?';
+      response.speechOutput = "Find the light, " + lightList[0].did + "!";
+      response.reprompt = 'What do you want to control the light?';
     }else{
       response.type = constants.RESPONSE_SPEAK;
-      response.speechOutput = "Don't find any device.";
+      response.speechOutput = "Don't find any light.";
     }
 
 
     var data = {};
 
     data.response = response;
-    data.deviceList = deviceList;
+    data.lightList = lightList;
 
 
     resultObject.code = 0;

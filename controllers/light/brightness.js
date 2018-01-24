@@ -3,16 +3,16 @@ const async = require("async");
 const request = require("request");
 
 
-const constants = require('../lib/constants');
+const constants = require('../../lib/constants');
 
 
-exports.adjustColorTemperature = function(unit, unitId, command, callback){
-  console.log("adjustColorTemperature");
+exports.adjustBrightness = function(unit, unitId, command, callback){
+  console.log("adjustBrightness");
 
   var resultObject = {};
 
-  var colorTemperature = constants.DEFAULT_COLOR_TEMPERATURE;
-  var preColorTemperature = constants.DEFAULT_COLOR_TEMPERATURE;
+  var brightness = constants.DEFAULT_BRIGHTNESS;
+  var preBrightness = constants.DEFAULT_BRIGHTNESS;
   var preOnOff = constants.DEFAULT_POWER;
   var prePowerLevel = constants.DEFAULT_POWER_LEVEL;
   var code = constants.DEFAULT_CODE;
@@ -28,13 +28,12 @@ exports.adjustColorTemperature = function(unit, unitId, command, callback){
       break;
   }
 
-
   async.waterfall([
     function(callback){
       // Request query
       var gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId;
       switch (unit) {
-        case constants.UNIT_DEVICE:
+        case constants.UNIT_LIGHT:
           gatewayUrl += "/light";
           break;
         case constants.UNIT_GROUP:
@@ -56,17 +55,18 @@ exports.adjustColorTemperature = function(unit, unitId, command, callback){
 
         var dataObject = JSON.parse(body);
 
+
         switch (unit) {
-          case constants.UNIT_DEVICE:
+          case constants.UNIT_LIGHT:
             preOnOff = dataObject.result_data.onoff;
             prePowerLevel = dataObject.result_data.level;
-            preColorTemperature = dataObject.result_data.colorTemp;
+            preBrightness = dataObject.result_data.brightness;
 
             break;
           case constants.UNIT_GROUP:
             preOnOff = dataObject.result_data.device_list[0].onoff;
             prePowerLevel = dataObject.result_data.device_list[0].level;
-            preColorTemperature = dataObject.result_data.device_list[0].colorTemp;
+            preBrightness = dataObject.result_data.device_list[0].brightness;
 
             break;
           default:
@@ -80,15 +80,15 @@ exports.adjustColorTemperature = function(unit, unitId, command, callback){
       // TODO modify equation
       switch (code) {
         case constants.INCREASE_CODE:
-          colorTemperature = Math.floor(preColorTemperature * constants.INCREASE_RATE);
+          brightness = Math.floor(preBrightness * constants.INCREASE_RATE);
 
           break;
         case constants.DECREASE_CODE:
-          colorTemperature = Math.floor(preColorTemperature * constants.DECREASE_RATE);
+          brightness = Math.floor(preBrightness * constants.DECREASE_RATE);
 
           break;
         default:
-          colorTemperature = Math.floor(preColorTemperature * constants.DEFAULT_RATE);
+          brightness = Math.floor(preBrightness * constants.DEFAULT_RATE);
 
           break;
       }
@@ -100,7 +100,7 @@ exports.adjustColorTemperature = function(unit, unitId, command, callback){
       body.level = prePowerLevel;
 
       // color
-      body.colorTemp = colorTemperature;
+      body.brightness = brightness;
 
       if(unit == constants.UNIT_GROUP){
         body.onlevel = constants.DEFAULT_POWER_LEVEL;
@@ -114,8 +114,6 @@ exports.adjustColorTemperature = function(unit, unitId, command, callback){
         json: JSON.stringify(body)
       }
 
-      console.log("data", data);
-
       // request gateway
       request.put(data, function(error, httpResponse, body){
         console.log(body);
@@ -128,7 +126,7 @@ exports.adjustColorTemperature = function(unit, unitId, command, callback){
     resultObject.message = "success";
 
     var data = {
-      colorTemperature: colorTemperature
+      brightness: brightness
     }
 
     resultObject.data = data;
@@ -137,28 +135,23 @@ exports.adjustColorTemperature = function(unit, unitId, command, callback){
   });
 }// adjustColorTemperature
 
-
-
-
-exports.setColorTemperature = function(unit, unitId, colorTemperature, callback){
-  console.log("setColorTemperature");
+exports.setBrightness = function(unit, unitId, brightness, callback){
+  console.log("setBrightness");
 
   var resultObject = {};
 
   // Request query
-  const gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
+  var gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
 
   const onoff = constants.SL_API_POWER_ON;
   const level = constants.DEFAULT_POWER_LEVEL;
-
-  const colorTemperatureInKelvin = colorTemperature;
 
   var body = {};
   body.onoff = onoff;
   body.level = level;
 
-  // color
-  body.colorTemp = colorTemperatureInKelvin;
+  // brightness
+  body.brightness = brightness;
 
   if(unit == constants.UNIT_GROUP){
     body.onlevel = constants.DEFAULT_POWER_LEVEL;
@@ -181,4 +174,4 @@ exports.setColorTemperature = function(unit, unitId, colorTemperature, callback)
 
     callback(null, resultObject);
   });
-}// setColorTemperature
+}// setBrightness

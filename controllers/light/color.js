@@ -2,7 +2,7 @@
 const colorConverter = require("color-convert");
 const request = require("request");
 
-const constants = require('../lib/constants');
+const constants = require('../../lib/constants');
 
 
 exports.handleColor = function(unit, unitId, color, callback){
