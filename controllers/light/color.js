@@ -61,4 +61,4 @@ exports.handleColor = function(unit, unitId, color, callback){
 
     callback(true, resultObject);
   }
-}// handleColorControl
+};// handleColorControl

@@ -133,7 +133,7 @@ exports.adjustBrightness = function(unit, unitId, command, callback){
 
     callback(null, resultObject);
   });
-}// adjustColorTemperature
+};// adjustColorTemperature
 
 exports.setBrightness = function(unit, unitId, brightness, callback){
   console.log("setBrightness");
@@ -174,4 +174,4 @@ exports.setBrightness = function(unit, unitId, brightness, callback){
 
     callback(null, resultObject);
   });
-}// setBrightness
+};// setBrightness

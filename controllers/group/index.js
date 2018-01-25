@@ -40,7 +40,7 @@ exports.createGroup = function(gatewayObject, groupId, callback){
     console.log(body);
 
     resultObject.code = constants.SL_API_SUCCESS_CODE;
-    resultObject.message = "success";
+    resultObject.message = "Success";
 
     var dataObject = JSON.parse(body);
 
@@ -55,11 +55,11 @@ exports.createGroup = function(gatewayObject, groupId, callback){
 
     callback(null, resultObject);
   });
-}// createGroup
+};// createGroup
 
 
-exports.discoverGroups = function(gatewayObject, callback){
-  console.log("discoverGroups");
+exports.loadGroupList = function(gatewayObject, callback){
+  console.log("loadGroupList");
 
   var resultObject = {};
 
@@ -86,7 +86,7 @@ exports.discoverGroups = function(gatewayObject, callback){
     var groupList = dataObject.result_data.group_list;
 
     resultObject.code = constants.SL_API_SUCCESS_CODE;
-    resultObject.message = "success";
+    resultObject.message = "Success";
 
     var data = {
       groupList: groupList
@@ -96,38 +96,161 @@ exports.discoverGroups = function(gatewayObject, callback){
 
     callback(null, resultObject);
   });
-}// discoverGroups
+};// loadGroupList
 
-exports.removeGroup = function(groupId, callback){
+exports.removeGroup = function(gatewayObject, groupId, callback){
   console.log("removeGroup");
 
   var resultObject = {};
 
-  callback(null, resultObject);
-}// removeGroup
+  const ip = gatewayObject.ip;
+  const port = gatewayObject.tcp_port;
+  const version = config.sl.gw.version;
 
-exports.addLightToGroup = function(deviceObject, groupId, callback){
+  const gatewayURL = makeGatewayURL(ip, port, version);
+
+  var requestURL = gatewayURL + "/group/" + groupId;
+
+  var data = {
+    url: requestURL,
+    headers: {
+      'content-type': 'application/json'
+    }
+  }
+
+  request.delete(data, function(error, httpResponse, body){
+    console.log(body);
+
+    resultObject.code = constants.SL_API_SUCCESS_CODE;
+    resultObject.message = "Success";
+
+    callback(null, resultObject);
+  });
+};// removeGroup
+
+exports.addLightToGroup = function(gatewayObject, deviceObject, groupId, callback){
   console.log("addLightToGroup");
 
   var resultObject = {};
 
-  callback(null, resultObject);
-}// addLightToGroup
+  const lightId = deviceObject.did;
 
 
-exports.loadLightFromGroup = function(groupId, callback){
+  const ip = gatewayObject.ip;
+  const port = gatewayObject.tcp_port;
+  const version = config.sl.gw.version;
+
+  const gatewayURL = makeGatewayURL(ip, port, version);
+  const requestURL = gatewayURL + "/group/" + groupId;
+
+  const groupName = constants.GROUP_NAME_PREFIX + groupId;
+  const lightList = [];
+
+  lightList.push(deviceObject);
+
+  var body = {};
+  body.group_name = groupName;
+  body.add_list = lightList;
+
+  var data = {
+    url: requestURL,
+    headers: {
+      'content-type': 'application/json'
+    },
+    json: JSON.stringify(body)
+  }
+
+  // request gateway
+  request.put(data, function(error, httpResponse, body){
+    console.log(body);
+
+    resultObject.code = constants.SL_API_SUCCESS_CODE;
+    resultObject.message = "Success";
+
+    callback(null, resultObject);
+  });
+};// addLightToGroup
+
+
+exports.loadLightListFromGroup = function(gatewayObject, groupId, callback){
   console.log("loadLightFromGroup");
 
   var resultObject = {};
 
-  callback(null, resultObject);
-}// loadLightFromGroup
+
+  const ip = gatewayObject.ip;
+  const port = gatewayObject.tcp_port;
+  const version = config.sl.gw.version;
+
+  const gatewayURL = makeGatewayURL(ip, port, version);
+  var requestURL = gatewayURL + "/group/" + groupId + "/dstatus"
+
+  var data = {
+    url: requestURL,
+    headers: {
+      'content-type': 'application/json'
+    }
+  }
+
+  request.get(data, function(error, httpResponse, body){
+    console.log(body);
+
+    var dataObject = JSON.parse(body);
+
+    var deviceList = dataObject.result_data.device_list;
+
+    resultObject.code = constants.SL_API_SUCCESS_CODE;
+    resultObject.message = "Success";
+
+    var data = {};
+    data.deviceList = deviceList;
+
+    resultObject.data = data;
+
+    callback(null, resultObject);
+  });
+};// loadLightFromGroup
 
 
-exports.removeLightFromGroup = function(deviceId, groupId, callback){
+exports.removeLightFromGroup = function(gatewayObject, deviceObject, groupId, callback){
   console.log("removeLightFromGroup");
 
   var resultObject = {};
 
-  callback(null, resultObject);
-}// removeLightFromGroup
+  const lightId = deviceObject.did;
+
+
+  const ip = gatewayObject.ip;
+  const port = gatewayObject.tcp_port;
+  const version = config.sl.gw.version;
+
+  const gatewayURL = makeGatewayURL(ip, port, version);
+  const requestURL = gatewayURL + "/group/" + groupId;
+
+  const groupName = constants.GROUP_NAME_PREFIX + groupId;
+  const lightList = [];
+
+  lightList.push(deviceObject);
+
+  var body = {};
+  body.group_name = groupName;
+  body.del_list = lightList;
+
+  var data = {
+    url: requestURL,
+    headers: {
+      'content-type': 'application/json'
+    },
+    json: JSON.stringify(body)
+  }
+
+  // request gateway
+  request.put(data, function(error, httpResponse, body){
+    console.log(body);
+
+    resultObject.code = constants.SL_API_SUCCESS_CODE;
+    resultObject.message = "Success";
+
+    callback(null, resultObject);
+  });
+};// removeLightFromGroup

@@ -68,6 +68,23 @@
     ],
     "intents": [
       {
+        "name": "AddGroupToUnitSpace",
+        "samples": [
+          "Add group {groupId} to unitspace {uSpaceName}",
+          "Add group {groupId} to {uSpaceName}"
+        ],
+        "slots": [
+          {
+            "name": "groupId",
+            "type": "AMAZON.NUMBER"
+          },
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room"
+          }
+        ]
+      },
+      {
         "name": "AddLightToGroup",
         "samples": [
           "Add device {lightId} to group {groupId}",
@@ -272,6 +289,18 @@
         ]
       },
       {
+        "name": "CreateLight",
+        "samples": [
+          "Create Light {lightId}"
+        ],
+        "slots": [
+          {
+            "name": "lightId",
+            "type": "AMAZON.NUMBER"
+          }
+        ]
+      },
+      {
         "name": "CreateUnitSpace",
         "samples": [
           "Create space {uSpaceName}",
@@ -290,7 +319,7 @@
         ]
       },
       {
-        "name": "DiscoverGateways",
+        "name": "DiscoverGateway",
         "samples": [
           "Discover gateway",
           "Discover a gateway",
@@ -300,16 +329,52 @@
         "slots": []
       },
       {
-        "name": "DiscoverGroups",
+        "name": "LoadGroupLightListFromUnitSpace",
+        "samples": [
+          "Load group {groupId} light list from {uSpaceName}",
+          "Load group {groupId} device list from {uSpaceName}"
+        ],
+        "slots": [
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "samples": [
+              "{uSpaceName}"
+            ]
+          },
+          {
+            "name": "groupId",
+            "type": "AMAZON.NUMBER"
+          }
+        ]
+      },
+      {
+        "name": "LoadGroupList",
         "samples": [
           "Tell me group",
-          "Load group",
-          "Discover group"
+          "Discover group",
+          "Load group list"
         ],
         "slots": []
       },
       {
-        "name": "DiscoverLights",
+        "name": "LoadLight",
+        "samples": [
+          "Load device number {lightId}",
+          "Load light number {lightId}"
+        ],
+        "slots": [
+          {
+            "name": "lightId",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{lightId}"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "LoadLightList",
         "samples": [
           "Discover",
           "Discover my devices",
@@ -350,58 +415,15 @@
           "Discover a list",
           "Discover a device list",
           "Discover the device list",
-          "Load lights"
+          "Load lights",
+          "Load light list"
         ],
         "slots": []
-      },
-      {
-        "name": "DiscoverUnitSpaces",
-        "samples": [
-          "Tell me unit space",
-          "Tell me unitspace",
-          "Load unit space",
-          "Load unitspace",
-          "Discover unitspace",
-          "Discover unit space"
-        ],
-        "slots": []
-      },
-      {
-        "name": "LoadLight",
-        "samples": [
-          "Load device {lightId}",
-          "Load light {lightId}"
-        ],
-        "slots": [
-          {
-            "name": "lightId",
-            "type": "AMAZON.NUMBER",
-            "samples": [
-              "{lightId}"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "LoadLightFromUnitSpace",
-        "samples": [
-          "Load device from {uSpaceName}",
-          "Load light from {uSpaceName}"
-        ],
-        "slots": [
-          {
-            "name": "uSpaceName",
-            "type": "AMAZON.Room",
-            "samples": [
-              "{uSpaceName}"
-            ]
-          }
-        ]
       },
       {
         "name": "LoadLightListFromGroup",
         "samples": [
-          "Load device from group {groupId}"
+          "Load device list from group {groupId}"
         ],
         "slots": [
           {
@@ -416,7 +438,8 @@
       {
         "name": "LoadLightListFromUnitSpace",
         "samples": [
-          "Load device list from {uSpaceName}"
+          "Load device list from {uSpaceName}",
+          "Load light list from {uSpaceName}"
         ],
         "slots": [
           {
@@ -427,6 +450,20 @@
             ]
           }
         ]
+      },
+      {
+        "name": "LoadUnitSpaceList",
+        "samples": [
+          "Tell me unit space",
+          "Tell me unitspace",
+          "Load unit space",
+          "Load unitspace",
+          "Discover unitspace",
+          "Discover unit space",
+          "Load unitspace list",
+          "Load unit space list"
+        ],
+        "slots": []
       },
       {
         "name": "RemoveGroup",
@@ -442,6 +479,18 @@
             "samples": [
               "{groupId}"
             ]
+          }
+        ]
+      },
+      {
+        "name": "RemoveLight",
+        "samples": [
+          "Remove light {lightId}"
+        ],
+        "slots": [
+          {
+            "name": "lightId",
+            "type": "AMAZON.NUMBER"
           }
         ]
       },
@@ -825,20 +874,20 @@
       ]
     },
     {
+      "id": "Elicit.Intent-LoadGroupLightListFromUnitSpace.IntentSlot-uSpaceName",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which space?"
+        }
+      ]
+    },
+    {
       "id": "Elicit.Intent-LoadLight.IntentSlot-lightId",
       "variations": [
         {
           "type": "PlainText",
           "value": "Which number of device?"
-        }
-      ]
-    },
-    {
-      "id": "Elicit.Intent-LoadLightFromUnitSpace.IntentSlot-uSpaceName",
-      "variations": [
-        {
-          "type": "PlainText",
-          "value": "Which space?"
         }
       ]
     },
@@ -1190,6 +1239,29 @@
         ]
       },
       {
+        "name": "LoadGroupLightListFromUnitSpace",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "uSpaceName",
+            "type": "AMAZON.Room",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-LoadGroupLightListFromUnitSpace.IntentSlot-uSpaceName"
+            }
+          },
+          {
+            "name": "groupId",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          }
+        ]
+      },
+      {
         "name": "LoadLight",
         "confirmationRequired": false,
         "prompts": {},
@@ -1201,22 +1273,6 @@
             "confirmationRequired": false,
             "prompts": {
               "elicitation": "Elicit.Intent-LoadLight.IntentSlot-lightId"
-            }
-          }
-        ]
-      },
-      {
-        "name": "LoadLightFromUnitSpace",
-        "confirmationRequired": false,
-        "prompts": {},
-        "slots": [
-          {
-            "name": "uSpaceName",
-            "type": "AMAZON.Room",
-            "elicitationRequired": true,
-            "confirmationRequired": false,
-            "prompts": {
-              "elicitation": "Elicit.Intent-LoadLightFromUnitSpace.IntentSlot-uSpaceName"
             }
           }
         ]

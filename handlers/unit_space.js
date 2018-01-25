@@ -41,8 +41,8 @@ module.exports = {
       }).bind(this));
     }
   },// CreateUnitSpace
-  'DiscoverUnitSpaces': function () {
-    console.log("DiscoverUnitSpaces");
+  'LoadUnitSpaceList': function () {
+    console.log("LoadUnitSpaceList");
 
     var key = constants.TABLE_USER_GATEWAY;
     const gatewayObject = this.attributes[key];
@@ -54,8 +54,8 @@ module.exports = {
 
       this.emit(':responseReady');
     }else{
-      unitSpaceCTRL.discoverUnitSpaces(gatewayObject, (function(error, resultObject){
-        this.response.speak('Discover unitspaces!');
+      unitSpaceCTRL.loadUnitSpaceList(gatewayObject, (function(error, resultObject){
+        this.response.speak('Load unitspaces!' + JSON.stringify(resultObject.data.uSpaceList));
 
         var key = constants.TABLE_USER_UNIT_SPACE_LIST;
         var value = resultObject.data.uSpaceList;
@@ -65,7 +65,7 @@ module.exports = {
         this.emit(':saveState', true);
       }).bind(this));
     }
-  },// DiscoverUnitSpaces
+  },// LoadUnitSpaceList
   'RemoveUnitSpace': function () {
     console.log("RemoveUnitSpace");
 
@@ -103,9 +103,6 @@ module.exports = {
         this.emit(':saveState', true);
       }).bind(this));
     }
-
-    this.response.speak('Remove unit space!');
-    this.emit(':responseReady');
   },// RemoveUnitSpace
   'AddLightToUnitSpace': function () {
     console.log("AddLightToUnitSpace");
@@ -113,16 +110,135 @@ module.exports = {
     this.response.speak('Add light to unit space!');
     this.emit(':responseReady');
   },// AddLightToUnitSpace
-  'LoadLightFromUnitSpace': function () {
-    console.log("LoadLightFromUnitSpace");
+  'AddGroupToUnitSpace': function () {
+    console.log("AddGroupToUnitSpace");
 
-    this.response.speak('Load light from unit space!');
+    this.response.speak('Add group to unit space!');
     this.emit(':responseReady');
-  },// LoadLightFromUnitSpace
+  },// AddGroupToUnitSpace
+  'LoadLightListFromUnitSpace': function () {
+    console.log("LoadLightListFromUnitSpace");
+
+    var key = constants.TABLE_USER_GATEWAY;
+    const gatewayObject = this.attributes[key];
+
+    if(gatewayObject === undefined){
+      const speechOutput = "First, you must discover your gateway!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.emit(':responseReady');
+    }else{
+      const uSpaceName = this.event.request.intent.slots.uSpaceName.value;
+
+      var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
+
+      var uSpaceId = this.attributes[key];
+
+      unitSpaceCTRL.loadLightListFromUnitSpace(gatewayObject, uSpaceId, (function(error, resultObject){
+        var deviceList = resultObject.data.deviceList;
+
+        var listName = "";
+
+        // temp data
+        for(var i=0; i<deviceList.length; i++){
+          listName += " Light " + deviceList[i].did;
+        }
+
+        this.response.speak(`Load light from unit space ${uSpaceName}! Light List : ${listName}`);
+        this.emit(':responseReady');
+      }).bind(this));
+    }
+  },// LoadLightListFromUnitSpace
+  'LoadGroupLightListFromUnitSpace': function () {
+    console.log("LoadGroupLightListFromUnitSpace");
+
+    var key = constants.TABLE_USER_GATEWAY;
+    const gatewayObject = this.attributes[key];
+
+    if(gatewayObject === undefined){
+      const speechOutput = "First, you must discover your gateway!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.emit(':responseReady');
+    }else{
+      const uSpaceName = this.event.request.intent.slots.uSpaceName.value;
+      const groupId = this.event.request.intent.slots.groupId.value;
+
+      var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
+
+      var uSpaceId = this.attributes[key];
+
+      unitSpaceCTRL.loadGroupLightListFromUnitSpace(gatewayObject, groupId, uSpaceId, (function(error, resultObject){
+        var deviceList = resultObject.data.deviceList;
+
+        var listName = "";
+
+        // temp data
+        for(var i=0; i<deviceList.length; i++){
+          listName += " Light " + deviceList[i].did;
+        }
+
+        this.response.speak(`Load light from unit space ${uSpaceId}! Light list : ${listName}`);
+        this.emit(':responseReady');
+      }).bind(this));
+    }
+  },// LoadGroupLightListFromUnitSpace
   'RemoveLightFromUnitSpace': function () {
     console.log("RemoveLightFromUnitSpace");
 
-    this.response.speak('Remove light from unit space!');
-    this.emit(':responseReady');
-  }// RemoveLightFromUnitSpace
+    var key = constants.TABLE_USER_GATEWAY;
+    const gatewayObject = this.attributes[key];
+
+    if(gatewayObject === undefined){
+      const speechOutput = "First, you must discover your gateway!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.emit(':responseReady');
+    }else{
+      const uSpaceName = this.event.request.intent.slots.uSpaceName.value;
+      const lightId = this.event.request.intent.slots.lightId.value;
+
+      var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
+
+      var uSpaceId = this.attributes[key];
+
+      unitSpaceCTRL.removeLightFromUnitSpace(lightId, uSpaceId, (function(error, resultObject){
+
+
+        this.response.speak(`Remove light ${lightId} from unit space ${uSpaceId}!`);
+        this.emit(':responseReady');
+      }).bind(this));
+    }
+  },// RemoveLightFromUnitSpace
+  'RemoveGroupFromUnitSpace': function () {
+    console.log("RemoveGroupFromUnitSpace");
+
+    var key = constants.TABLE_USER_GATEWAY;
+    const gatewayObject = this.attributes[key];
+
+    if(gatewayObject === undefined){
+      const speechOutput = "First, you must discover your gateway!";
+      this.response.speak(speechOutput);
+      this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.emit(':responseReady');
+    }else{
+      const uSpaceName = this.event.request.intent.slots.uSpaceName.value;
+      const groupId = this.event.request.intent.slots.groupId.value;
+
+      var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
+
+      var uSpaceId = this.attributes[key];
+
+      unitSpaceCTRL.removeGroupFromUnitSpace(gatewayObject, groupId, uSpaceId, (function(error, resultObject){
+
+
+        this.response.speak(`Remove group from unit space ${uSpaceId}!`);
+        this.emit(':responseReady');
+      }).bind(this));
+    }
+  }// RemoveGroupFromUnitSpace
 };// UnitSpaceHandler

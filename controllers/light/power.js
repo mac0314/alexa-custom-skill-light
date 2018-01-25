@@ -136,7 +136,7 @@ exports.adjustPowerLevel = function(gatewayObject, unit, unitId, command, callba
 
     callback(null, resultObject);
   });
-}// handlePower
+};// handlePower
 
 
 exports.handlePower = function(gatewayObject, uSpaceId, unit, unitId, onoff, powerLevel, callback){
@@ -184,4 +184,4 @@ exports.handlePower = function(gatewayObject, uSpaceId, unit, unitId, onoff, pow
 
     callback(null, resultObject);
   });
-}// handlePower
+};// handlePower

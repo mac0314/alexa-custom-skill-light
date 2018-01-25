@@ -60,11 +60,11 @@ exports.createUnitSpace = function(gatewayObject, uSpaceName, callback){
 
     callback(null, resultObject);
   });
-}// createUnitSpace
+};// createUnitSpace
 
 
-exports.discoverUnitSpaces = function(gatewayObject, callback){
-  console.log("discoverUnitSpaces");
+exports.loadUnitSpaceList = function(gatewayObject, callback){
+  console.log("loadUnitSpaceList");
 
   var resultObject = {};
 
@@ -101,40 +101,182 @@ exports.discoverUnitSpaces = function(gatewayObject, callback){
 
     callback(null, resultObject);
   });
-}// discoverUnitSpaces
+};// loadUnitSpaceList
 
 
-exports.removeUnitSpace = function(groupId, callback){
+exports.removeUnitSpace = function(gatewayObject, uSpaceId, callback){
   console.log("removeUnitSpace");
 
   var resultObject = {};
 
-  callback(null, resultObject);
-}// removeUnitSpace
+  const ip = gatewayObject.ip;
+  const port = gatewayObject.tcp_port;
+  const version = config.sl.gw.version;
+
+  const gatewayURL = makeGatewayURL(ip, port, version);
+
+  var requestURL = gatewayURL + "/uspace/" + uSpaceId;
+
+  var data = {
+    url: requestURL,
+    headers: {
+      'content-type': 'application/json'
+    }
+  }
+
+  request.delete(data, function(error, httpResponse, body){
+    console.log(body);
+
+    resultObject.code = constants.SL_API_SUCCESS_CODE;
+    resultObject.message = "Success";
+
+    callback(null, resultObject);
+  });
+};// removeUnitSpace
 
 
-exports.addLightToUnitSpace = function(deviceObject, groupId, callback){
+exports.addLightToUnitSpace = function(gatewayObject, lightId, uSpaceId, callback){
   console.log("addLightToUnitSpace");
 
   var resultObject = {};
 
+  resultObject.code = SL_API_SUCCESS_CODE;
+  resultObject.message = "Success";
+
   callback(null, resultObject);
-}// addLightToUnitSpace
+};// addLightToUnitSpace
 
 
-exports.loadLightFromUnitSpace = function(groupId, callback){
+exports.addGroupToUnitSpace = function(gatewayObject, groupId, uSpaceId, callback){
+  console.log("addLightToUnitSpace");
+
+  var resultObject = {};
+
+  resultObject.code = SL_API_SUCCESS_CODE;
+  resultObject.message = "Success";
+
+  callback(null, resultObject);
+};// addLightToUnitSpace
+
+
+exports.loadLightListFromUnitSpace = function(gatewayObject, uSpaceId, callback){
   console.log("loadLightFromUnitSpace");
 
   var resultObject = {};
 
-  callback(null, resultObject);
-}// loadLightFromUnitSpace
+  const ip = gatewayObject.ip;
+  const port = gatewayObject.tcp_port;
+  const version = config.sl.gw.version;
+
+  const gatewayURL = makeGatewayURL(ip, port, version);
+
+  var requestURL = gatewayURL + "/uspace/" + uSpaceId + "/device"
+
+  var data = {
+    url: requestURL,
+    headers: {
+      'content-type': 'application/json'
+    }
+  }
+
+  request.get(data, function(error, httpResponse, body){
+    console.log(body);
+
+    var dataObject = JSON.parse(body);
+
+    var deviceList = dataObject.result_data.device_list;
+
+    resultObject.code = constants.SL_API_SUCCESS_CODE;
+    resultObject.message = "Success";
+
+    var data = {};
+    data.deviceList = deviceList;
+
+    resultObject.data = data;
+
+    callback(null, resultObject);
+  });
+};// loadLightFromUnitSpace
 
 
-exports.removeLightFromUnitSpace = function(deviceId, groupId, callback){
+exports.loadGroupLightListFromUnitSpace = function(gatewayObject, groupId, uSpaceId, callback){
+  console.log("loadLightFromUnitSpace");
+
+  var resultObject = {};
+
+  const ip = gatewayObject.ip;
+  const port = gatewayObject.tcp_port;
+  const version = config.sl.gw.version;
+
+  const gatewayURL = makeGatewayURL(ip, port, version);
+
+  var requestURL = gatewayURL + "/uspace/" + uSpaceId + "/group/" + groupId;
+
+  var data = {
+    url: requestURL,
+    headers: {
+      'content-type': 'application/json'
+    }
+  }
+
+  request.get(data, function(error, httpResponse, body){
+    console.log(body);
+
+    var dataObject = JSON.parse(body);
+
+    var deviceList = dataObject.result_data.device_list;
+
+    resultObject.code = constants.SL_API_SUCCESS_CODE;
+    resultObject.message = "Success";
+
+    var data = {};
+    data.deviceList = deviceList;
+
+    resultObject.data = data;
+
+    callback(null, resultObject);
+  });
+};// loadLightFromUnitSpace
+
+
+exports.removeLightFromUnitSpace = function(gatewayObject, lightId, uSpaceId, callback){
   console.log("removeLightFromUnitSpace");
 
   var resultObject = {};
 
+  resultObject.code = constants.SL_API_SUCCESS_CODE;
+  resultObject.message = "Success";
+
   callback(null, resultObject);
-}// removeLightFromUnitSpace
+};// removeLightFromUnitSpace
+
+
+exports.removeGroupFromUnitSpace = function(gatewayObject, groupId, uSpaceId, callback){
+  console.log("removeGroupFromUnitSpace");
+
+  var resultObject = {};
+
+  const ip = gatewayObject.ip;
+  const port = gatewayObject.tcp_port;
+  const version = config.sl.gw.version;
+
+  const gatewayURL = makeGatewayURL(ip, port, version);
+
+  var requestURL = gatewayURL + "/uspace/" + uSpaceId + "/group/" + groupId;
+
+  var data = {
+    url: requestURL,
+    headers: {
+      'content-type': 'application/json'
+    }
+  }
+
+  request.delete(data, function(error, httpResponse, body){
+    console.log(body);
+
+    resultObject.code = constants.SL_API_SUCCESS_CODE;
+    resultObject.message = "Success";
+
+    callback(null, resultObject);
+  });
+};// removeGroupFromUnitSpace

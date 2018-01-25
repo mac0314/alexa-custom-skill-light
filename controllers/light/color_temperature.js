@@ -135,7 +135,7 @@ exports.adjustColorTemperature = function(unit, unitId, command, callback){
 
     callback(null, resultObject);
   });
-}// adjustColorTemperature
+};// adjustColorTemperature
 
 
 
@@ -181,4 +181,4 @@ exports.setColorTemperature = function(unit, unitId, colorTemperature, callback)
 
     callback(null, resultObject);
   });
-}// setColorTemperature
+};// setColorTemperature
