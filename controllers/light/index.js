@@ -34,17 +34,11 @@ exports.loadLight = function(gatewayObject, lightId, callback){
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    }
+    json: true
   }
 
   request.get(data, function(error, httpResponse, body){
-    console.log(body);
-
-    var dataObject = JSON.parse(body);
-
-    var data = dataObject.result_data;
+    var data = body.result_data;
 
     resultObject.code = constants.SL_API_SUCCESS_CODE;
     resultObject.message = "Success";
@@ -93,18 +87,12 @@ exports.loadLightList = function(gatewayObject, callback){
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    }
+    json: true
   }
 
   // request gateway
   request.get(data, function(error, httpResponse, body){
-    console.log(body);
-
-    var dataObject = JSON.parse(body);
-
-    var lightList = dataObject.result_data.device_list;
+    var lightList = body.result_data.device_list;
 
     const lightNum = lightList.length;
 

@@ -50,27 +50,20 @@ exports.adjustPowerLevel = function(gatewayObject, unit, unitId, command, callba
 
       var data = {
         url: requestURL,
-        headers: {
-          'content-type': 'application/json'
-        }
+        json: true
       }
 
       // request gateway
       request.get(data, function(error, httpResponse, body){
-        console.log(body);
-        console.log(body.result_data);
-
-        var dataObject = JSON.parse(body);
-
         switch (unit) {
           case constants.UNIT_LIGHT:
-            preOnOff = dataObject.result_data.onoff;
-            prePowerLevel = dataObject.result_data.level;
+            preOnOff = body.result_data.onoff;
+            prePowerLevel = body.result_data.level;
 
             break;
           case constants.UNIT_GROUP:
-            preOnOff = dataObject.result_data.device_list[0].onoff;
-            prePowerLevel = dataObject.result_data.device_list[0].level;
+            preOnOff = body.result_data.device_list[0].onoff;
+            prePowerLevel = body.result_data.device_list[0].level;
 
             break;
           default:
@@ -111,22 +104,18 @@ exports.adjustPowerLevel = function(gatewayObject, unit, unitId, command, callba
 
       var data = {
         url: requestURL,
-        headers: {
-          'content-type': 'application/json'
-        },
-        json: JSON.stringify(body)
+        json: true,
+        body: JSON.stringify(body)
       }
 
       // request gateway
       request.put(data, function(error, httpResponse, body){
-        console.log(body);
-
         callback(null, true);
       });
     }
   ], function(error, result){
     resultObject.code = constants.SL_API_SUCCESS_CODE;
-    resultObject.message = "success";
+    resultObject.message = "Success";
 
     var data = {
       powerLevel: powerLevel
@@ -167,18 +156,12 @@ exports.handlePower = function(gatewayObject, uSpaceId, unit, unitId, onoff, pow
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    },
-    json: JSON.stringify(body)
+    json: true,
+    body: JSON.stringify(body)
   }
-
-  console.log(data);
 
   // request gateway
   request.put(data, function(error, httpResponse, body){
-    console.log(body);
-
     resultObject.code = constants.SL_API_SUCCESS_CODE;
     resultObject.message = "success";
 

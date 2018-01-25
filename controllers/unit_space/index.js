@@ -38,16 +38,12 @@ exports.createUnitSpace = function(gatewayObject, uSpaceName, callback){
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    },
-    json: JSON.stringify(body)
+    json: true,
+    body: JSON.stringify(body)
   }
 
   // request gateway
   request.post(data, function(error, httpResponse, body){
-    console.log(body);
-
     resultObject.code = constants.SL_API_SUCCESS_CODE;
     resultObject.message = "success";
 
@@ -77,18 +73,12 @@ exports.loadUnitSpaceList = function(gatewayObject, callback){
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    }
+    json: true
   }
 
   // request gateway
   request.get(data, function(error, httpResponse, body){
-    console.log(body);
-
-    var dataObject = JSON.parse(body);
-
-    var uSpaceList = dataObject.result_data.uspace_list;
+    var uSpaceList = body.result_data.uspace_list;
 
     resultObject.code = constants.SL_API_SUCCESS_CODE;
     resultObject.message = "success";
@@ -119,14 +109,10 @@ exports.removeUnitSpace = function(gatewayObject, uSpaceId, callback){
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    }
+    json: true
   }
 
   request.delete(data, function(error, httpResponse, body){
-    console.log(body);
-
     resultObject.code = constants.SL_API_SUCCESS_CODE;
     resultObject.message = "Success";
 
@@ -174,17 +160,11 @@ exports.loadLightListFromUnitSpace = function(gatewayObject, uSpaceId, callback)
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    }
+    json: true
   }
 
   request.get(data, function(error, httpResponse, body){
-    console.log(body);
-
-    var dataObject = JSON.parse(body);
-
-    var deviceList = dataObject.result_data.device_list;
+    var deviceList = body.result_data.device_list;
 
     resultObject.code = constants.SL_API_SUCCESS_CODE;
     resultObject.message = "Success";
@@ -214,17 +194,11 @@ exports.loadGroupLightListFromUnitSpace = function(gatewayObject, groupId, uSpac
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    }
+    json: true
   }
 
   request.get(data, function(error, httpResponse, body){
-    console.log(body);
-
-    var dataObject = JSON.parse(body);
-
-    var deviceList = dataObject.result_data.device_list;
+    var deviceList = body.result_data.device_list;
 
     resultObject.code = constants.SL_API_SUCCESS_CODE;
     resultObject.message = "Success";

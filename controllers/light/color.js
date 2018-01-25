@@ -37,16 +37,12 @@ exports.handleColor = function(unit, unitId, color, callback){
 
     var data = {
       url: gatewayUrl,
-      headers: {
-        'content-type': 'application/json'
-      },
-      json: JSON.stringify(body)
+      json: true,
+      body: JSON.stringify(body)
     }
 
     // request gateway
     request.put(data, function(error, httpResponse, body){
-      console.log(body);
-
       resultObject.code = constants.SL_API_SUCCESS_CODE;
       resultObject.message = "Success";
 

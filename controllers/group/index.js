@@ -1,7 +1,7 @@
 
 const async = require("async");
 const config = require("config.json")("./config/config.json");
-const request = require("request");
+var request = require("request");
 
 
 const constants = require('../../lib/constants');
@@ -9,7 +9,7 @@ const makeGatewayURL = require('../../js/make_gateway_URL');
 
 
 exports.createGroup = function(gatewayObject, groupId, callback){
-  console.log("createGroup");
+  //console.log("createGroup");
 
   var resultObject = {};
 
@@ -29,27 +29,19 @@ exports.createGroup = function(gatewayObject, groupId, callback){
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    },
-    json: JSON.stringify(body)
+    json: true,
+    body: JSON.stringify(body)
   }
 
   // request gateway
   request.post(data, function(error, httpResponse, body){
-    console.log(body);
+    var data = {
+      groupName : groupName,
+      gdid: body.result_data.gdid
+    }
 
     resultObject.code = constants.SL_API_SUCCESS_CODE;
     resultObject.message = "Success";
-
-    var dataObject = JSON.parse(body);
-
-    const gdid = dataObject.result_data.gdid;
-
-    var data = {
-      groupName : groupName,
-      gdid: gdid
-    }
 
     resultObject.data = data;
 
@@ -59,7 +51,7 @@ exports.createGroup = function(gatewayObject, groupId, callback){
 
 
 exports.loadGroupList = function(gatewayObject, callback){
-  console.log("loadGroupList");
+  //console.log("loadGroupList");
 
   var resultObject = {};
 
@@ -72,25 +64,19 @@ exports.loadGroupList = function(gatewayObject, callback){
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    }
+    json: true
   }
 
   // request gateway
   request.get(data, function(error, httpResponse, body){
-    console.log(body);
-
-    var dataObject = JSON.parse(body);
-
-    var groupList = dataObject.result_data.group_list;
+    var groupList = body.result_data.group_list;
 
     resultObject.code = constants.SL_API_SUCCESS_CODE;
     resultObject.message = "Success";
 
-    var data = {
-      groupList: groupList
-    }
+    var data = {};
+
+    data.groupList = groupList;
 
     resultObject.data = data;
 
@@ -99,8 +85,6 @@ exports.loadGroupList = function(gatewayObject, callback){
 };// loadGroupList
 
 exports.removeGroup = function(gatewayObject, groupId, callback){
-  console.log("removeGroup");
-
   var resultObject = {};
 
   const ip = gatewayObject.ip;
@@ -113,14 +97,10 @@ exports.removeGroup = function(gatewayObject, groupId, callback){
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    }
+    json: true
   }
 
   request.delete(data, function(error, httpResponse, body){
-    console.log(body);
-
     resultObject.code = constants.SL_API_SUCCESS_CODE;
     resultObject.message = "Success";
 
@@ -129,7 +109,7 @@ exports.removeGroup = function(gatewayObject, groupId, callback){
 };// removeGroup
 
 exports.addLightToGroup = function(gatewayObject, deviceObject, groupId, callback){
-  console.log("addLightToGroup");
+  //console.log("addLightToGroup");
 
   var resultObject = {};
 
@@ -154,16 +134,12 @@ exports.addLightToGroup = function(gatewayObject, deviceObject, groupId, callbac
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    },
-    json: JSON.stringify(body)
+    json: true,
+    body: JSON.stringify(body)
   }
 
   // request gateway
   request.put(data, function(error, httpResponse, body){
-    console.log(body);
-
     resultObject.code = constants.SL_API_SUCCESS_CODE;
     resultObject.message = "Success";
 
@@ -173,7 +149,7 @@ exports.addLightToGroup = function(gatewayObject, deviceObject, groupId, callbac
 
 
 exports.loadLightListFromGroup = function(gatewayObject, groupId, callback){
-  console.log("loadLightFromGroup");
+  //console.log("loadLightFromGroup");
 
   var resultObject = {};
 
@@ -187,17 +163,11 @@ exports.loadLightListFromGroup = function(gatewayObject, groupId, callback){
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    }
+    json: true
   }
 
   request.get(data, function(error, httpResponse, body){
-    console.log(body);
-
-    var dataObject = JSON.parse(body);
-
-    var deviceList = dataObject.result_data.device_list;
+    var deviceList = body.result_data.device_list;
 
     resultObject.code = constants.SL_API_SUCCESS_CODE;
     resultObject.message = "Success";
@@ -213,7 +183,7 @@ exports.loadLightListFromGroup = function(gatewayObject, groupId, callback){
 
 
 exports.removeLightFromGroup = function(gatewayObject, deviceObject, groupId, callback){
-  console.log("removeLightFromGroup");
+  //console.log("removeLightFromGroup");
 
   var resultObject = {};
 
@@ -238,16 +208,12 @@ exports.removeLightFromGroup = function(gatewayObject, deviceObject, groupId, ca
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    },
-    json: JSON.stringify(body)
+    json: true,
+    body: JSON.stringify(body)
   }
 
   // request gateway
   request.put(data, function(error, httpResponse, body){
-    console.log(body);
-
     resultObject.code = constants.SL_API_SUCCESS_CODE;
     resultObject.message = "Success";
 

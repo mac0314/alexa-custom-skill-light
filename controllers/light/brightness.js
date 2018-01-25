@@ -44,29 +44,22 @@ exports.adjustBrightness = function(unit, unitId, command, callback){
 
       var data = {
         url: gatewayUrl,
-        headers: {
-          'content-type': 'application/json'
-        }
+        json: true
       }
 
       // request gateway
       request.get(data, function(error, httpResponse, body){
-        console.log(body);
-
-        var dataObject = JSON.parse(body);
-
-
         switch (unit) {
           case constants.UNIT_LIGHT:
-            preOnOff = dataObject.result_data.onoff;
-            prePowerLevel = dataObject.result_data.level;
-            preBrightness = dataObject.result_data.brightness;
+            preOnOff = body.result_data.onoff;
+            prePowerLevel = body.result_data.level;
+            preBrightness = body.result_data.brightness;
 
             break;
           case constants.UNIT_GROUP:
-            preOnOff = dataObject.result_data.device_list[0].onoff;
-            prePowerLevel = dataObject.result_data.device_list[0].level;
-            preBrightness = dataObject.result_data.device_list[0].brightness;
+            preOnOff = body.result_data.device_list[0].onoff;
+            prePowerLevel = body.result_data.device_list[0].level;
+            preBrightness = body.result_data.device_list[0].brightness;
 
             break;
           default:
@@ -108,16 +101,12 @@ exports.adjustBrightness = function(unit, unitId, command, callback){
 
       var data = {
         url: gatewayUrl,
-        headers: {
-          'content-type': 'application/json'
-        },
-        json: JSON.stringify(body)
+        json: true,
+        body: JSON.stringify(body)
       }
 
       // request gateway
       request.put(data, function(error, httpResponse, body){
-        console.log(body);
-
         callback(null, true);
       });
     }
@@ -159,16 +148,12 @@ exports.setBrightness = function(unit, unitId, brightness, callback){
 
   var data = {
     url: gatewayUrl,
-    headers: {
-      'content-type': 'application/json'
-    },
-    json: JSON.stringify(body)
+    json: true,
+    body: JSON.stringify(body)
   }
 
   // request gateway
   request.put(data, function(error, httpResponse, body){
-    console.log(body);
-
     resultObject.code = constants.SL_API_SUCCESS_CODE;
     resultObject.message = "success";
 

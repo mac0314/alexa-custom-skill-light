@@ -31,7 +31,7 @@ module.exports = {
 
         this.attributes[key] = value;
 
-        const speechOutput = 'Create group' + groupId + "!";
+        const speechOutput = 'Create group ' + groupId + "!";
 
         this.response.speak(speechOutput);
 
@@ -79,7 +79,7 @@ module.exports = {
     }else{
       const groupId = this.event.request.intent.slots.groupId.value;
 
-      groupCTRL.removeGroup(groupId, (function(error, resultObject){
+      groupCTRL.removeGroup(gatewayObject, groupId, (function(error, resultObject){
 
         var key = constants.TABLE_USER_GROUP_LIST;
         var groupList = this.attributes[key];
@@ -90,7 +90,7 @@ module.exports = {
         const gdid = this.attributes[key];
 
         console.log(key, gdid);
-/*
+
         for(var i=0; i<groupList.length; i++){
 
           if(gdid == groupList[i].gdid){
@@ -104,7 +104,7 @@ module.exports = {
 
         var key = constants.TABLE_USER_GROUP_LIST;
         var groupList = this.attributes[key];
-*/
+
         delete this.attributes[key];
 
         this.response.speak(`Remove group ${groupId}!`);
