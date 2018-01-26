@@ -25,10 +25,16 @@
       ```
         sudo chmod +x lambda_upload.sh
       ```
-
-
+- 로컬 환경 테스트
+  - [lambda-local](https://github.com/ashiina/lambda-local)을 활용하여 테스트 가능
+  - 아래와 같이 Alexa-SDK를 활용하여 DynamoDB에 상태를 저장한 경우 이 부분은 lambda-local 테스트가 제대로 동작하지 않음
+  ```
+    this.attributes[key] = value
+  ```
 
 #### 알렉사 skill 구성하기
+- 람다에 Alexa skill interface를 연결하여야 함
+- IAM을 활용하여 람다에 DynamoDB, CloudWatch에 변경 권한을 주어야 함
 
 - 스킬 구성하기(Build An Alexa How To Skill) [링크](https://github.com/alexa/skill-sample-nodejs-howto/blob/master/instructions/0-intro.md)
 - 스킬에 아마존 로그인 연동하기(Login with Amazon, LWA) [링크](https://developer.amazon.com/blogs/post/Tx3CX1ETRZZ2NPC/Alexa-Account-Linking-5-Steps-to-Seamlessly-Link-Your-Alexa-Skill-with-Login-wit)
