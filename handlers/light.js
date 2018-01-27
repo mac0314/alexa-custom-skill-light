@@ -20,6 +20,9 @@ var option = {
 }
 var client  = mqtt.connect(url, option);
 
+const requestTopic = constants.MQTT_REQUEST_TOPIC;
+const topicPrefix = constants.MQTT_RESPONSE_TOPIC_PREFIX;
+
 
 
 module.exports = {
@@ -52,7 +55,7 @@ module.exports = {
         messageObject.userId = userId;
         messageObject.contentObject = contentObject;
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
 
         const speechOutput = 'Create Light!';
 
@@ -108,14 +111,26 @@ module.exports = {
           messageObject.userId = userId;
           messageObject.contentObject = contentObject;
 
-          client.publish('systemlight', JSON.stringify(messageObject));
+          client.publish(requestTopic, JSON.stringify(messageObject));
 
-          const speechOutput = 'Load Light!';
+          var mqttTopic = topicPrefix + intent;
+          client.subscribe(mqttTopic);
 
-          this.response.speak(speechOutput);
-          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+          client.on('message', (function (topic, message) {
+            var messageObject = JSON.parse(message);
 
-          this.emit(':responseReady');
+            var messageIntent = messageObject.intent;
+            if(mqttTopic == topic){
+              var dataObject = messageObject.contentObject.data;
+
+              const speechOutput = "Load Light! " + JSON.stringify(dataObject);
+
+              this.response.speak(speechOutput);
+              this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+              this.emit(':responseReady');
+            }
+          }).bind(this));
         }else{
           // REST request
           lightCTRL.loadLight(gatewayObject, lightId, (function(error, resultObject){
@@ -171,7 +186,7 @@ module.exports = {
           messageObject.userId = userId;
           messageObject.contentObject = contentObject;
 
-          client.publish('systemlight', JSON.stringify(messageObject));
+          client.publish(requestTopic, JSON.stringify(messageObject));
 
           const speechOutput = 'Remove Light!';
 
@@ -226,14 +241,46 @@ module.exports = {
         messageObject.userId = userId;
         messageObject.contentObject = contentObject;
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
 
-        const speechOutput = 'Load Light List!';
+        var mqttTopic = topicPrefix + intent;
+        client.subscribe(mqttTopic);
 
-        this.response.speak(speechOutput);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+        client.on('message', (function (topic, message) {
+          var messageObject = JSON.parse(message);
 
-        this.emit(':responseReady');
+          var messageIntent = messageObject.intent;
+          if(mqttTopic == topic){
+            var dataObject = messageObject.contentObject.data;
+
+            const response = dataObject.response;
+            const lightList = dataObject.lightList;
+
+            switch (response.type) {
+              case constants.RESPONSE_SPEAK:
+                this.response.speak(response.speechOutput);
+                break;
+              case constants.RESPONSE_SPEAK_AND_LISTEN:
+                this.response.speak(response.speechOutput).listen(response.reprompt);
+                break;
+              default:
+                break;
+            }
+            this.response.cardRenderer(global.APP_NAME, response.speechOutput, constants.BACKGROUND_IMAGE);
+
+            key = constants.TABLE_USER_LIGHT_FLAG;
+            if(lightList.length === 0){
+              this.attributes[key] = false;
+            }else{
+              this.attributes[key] = true;
+
+              key = constants.TABLE_USER_LIGHT_LIST;
+              this.attributes[key] = lightList;
+            }
+
+            this.emit(':saveState', true);
+          }
+        }).bind(this));
       }else{
         // REST request
         lightCTRL.loadLightList(gatewayObject, (function(error, resultObject){

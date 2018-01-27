@@ -9,6 +9,20 @@ const groupCTRL = require('../controllers/group/index');
 const constants = require('../lib/constants');
 
 
+var mqtt = require('mqtt');
+
+var url = config.aws.amazonMQ.mqtt.url + ":" + config.aws.amazonMQ.mqtt.port;
+var option = {
+  username : config.aws.amazonMQ.user.name,
+  password : config.aws.amazonMQ.user.password
+}
+var client  = mqtt.connect(url, option);
+
+const requestTopic = constants.MQTT_REQUEST_TOPIC;
+const topicPrefix = constants.MQTT_RESPONSE_TOPIC_PREFIX;
+
+
+
 module.exports = {
   'CreateGroup': function () {
     console.log("CreateGroup");
@@ -41,7 +55,7 @@ module.exports = {
         messageObject.contentObject = contentObject;
 
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
 
         const speechOutput = 'Create group ' + groupId;
 
@@ -95,14 +109,27 @@ module.exports = {
         messageObject.contentObject = contentObject;
 
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
 
-        const speechOutput = 'Load group list!';
+        var mqttTopic = topicPrefix + intent;
+        client.subscribe(mqttTopic);
 
-        this.response.speak(speechOutput);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+        client.on('message', (function (topic, message) {
+          var messageObject = JSON.parse(message);
 
-        this.emit(':responseReady');
+          if(mqttTopic == topic){
+            var dataObject = messageObject.contentObject.data;
+
+            this.response.speak('Load group list!' + JSON.stringify(dataObject.groupList));
+
+            key = constants.TABLE_USER_GROUP_LIST;
+            var value = resultObject.data.groupList;
+
+            this.attributes[key] = value;
+
+            this.emit(':saveState', true);
+          }
+        }).bind(this));
       }else{
         // REST request
         groupCTRL.loadGroupList(gatewayObject, (function(error, resultObject){
@@ -149,7 +176,7 @@ module.exports = {
         messageObject.contentObject = contentObject;
 
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
 
         const speechOutput = 'turn on the ' + uSpaceName + ' ' + unitId + ' ' + unit;
 
@@ -240,7 +267,7 @@ module.exports = {
         messageObject.contentObject = contentObject;
 
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
 
         const speechOutput = 'Add light ' + lightId + ' to group ' + groupId;
 
@@ -292,7 +319,23 @@ module.exports = {
         messageObject.contentObject = contentObject;
 
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
+
+        var mqttTopic = topicPrefix + intent;
+        client.subscribe(mqttTopic);
+
+        client.on('message', (function (topic, message) {
+          var messageObject = JSON.parse(message);
+
+          if(mqttTopic == topic){
+            var dataObject = messageObject.contentObject.data;
+
+            var deviceList = JSON.stringify(dataObject.deviceList);
+
+            this.response.speak(`Load light from group ${groupId}! deviceList : ${deviceList}`);
+            this.emit(':responseReady');
+          }
+        }).bind(this));
 
         const speechOutput = 'Load light from group';
 
@@ -357,7 +400,7 @@ module.exports = {
         messageObject.contentObject = contentObject;
 
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
 
         const speechOutput = 'Remove light ' + lightId + ' to group ' + groupId;
 

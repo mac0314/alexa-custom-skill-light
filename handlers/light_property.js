@@ -20,6 +20,8 @@ var option = {
 }
 var client  = mqtt.connect(url, option);
 
+const requestTopic = constants.MQTT_REQUEST_TOPIC;
+
 
 
 module.exports = {
@@ -113,7 +115,7 @@ module.exports = {
             messageObject.contentObject = contentObject;
 
 
-            client.publish('systemlight', JSON.stringify(messageObject));
+            client.publish(requestTopic, JSON.stringify(messageObject));
 
             const speechOutput = 'turn on the ' + uSpaceName + ' ' + unitId + ' ' + unit;
 
@@ -232,7 +234,7 @@ module.exports = {
             messageObject.contentObject = contentObject;
 
 
-            client.publish('systemlight', JSON.stringify(messageObject));
+            client.publish(requestTopic, JSON.stringify(messageObject));
 
             const speechOutput = 'turn off the ' + uSpaceName + ' ' + unitId + ' ' + unit;
 
@@ -351,7 +353,7 @@ module.exports = {
             messageObject.contentObject = contentObject;
 
 
-            client.publish('systemlight', JSON.stringify(messageObject));
+            client.publish(requestTopic, JSON.stringify(messageObject));
 
             const speechOutput = command + ', the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' power level ' + powerLevel;
 
@@ -472,7 +474,7 @@ module.exports = {
             messageObject.contentObject = contentObject;
 
 
-            client.publish('systemlight', JSON.stringify(messageObject));
+            client.publish(requestTopic, JSON.stringify(messageObject));
 
             const speechOutput = 'Set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' power level ' + powerLevel;
 
@@ -591,7 +593,7 @@ module.exports = {
             messageObject.contentObject = contentObject;
 
 
-            client.publish('systemlight', JSON.stringify(messageObject));
+            client.publish(requestTopic, JSON.stringify(messageObject));
 
             const speechOutput = command + ', the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' brightness';
 
@@ -711,7 +713,7 @@ module.exports = {
             messageObject.contentObject = contentObject;
 
 
-            client.publish('systemlight', JSON.stringify(messageObject));
+            client.publish(requestTopic, JSON.stringify(messageObject));
 
             const speechOutput = command + ', the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' brightness';
 
@@ -828,7 +830,7 @@ module.exports = {
             messageObject.contentObject = contentObject;
 
 
-            client.publish('systemlight', JSON.stringify(messageObject));
+            client.publish(requestTopic, JSON.stringify(messageObject));
 
             const speechOutput = 'Set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' color' + color;
 
@@ -946,7 +948,7 @@ module.exports = {
             messageObject.contentObject = contentObject;
 
 
-            client.publish('systemlight', JSON.stringify(messageObject));
+            client.publish(requestTopic, JSON.stringify(messageObject));
 
             const speechOutput = command + ', the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' color temperature';
 
@@ -1067,7 +1069,7 @@ module.exports = {
             messageObject.contentObject = contentObject;
 
 
-            client.publish('systemlight', JSON.stringify(messageObject));
+            client.publish(requestTopic, JSON.stringify(messageObject));
 
             const speechOutput = 'Set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' color temperature ' + colorTemperature;
 

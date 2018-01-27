@@ -30,8 +30,8 @@ const tableName = config.aws.dynamoDB.table.name;
 // TEMP Gateway IP URL
 global.BASE_URL = makeGatewayURL(config.sl.gw.ip, config.sl.gw.port, config.sl.gw.version);
 
-//global.TEST = "MQTT";
-global.TEST = "REST";
+global.TEST = "MQTT";
+//global.TEST = "REST";
 
 // entry
 exports.handler = function(event, context, callback) {

@@ -9,6 +9,19 @@ const unitSpaceCTRL = require('../controllers/unit_space/index');
 const constants = require('../lib/constants');
 
 
+var mqtt = require('mqtt');
+
+var url = config.aws.amazonMQ.mqtt.url + ":" + config.aws.amazonMQ.mqtt.port;
+var option = {
+  username : config.aws.amazonMQ.user.name,
+  password : config.aws.amazonMQ.user.password
+}
+var client  = mqtt.connect(url, option);
+
+const requestTopic = constants.MQTT_REQUEST_TOPIC;
+const topicPrefix = constants.MQTT_RESPONSE_TOPIC_PREFIX;
+
+
 module.exports = {
   'CreateUnitSpace': function () {
     console.log("CreateUnitSpace");
@@ -40,7 +53,7 @@ module.exports = {
         messageObject.contentObject = contentObject;
 
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
 
         const speechOutput = 'Create unit space ' + uSpaceName;
 
@@ -97,14 +110,28 @@ module.exports = {
         messageObject.contentObject = contentObject;
 
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
 
-        const speechOutput = 'Load unitspaces! ';
+        var mqttTopic = topicPrefix + intent;
+        client.subscribe(mqttTopic);
 
-        this.response.speak(speechOutput);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+        client.on('message', (function (topic, message) {
+          var messageObject = JSON.parse(message);
 
-        this.emit(':responseReady');
+          var messageIntent = messageObject.intent;
+          if(mqttTopic == topic){
+            var dataObject = messageObject.contentObject.data;
+
+            this.response.speak('Load unitspaces!' + JSON.stringify(dataObject.uSpaceList));
+
+            var key = constants.TABLE_USER_UNIT_SPACE_LIST;
+            var value = resultObject.data.uSpaceList;
+
+            this.attributes[key] = value;
+
+            this.emit(':saveState', true);
+          }
+        }).bind(this));
       }else{
         // REST request
         unitSpaceCTRL.loadUnitSpaceList(gatewayObject, (function(error, resultObject){
@@ -156,7 +183,7 @@ module.exports = {
         messageObject.contentObject = contentObject;
 
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
 
         const speechOutput = 'Remove unit space, ' + uSpaceName;
 
@@ -235,14 +262,32 @@ module.exports = {
         messageObject.contentObject = contentObject;
 
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
 
-        const speechOutput = 'Load light from unit space!';
+        var mqttTopic = topicPrefix + intent;
+        client.subscribe(mqttTopic);
 
-        this.response.speak(speechOutput);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+        client.on('message', (function (topic, message) {
+          var messageObject = JSON.parse(message);
 
-        this.emit(':responseReady');
+          var messageIntent = messageObject.intent;
+          if(mqttTopic == topic){
+            var dataObject = messageObject.contentObject.data;
+
+            var deviceList = dataObject.deviceList;
+
+            var listName = "";
+
+            // temp data
+            for(var i=0; i<deviceList.length; i++){
+              listName += " Light " + deviceList[i].did;
+            }
+
+            this.response.speak(`Load light from unit space ${uSpaceName}! Light List : ${listName}`);
+            this.emit(':responseReady');
+          }
+        }).bind(this));
+
       }else{
         // REST request
         unitSpaceCTRL.loadLightListFromUnitSpace(gatewayObject, uSpaceId, (function(error, resultObject){
@@ -300,14 +345,32 @@ module.exports = {
         messageObject.contentObject = contentObject;
 
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
 
-        const speechOutput = 'turn on the ' + uSpaceName + ' ' + unitId + ' ' + unit;
+        var mqttTopic = topicPrefix + intent;
+        client.subscribe(mqttTopic);
 
-        this.response.speak(speechOutput);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+        client.on('message', (function (topic, message) {
+          var messageObject = JSON.parse(message);
 
-        this.emit(':responseReady');
+          var messageIntent = messageObject.intent;
+          if(mqttTopic == topic){
+            var dataObject = messageObject.contentObject.data;
+
+            var deviceList = dataObject.deviceList;
+
+            var listName = "";
+
+            // temp data
+            for(var i=0; i<deviceList.length; i++){
+              listName += " Light " + deviceList[i].did;
+            }
+
+            this.response.speak(`Load light from unit space ${uSpaceId}! Light list : ${listName}`);
+            this.emit(':responseReady');
+          }
+        }).bind(this));
+
       }else{
         // REST request
         unitSpaceCTRL.loadGroupLightListFromUnitSpace(gatewayObject, groupId, uSpaceId, (function(error, resultObject){
@@ -364,7 +427,7 @@ module.exports = {
         messageObject.contentObject = contentObject;
 
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
 
         const speechOutput = 'Remove light ' + lightId + ' from unit space ' + uSpaceName;
 
@@ -421,7 +484,7 @@ module.exports = {
         messageObject.contentObject = contentObject;
 
 
-        client.publish('systemlight', JSON.stringify(messageObject));
+        client.publish(requestTopic, JSON.stringify(messageObject));
 
         const speechOutput = 'Remove group from unit space ' + uSpaceName;
 
