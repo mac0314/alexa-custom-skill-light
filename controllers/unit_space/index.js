@@ -39,7 +39,7 @@ exports.createUnitSpace = function(gatewayObject, uSpaceName, callback){
   var data = {
     url: requestURL,
     json: true,
-    body: JSON.stringify(body)
+    body: body
   }
 
   // request gateway

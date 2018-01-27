@@ -1,8 +1,11 @@
 
 const colorConverter = require("color-convert");
+const config = require("config.json")("./config/config.json");
 const request = require("request");
 
 const constants = require('../../lib/constants');
+const makeGatewayURL = require('../../js/make_gateway_URL');
+
 
 
 exports.handleColor = function(gatewayObject, uSpaceId, unit, unitId, color, callback){
@@ -49,8 +52,11 @@ exports.handleColor = function(gatewayObject, uSpaceId, unit, unitId, color, cal
     var data = {
       url: requestURL,
       json: true,
-      body: JSON.stringify(body)
+      body: body
     }
+
+    console.log(requestURL);
+    console.log(data);
 
     // request gateway
     request.put(data, function(error, httpResponse, body){

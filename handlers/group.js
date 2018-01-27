@@ -120,10 +120,18 @@ module.exports = {
           if(mqttTopic == topic){
             var dataObject = messageObject.contentObject.data;
 
-            this.response.speak('Load group list!' + JSON.stringify(dataObject.groupList));
+            var groupList = dataObject.groupList;
+
+            var listName = "";
+
+            for(var i=0; i<groupList.length; i++){
+              listName += ", Group " + groupList[i].gdid;
+            }
+
+            this.response.speak("Load group list" + listName);
 
             key = constants.TABLE_USER_GROUP_LIST;
-            var value = resultObject.data.groupList;
+            var value = groupList;
 
             this.attributes[key] = value;
 
@@ -133,10 +141,20 @@ module.exports = {
       }else{
         // REST request
         groupCTRL.loadGroupList(gatewayObject, (function(error, resultObject){
-          this.response.speak('Load group list!' + JSON.stringify(resultObject.data.groupList));
+          var dataObject = resultObject.data;
+
+          var groupList = dataObject.groupList;
+
+          var listName = "";
+
+          for(var i=0; i<groupList.length; i++){
+            listName += ", Group " + groupList[i].gdid;
+          }
+
+          this.response.speak("Load group list" + listName);
 
           key = constants.TABLE_USER_GROUP_LIST;
-          var value = resultObject.data.groupList;
+          var value = groupList;
 
           this.attributes[key] = value;
 
@@ -214,7 +232,7 @@ module.exports = {
 
           delete this.attributes[key];
 
-          this.response.speak(`Remove group ${groupId}!`);
+          this.response.speak("Remove group " + groupId);
           this.emit(':saveState', true);
         }).bind(this));
       }
@@ -279,9 +297,9 @@ module.exports = {
         // REST request
         groupCTRL.addLightToGroup(gatewayObject, deviceObject, groupId, (function(error, resultObject){
 
+          const speechOutput = 'Add light ' + lightId + ' to group ' + groupId;
 
-
-          this.response.speak(`Add light to group ${groupId}!`);
+          this.response.speak(speechOutput);
           this.emit(':saveState', true);
         }).bind(this));
       }
@@ -330,25 +348,31 @@ module.exports = {
           if(mqttTopic == topic){
             var dataObject = messageObject.contentObject.data;
 
-            var deviceList = JSON.stringify(dataObject.deviceList);
+            var deviceList = dataObject.deviceList;
 
-            this.response.speak(`Load light from group ${groupId}! deviceList : ${deviceList}`);
+            var listName = "";
+
+            for(var i = 0; i < deviceList.length; i++){
+              listName += " Light " + deviceList[i].did;
+            }
+
+            this.response.speak("Load light from group " + groupId + "! " + "device list : " + listName);
             this.emit(':responseReady');
           }
         }).bind(this));
 
-        const speechOutput = 'Load light from group';
-
-        this.response.speak(speechOutput);
-        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
-
-        this.emit(':responseReady');
       }else{
         // REST request
         groupCTRL.loadLightListFromGroup(gatewayObject, groupId, (function(error, resultObject){
-          var deviceList = JSON.stringify(resultObject.data.deviceList);
+          var deviceList = dataObject.deviceList;
 
-          this.response.speak(`Load light from group ${groupId}! deviceList : ${deviceList}`);
+          var listName = "";
+
+          for(var i = 0; i<deviceList.length; i++){
+            listName += " Light " + deviceList[i].did;
+          }
+
+          this.response.speak("Load light from group " + groupId + "!" + "device list : " + listName);
           this.emit(':responseReady');
         }).bind(this));
       }
@@ -414,7 +438,7 @@ module.exports = {
 
 
 
-          this.response.speak(`Remove light ${lightId} to group ${groupId}!`);
+          this.response.speak("Remove light " + lightId + " to group " + groupId + "!");
           this.emit(':saveState', true);
         }).bind(this));
       }

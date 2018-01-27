@@ -1,5 +1,6 @@
 
 const async = require("async");
+const config = require("config.json")("./config/config.json");
 const request = require("request");
 
 
@@ -16,7 +17,7 @@ exports.adjustBrightness = function(gatewayObject, unit, unitId, command, callba
   const port = gatewayObject.tcp_port;
   const version = config.sl.gw.version;
 
-  var gatewayURL = makeGatewayURL(ip, port, version);
+  const gatewayURL = makeGatewayURL(ip, port, version);
 
   var brightness = constants.DEFAULT_BRIGHTNESS;
   var preBrightness = constants.DEFAULT_BRIGHTNESS;
@@ -41,10 +42,10 @@ exports.adjustBrightness = function(gatewayObject, unit, unitId, command, callba
       var requestURL = gatewayURL + "/" + unit + "/" + unitId;
       switch (unit) {
         case constants.UNIT_LIGHT:
-          gatewayUrl += "/light";
+          requestURL += "/light";
           break;
         case constants.UNIT_GROUP:
-          gatewayUrl += "/dstatus";
+          requestURL += "/dstatus";
           break;
         default:
       }
@@ -109,7 +110,7 @@ exports.adjustBrightness = function(gatewayObject, unit, unitId, command, callba
       var data = {
         url: requestURL,
         json: true,
-        body: JSON.stringify(body)
+        body: body
       }
 
       // request gateway
@@ -154,6 +155,7 @@ exports.setBrightness = function(gatewayObject, uSpaceId, unit, unitId, brightne
   const level = constants.DEFAULT_POWER_LEVEL;
 
   var body = {};
+  // TODO modify gateway
   body.onoff = onoff;
   body.level = level;
 
@@ -167,7 +169,7 @@ exports.setBrightness = function(gatewayObject, uSpaceId, unit, unitId, brightne
   var data = {
     url: requestURL,
     json: true,
-    body: JSON.stringify(body)
+    body: body
   }
 
   // request gateway

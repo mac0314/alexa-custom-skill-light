@@ -1,9 +1,12 @@
 
 const async = require("async");
+const config = require("config.json")("./config/config.json");
 const request = require("request");
 
 
 const constants = require('../../lib/constants');
+const makeGatewayURL = require('../../js/make_gateway_URL');
+
 
 
 exports.adjustColorTemperature = function(gatewayObject, unit, unitId, command, callback){
@@ -41,10 +44,10 @@ exports.adjustColorTemperature = function(gatewayObject, unit, unitId, command, 
       var requestURL = gatewayURL + "/" + unit + "/" + unitId;
       switch (unit) {
         case constants.UNIT_LIGHT:
-          gatewayUrl += "/light";
+          requestURL += "/light";
           break;
         case constants.UNIT_GROUP:
-          gatewayUrl += "/dstatus";
+          requestURL += "/dstatus";
           break;
         default:
       }
@@ -96,8 +99,9 @@ exports.adjustColorTemperature = function(gatewayObject, unit, unitId, command, 
       var requestURL = gatewayURL + "/" + unit + "/" + unitId + "/light";
 
       var body = {};
-      body.onoff = preOnOff;
-      body.level = prePowerLevel;
+      // TODO modify gateway
+      //body.onoff = preOnOff;
+      //body.level = prePowerLevel;
 
       // color
       body.colorTemp = colorTemperature;
@@ -109,7 +113,7 @@ exports.adjustColorTemperature = function(gatewayObject, unit, unitId, command, 
       var data = {
         url: requestURL,
         json: true,
-        body: JSON.stringify(body)
+        body: body
       }
 
       // request gateway
@@ -169,7 +173,7 @@ exports.setColorTemperature = function(gatewayObject, uSpaceId, unit, unitId, co
   var data = {
     url: requestURL,
     json: true,
-    body: JSON.stringify(body)
+    body: body
   }
 
   // request gateway

@@ -95,7 +95,13 @@ exports.adjustPowerLevel = function(gatewayObject, unit, unitId, command, callba
 
       var body = {};
       body.onoff = preOnOff;
-      body.level = powerLevel;
+
+      // TODO modify gateway
+      if(powerLevel == constants.DEFAULT_POWER_LEVEL || onoff == "off"){
+      }else{
+        body.level = powerLevel;
+      }
+
 
 
       if(unit == constants.UNIT_GROUP){
@@ -105,7 +111,7 @@ exports.adjustPowerLevel = function(gatewayObject, unit, unitId, command, callba
       var data = {
         url: requestURL,
         json: true,
-        body: JSON.stringify(body)
+        body: body
       }
 
       // request gateway
@@ -157,7 +163,7 @@ exports.handlePower = function(gatewayObject, uSpaceId, unit, unitId, onoff, pow
   var data = {
     url: requestURL,
     json: true,
-    body: JSON.stringify(body)
+    body: body
   }
 
   // request gateway

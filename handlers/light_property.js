@@ -38,7 +38,7 @@ module.exports = {
 
       this.emit(':responseReady');
     }else{
-      var key = constants.TABLE_USER_LIGHTS_FLAG;
+      var key = constants.TABLE_USER_LIGHT_FLAG;
       const flag = this.attributes[key];
 
       var unit = "";
@@ -160,7 +160,7 @@ module.exports = {
 
       this.emit(':responseReady');
     }else{
-      var key = constants.TABLE_USER_LIGHTS_FLAG;
+      var key = constants.TABLE_USER_LIGHT_FLAG;
       const flag = this.attributes[key];
 
       if(flag){
@@ -278,7 +278,7 @@ module.exports = {
       this.emit(':responseReady');
     }else{
 
-      var key = constants.TABLE_USER_LIGHTS_FLAG;
+      var key = constants.TABLE_USER_LIGHT_FLAG;
       const flag = this.attributes[key];
 
       if(flag){
@@ -355,7 +355,7 @@ module.exports = {
 
             client.publish(requestTopic, JSON.stringify(messageObject));
 
-            const speechOutput = command + ', the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' power level ' + powerLevel;
+            const speechOutput = command + ', the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' power level';
 
             this.response.speak(speechOutput);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
@@ -401,7 +401,7 @@ module.exports = {
       this.emit(':responseReady');
     }else{
 
-      var key = constants.TABLE_USER_LIGHTS_FLAG;
+      var key = constants.TABLE_USER_LIGHT_FLAG;
       const flag = this.attributes[key];
 
       if(flag){
@@ -521,7 +521,7 @@ module.exports = {
       this.emit(':responseReady');
     }else{
 
-      var key = constants.TABLE_USER_LIGHTS_FLAG;
+      var key = constants.TABLE_USER_LIGHT_FLAG;
       const flag = this.attributes[key];
 
       if(flag){
@@ -640,7 +640,7 @@ module.exports = {
       this.emit(':responseReady');
     }else{
 
-      var key = constants.TABLE_USER_LIGHTS_FLAG;
+      var key = constants.TABLE_USER_LIGHT_FLAG;
       const flag = this.attributes[key];
 
       if(flag){
@@ -715,7 +715,7 @@ module.exports = {
 
             client.publish(requestTopic, JSON.stringify(messageObject));
 
-            const speechOutput = command + ', the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' brightness';
+            const speechOutput = 'Set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' brightness';
 
             this.response.speak(speechOutput);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
@@ -757,7 +757,7 @@ module.exports = {
       this.emit(':responseReady');
     }else{
 
-      var key = constants.TABLE_USER_LIGHTS_FLAG;
+      var key = constants.TABLE_USER_LIGHT_FLAG;
       const flag = this.attributes[key];
 
       if(flag){
@@ -874,7 +874,7 @@ module.exports = {
       this.emit(':responseReady');
     }else{
 
-      var key = constants.TABLE_USER_LIGHTS_FLAG;
+      var key = constants.TABLE_USER_LIGHT_FLAG;
       const flag = this.attributes[key];
 
       if(flag){
@@ -995,7 +995,7 @@ module.exports = {
       this.emit(':responseReady');
     }else{
 
-      var key = constants.TABLE_USER_LIGHTS_FLAG;
+      var key = constants.TABLE_USER_LIGHT_FLAG;
       const flag = this.attributes[key];
 
       if(flag){

@@ -122,10 +122,18 @@ module.exports = {
           if(mqttTopic == topic){
             var dataObject = messageObject.contentObject.data;
 
-            this.response.speak('Load unitspaces!' + JSON.stringify(dataObject.uSpaceList));
+            var uSpaceList = dataObject.uSpaceList;
+
+            var listName = "";
+
+            for(var i = 0; i < uSpaceList.length; i++){
+              listName += ", " + uSpaceList[i].uspace_id;
+            }
+
+            this.response.speak("Load unitspaces listName" + listName + "!");
 
             var key = constants.TABLE_USER_UNIT_SPACE_LIST;
-            var value = resultObject.data.uSpaceList;
+            var value = uSpaceList;
 
             this.attributes[key] = value;
 
@@ -207,7 +215,7 @@ module.exports = {
 
           delete this.attributes[key];
 
-          this.response.speak(`Remove unit space ${uSpaceId}!`);
+          this.response.speak("Remove unit space " + uSpaceId + "!");
           this.emit(':saveState', true);
         }).bind(this));
       }
@@ -240,11 +248,11 @@ module.exports = {
 
       this.emit(':responseReady');
     }else{
-      const uSpaceName = this.event.request.intent.slots.uSpaceName.value;
+      var uSpaceName = this.event.request.intent.slots.uSpaceName.value;
 
       var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
 
-      var uSpaceId = this.attributes[key];
+      var uSpaceId = this.attributes[key] || this.event.request.intent.slots.uSpaceId.value;
 
 
       if(global.TEST == "MQTT"){
@@ -280,10 +288,14 @@ module.exports = {
 
             // temp data
             for(var i=0; i<deviceList.length; i++){
-              listName += " Light " + deviceList[i].did;
+              listName += ", Light " + deviceList[i].did;
             }
 
-            this.response.speak(`Load light from unit space ${uSpaceName}! Light List : ${listName}`);
+            if(uSpaceName === undefined){
+              uSpaceName = "";
+            }
+
+            this.response.speak("Load light from unit space " + uSpaceName + "! Light List " + listName + ".");
             this.emit(':responseReady');
           }
         }).bind(this));
@@ -297,10 +309,14 @@ module.exports = {
 
           // temp data
           for(var i=0; i<deviceList.length; i++){
-            listName += " Light " + deviceList[i].did;
+            listName += ", Light " + deviceList[i].did;
           }
 
-          this.response.speak(`Load light from unit space ${uSpaceName}! Light List : ${listName}`);
+          if(uSpaceName === undefined){
+            uSpaceName = "";
+          }
+
+          this.response.speak("Load light from unit space" + uSpaceName + "! Light List" + listName);
           this.emit(':responseReady');
         }).bind(this));
       }
@@ -363,10 +379,10 @@ module.exports = {
 
             // temp data
             for(var i=0; i<deviceList.length; i++){
-              listName += " Light " + deviceList[i].did;
+              listName += ", Light " + deviceList[i].did;
             }
 
-            this.response.speak(`Load light from unit space ${uSpaceId}! Light list : ${listName}`);
+            this.response.speak("Load light from unit space " + uSpaceId + "! Light list" + listName);
             this.emit(':responseReady');
           }
         }).bind(this));
@@ -383,7 +399,7 @@ module.exports = {
             listName += " Light " + deviceList[i].did;
           }
 
-          this.response.speak(`Load light from unit space ${uSpaceId}! Light list : ${listName}`);
+          this.response.speak("Load light from unit space " + uSpaceId + "! Light list" + listName);
           this.emit(':responseReady');
         }).bind(this));
       }
@@ -440,7 +456,7 @@ module.exports = {
         unitSpaceCTRL.removeLightFromUnitSpace(lightId, uSpaceId, (function(error, resultObject){
 
 
-          this.response.speak(`Remove light ${lightId} from unit space ${uSpaceId}!`);
+          this.response.speak("Remove light " + lightId + " from unit space " + uSpaceId + "!");
           this.emit(':responseReady');
         }).bind(this));
       }
@@ -497,7 +513,7 @@ module.exports = {
         unitSpaceCTRL.removeGroupFromUnitSpace(gatewayObject, groupId, uSpaceId, (function(error, resultObject){
 
 
-          this.response.speak(`Remove group from unit space ${uSpaceId}!`);
+          this.response.speak('Remove group from unit space ' + uSpaceName);
           this.emit(':responseReady');
         }).bind(this));
       }
