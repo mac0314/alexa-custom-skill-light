@@ -25,18 +25,47 @@ module.exports = {
     }else{
       const groupId = this.event.request.intent.slots.groupId.value;
 
-      groupCTRL.createGroup(gatewayObject, groupId, (function(error, resultObject){
-        var key = constants.TABLE_USER_GROUP_PREFIX + groupId;
-        var value = resultObject.data.gdid;
 
-        this.attributes[key] = value;
+      if(global.TEST == "MQTT"){
+        // MQTT request
+        var messageObject = {};
+        const intent = "CreateGroup";
+        const userId = this.event.session.user.userId;
 
-        const speechOutput = 'Create group ' + groupId + "!";
+        var contentObject = {};
+        contentObject.gatewayObject = gatewayObject;
+        contentObject.groupId = groupId;
+
+        messageObject.intent = intent;
+        messageObject.userId = userId;
+        messageObject.contentObject = contentObject;
+
+
+        client.publish('systemlight', JSON.stringify(messageObject));
+
+        const speechOutput = 'Create group ' + groupId;
 
         this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-        this.emit(':saveState', true);
-      }).bind(this));
+        this.emit(':responseReady');
+      }else{
+        // REST request
+        groupCTRL.createGroup(gatewayObject, groupId, (function(error, resultObject){
+          var key = constants.TABLE_USER_GROUP_PREFIX + groupId;
+          var value = resultObject.data.gdid;
+
+          this.attributes[key] = value;
+
+          const speechOutput = 'Create group ' + groupId + "!";
+
+          this.response.speak(speechOutput);
+
+          this.emit(':saveState', true);
+        }).bind(this));
+      }
+
+
     }
   },// CreateGroup
   'LoadGroupList': function () {
@@ -52,16 +81,41 @@ module.exports = {
 
       this.emit(':responseReady');
     }else{
-      groupCTRL.loadGroupList(gatewayObject, (function(error, resultObject){
-        this.response.speak('Load group list!' + JSON.stringify(resultObject.data.groupList));
+      if(global.TEST == "MQTT"){
+        // MQTT request
+        var messageObject = {};
+        const intent = "LoadGroupList";
+        const userId = this.event.session.user.userId;
 
-        key = constants.TABLE_USER_GROUP_LIST;
-        var value = resultObject.data.groupList;
+        var contentObject = {};
+        contentObject.gatewayObject = gatewayObject;
 
-        this.attributes[key] = value;
+        messageObject.intent = intent;
+        messageObject.userId = userId;
+        messageObject.contentObject = contentObject;
 
-        this.emit(':saveState', true);
-      }).bind(this));
+
+        client.publish('systemlight', JSON.stringify(messageObject));
+
+        const speechOutput = 'Load group list!';
+
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+        this.emit(':responseReady');
+      }else{
+        // REST request
+        groupCTRL.loadGroupList(gatewayObject, (function(error, resultObject){
+          this.response.speak('Load group list!' + JSON.stringify(resultObject.data.groupList));
+
+          key = constants.TABLE_USER_GROUP_LIST;
+          var value = resultObject.data.groupList;
+
+          this.attributes[key] = value;
+
+          this.emit(':saveState', true);
+        }).bind(this));
+      }
     }
   },// LoadGroupList
   'RemoveGroup': function () {
@@ -79,37 +133,64 @@ module.exports = {
     }else{
       const groupId = this.event.request.intent.slots.groupId.value;
 
-      groupCTRL.removeGroup(gatewayObject, groupId, (function(error, resultObject){
 
-        var key = constants.TABLE_USER_GROUP_LIST;
-        var groupList = this.attributes[key];
+      if(global.TEST == "MQTT"){
+        // MQTT request
+        var messageObject = {};
+        const intent = "RemoveGroup";
+        const userId = this.event.session.user.userId;
 
-        console.log(key, groupList);
+        var contentObject = {};
+        contentObject.gatewayObject = gatewayObject;
+        contentObject.groupId = groupId;
 
-        var key = constants.TABLE_USER_GROUP_PREFIX + groupId;
-        const gdid = this.attributes[key];
+        messageObject.intent = intent;
+        messageObject.userId = userId;
+        messageObject.contentObject = contentObject;
 
-        console.log(key, gdid);
 
-        for(var i=0; i<groupList.length; i++){
+        client.publish('systemlight', JSON.stringify(messageObject));
 
-          if(gdid == groupList[i].gdid){
-            groupList.splice(i, 1);
+        const speechOutput = 'turn on the ' + uSpaceName + ' ' + unitId + ' ' + unit;
 
-            var key = constants.TABLE_USER_GROUP_PREFIX + groupId;
-            this.attributes[key] = '';
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+        this.emit(':responseReady');
+      }else{
+        // REST request
+        groupCTRL.removeGroup(gatewayObject, groupId, (function(error, resultObject){
+
+          var key = constants.TABLE_USER_GROUP_LIST;
+          var groupList = this.attributes[key];
+
+          console.log(key, groupList);
+
+          var key = constants.TABLE_USER_GROUP_PREFIX + groupId;
+          const gdid = this.attributes[key];
+
+          console.log(key, gdid);
+
+          for(var i=0; i<groupList.length; i++){
+
+            if(gdid == groupList[i].gdid){
+              groupList.splice(i, 1);
+
+              var key = constants.TABLE_USER_GROUP_PREFIX + groupId;
+              this.attributes[key] = '';
+            }
           }
-        }
 
 
-        var key = constants.TABLE_USER_GROUP_LIST;
-        var groupList = this.attributes[key];
+          var key = constants.TABLE_USER_GROUP_LIST;
+          var groupList = this.attributes[key];
 
-        delete this.attributes[key];
+          delete this.attributes[key];
 
-        this.response.speak(`Remove group ${groupId}!`);
-        this.emit(':saveState', true);
-      }).bind(this));
+          this.response.speak(`Remove group ${groupId}!`);
+          this.emit(':saveState', true);
+        }).bind(this));
+      }
     }
 
   },// RemoveGroup
@@ -142,13 +223,41 @@ module.exports = {
         }
       }
 
-      groupCTRL.addLightToGroup(gatewayObject, deviceObject, groupId, (function(error, resultObject){
+
+      if(global.TEST == "MQTT"){
+        // MQTT request
+        var messageObject = {};
+        const intent = "AddLightToGroup";
+        const userId = this.event.session.user.userId;
+
+        var contentObject = {};
+        contentObject.gatewayObject = gatewayObject;
+        contentObject.deviceObject = deviceObject;
+        contentObject.groupId = groupId;
+
+        messageObject.intent = intent;
+        messageObject.userId = userId;
+        messageObject.contentObject = contentObject;
+
+
+        client.publish('systemlight', JSON.stringify(messageObject));
+
+        const speechOutput = 'Add light ' + lightId + ' to group ' + groupId;
+
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+        this.emit(':responseReady');
+      }else{
+        // REST request
+        groupCTRL.addLightToGroup(gatewayObject, deviceObject, groupId, (function(error, resultObject){
 
 
 
-        this.response.speak(`Add light to group ${groupId}!`);
-        this.emit(':saveState', true);
-      }).bind(this));
+          this.response.speak(`Add light to group ${groupId}!`);
+          this.emit(':saveState', true);
+        }).bind(this));
+      }
     }
   },// AddLightToGroup
   'LoadLightListFromGroup': function () {
@@ -167,12 +276,39 @@ module.exports = {
       const slots = this.event.request.intent.slots;
       const groupId = slots.groupId.value;
 
-      groupCTRL.loadLightListFromGroup(gatewayObject, groupId, (function(error, resultObject){
-        var deviceList = JSON.stringify(resultObject.data.deviceList);
 
-        this.response.speak(`Load light from group ${groupId}! deviceList : ${deviceList}`);
+      if(global.TEST == "MQTT"){
+        // MQTT request
+        var messageObject = {};
+        const intent = "LoadLightListFromGroup";
+        const userId = this.event.session.user.userId;
+
+        var contentObject = {};
+        contentObject.gatewayObject = gatewayObject;
+        contentObject.groupId = groupId;
+
+        messageObject.intent = intent;
+        messageObject.userId = userId;
+        messageObject.contentObject = contentObject;
+
+
+        client.publish('systemlight', JSON.stringify(messageObject));
+
+        const speechOutput = 'Load light from group';
+
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
-      }).bind(this));
+      }else{
+        // REST request
+        groupCTRL.loadLightListFromGroup(gatewayObject, groupId, (function(error, resultObject){
+          var deviceList = JSON.stringify(resultObject.data.deviceList);
+
+          this.response.speak(`Load light from group ${groupId}! deviceList : ${deviceList}`);
+          this.emit(':responseReady');
+        }).bind(this));
+      }
     }
   },// LoadLightListFromGroup
   'RemoveLightFromGroup': function () {
@@ -204,13 +340,43 @@ module.exports = {
         }
       }
 
-      groupCTRL.removeLightFromGroup(gatewayObject, deviceObject, groupId, (function(error, resultObject){
+      if(global.TEST == "MQTT"){
+        // MQTT request
+        var messageObject = {};
+        const intent = "RemoveLightFromGroup";
+        const userId = this.event.session.user.userId;
+
+        var contentObject = {};
+        contentObject.gatewayObject = gatewayObject;
+        contentObject.uSpaceId = uSpaceId;
+        contentObject.unit = unit;
+        contentObject.unitId = unitId;
+
+        messageObject.intent = intent;
+        messageObject.userId = userId;
+        messageObject.contentObject = contentObject;
+
+
+        client.publish('systemlight', JSON.stringify(messageObject));
+
+        const speechOutput = 'Remove light ' + lightId + ' to group ' + groupId;
+
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+        this.emit(':responseReady');
+      }else{
+        // REST request
+        groupCTRL.removeLightFromGroup(gatewayObject, deviceObject, groupId, (function(error, resultObject){
 
 
 
-        this.response.speak(`Remove light to group ${groupId}!`);
-        this.emit(':saveState', true);
-      }).bind(this));
+          this.response.speak(`Remove light ${lightId} to group ${groupId}!`);
+          this.emit(':saveState', true);
+        }).bind(this));
+      }
+
+
     }
   }// RemoveLightFromGroup
 };// GroupHandler

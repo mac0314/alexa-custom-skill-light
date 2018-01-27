@@ -11,6 +11,16 @@ const powerCTRL = require('../controllers/light/power');
 
 const constants = require('../lib/constants');
 
+var mqtt = require('mqtt');
+
+var url = config.aws.amazonMQ.mqtt.url + ":" + config.aws.amazonMQ.mqtt.port;
+var option = {
+  username : config.aws.amazonMQ.user.name,
+  password : config.aws.amazonMQ.user.password
+}
+var client  = mqtt.connect(url, option);
+
+
 
 module.exports = {
   'TurnOn': function () {
@@ -44,9 +54,15 @@ module.exports = {
             var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
 
             if(this.attributes[key]){
-              unit = "group";
+              if(slots.unit.hasOwnProperty("value")){
 
-              updatedIntent.slots.unit.value = unit;
+              }else{
+                // default
+                unit = "group";
+                updatedIntent.slots.unit.value = unit;
+              }
+
+
               this.emit(':delegate', updatedIntent);
             }else{
               const speechOutput = 'The space is not registered..';
@@ -79,14 +95,46 @@ module.exports = {
           const key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
           var uSpaceId = this.attributes[key];
 
-          powerCTRL.handlePower(gatewayObject, uSpaceId, unit, unitId, constants.SL_API_POWER_ON, constants.DEFAULT_POWER_LEVEL, (function(error, resultObject){
-            const speechOutput = 'turn on the ' + unitId + ' ' + unit;
+
+          if(global.TEST == "MQTT"){
+            // MQTT request
+            var messageObject = {};
+            const intent = "TurnOn";
+            const userId = this.event.session.user.userId;
+
+            var contentObject = {};
+            contentObject.gatewayObject = gatewayObject;
+            contentObject.uSpaceId = uSpaceId;
+            contentObject.unit = unit;
+            contentObject.unitId = unitId;
+
+            messageObject.intent = intent;
+            messageObject.userId = userId;
+            messageObject.contentObject = contentObject;
+
+
+            client.publish('systemlight', JSON.stringify(messageObject));
+
+            const speechOutput = 'turn on the ' + uSpaceName + ' ' + unitId + ' ' + unit;
 
             this.response.speak(speechOutput);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
             this.emit(':responseReady');
-          }).bind(this));
+          }else{
+            // REST request
+            powerCTRL.handlePower(gatewayObject, uSpaceId, unit, unitId, constants.SL_API_POWER_ON, constants.DEFAULT_POWER_LEVEL, (function(error, resultObject){
+              const speechOutput = 'turn on the ' + uSpaceName + ' ' + unitId + ' ' + unit;
+
+
+
+              this.response.speak(speechOutput);
+              this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+              this.emit(':responseReady');
+            }).bind(this));
+          }
+
         }
       }else{
         const speechOutput = "First, you must discover your lights!";
@@ -128,9 +176,14 @@ module.exports = {
             var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
 
             if(this.attributes[key]){
-              unit = "group";
+              if(slots.unit.hasOwnProperty("value")){
 
-              updatedIntent.slots.unit.value = unit;
+              }else{
+                // default
+                unit = "group";
+                updatedIntent.slots.unit.value = unit;
+              }
+
               this.emit(':delegate', updatedIntent);
             }else{
               const speechOutput = 'The space is not registered..';
@@ -161,14 +214,44 @@ module.exports = {
           const key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
           var uSpaceId = this.attributes[key];
 
-          powerCTRL.handlePower(gatewayObject, uSpaceId, unit, unitId, constants.SL_API_POWER_OFF, constants.DEFAULT_POWER_LEVEL, (function(error, resultObject){
-            const speechOutput = 'turn off the ' + unitId + ' ' + unit;
+
+          if(global.TEST == "MQTT"){
+            // MQTT request
+            var messageObject = {};
+            const intent = "TurnOff";
+            const userId = this.event.session.user.userId;
+
+            var contentObject = {};
+            contentObject.gatewayObject = gatewayObject;
+            contentObject.uSpaceId = uSpaceId;
+            contentObject.unit = unit;
+            contentObject.unitId = unitId;
+
+            messageObject.intent = intent;
+            messageObject.userId = userId;
+            messageObject.contentObject = contentObject;
+
+
+            client.publish('systemlight', JSON.stringify(messageObject));
+
+            const speechOutput = 'turn off the ' + uSpaceName + ' ' + unitId + ' ' + unit;
 
             this.response.speak(speechOutput);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
             this.emit(':responseReady');
-          }).bind(this));
+          }else{
+            // REST request
+            powerCTRL.handlePower(gatewayObject, uSpaceId, unit, unitId, constants.SL_API_POWER_OFF, constants.DEFAULT_POWER_LEVEL, (function(error, resultObject){
+              const speechOutput = 'turn off the ' + uSpaceName + ' ' + unitId + ' ' + unit;
+
+              this.response.speak(speechOutput);
+              this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+              this.emit(':responseReady');
+            }).bind(this));
+          }
+
         }
       }else{
         const speechOutput = "First, you must discover your lights!";
@@ -208,9 +291,14 @@ module.exports = {
             var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
 
             if(this.attributes[key]){
-              unit = "group";
+              if(slots.unit.hasOwnProperty("value")){
 
-              updatedIntent.slots.unit.value = unit;
+              }else{
+                // default
+                unit = "group";
+                updatedIntent.slots.unit.value = unit;
+              }
+
               this.emit(':delegate', updatedIntent);
             }else{
               const speechOutput = 'The space is not registered..';
@@ -245,17 +333,48 @@ module.exports = {
           const command = updatedIntent.slots.command.resolutions.resolutionsPerAuthority[0].values[0].value.name;
 
 
-          powerCTRL.adjustPowerLevel(gatewayObject, unit, unitId, command, (function(error, resultObject){
-            const powerLevel = resultObject.data.powerLevel;
+          if(global.TEST == "MQTT"){
+            // MQTT request
+            var messageObject = {};
+            const intent = "AdjustPowerLevel";
+            const userId = this.event.session.user.userId;
 
-            const speechOutput = command + ', set the ' + unitId + ' ' + unit + ' power level ' + powerLevel;
-            const reprompt = 'Do you want to Change more?'
+            var contentObject = {};
+            contentObject.gatewayObject = gatewayObject;
+            contentObject.uSpaceId = uSpaceId;
+            contentObject.unit = unit;
+            contentObject.unitId = unitId;
+            contentObject.command = command;
 
-            this.response.speak(speechOutput).listen(reprompt);
+            messageObject.intent = intent;
+            messageObject.userId = userId;
+            messageObject.contentObject = contentObject;
+
+
+            client.publish('systemlight', JSON.stringify(messageObject));
+
+            const speechOutput = command + ', the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' power level ' + powerLevel;
+
+            this.response.speak(speechOutput);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
             this.emit(':responseReady');
-          }).bind(this));
+          }else{
+            // REST request
+            powerCTRL.adjustPowerLevel(gatewayObject, unit, unitId, command, (function(error, resultObject){
+              const powerLevel = resultObject.data.powerLevel;
+
+              const speechOutput = command + ', set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' power level ' + powerLevel;
+              const reprompt = 'Do you want to Change more?'
+
+              this.response.speak(speechOutput).listen(reprompt);
+              this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+              this.emit(':responseReady');
+            }).bind(this));
+
+          }
+
         }
       }else{
         const speechOutput = "First, you must discover your lights!";
@@ -295,9 +414,14 @@ module.exports = {
             var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
 
             if(this.attributes[key]){
-              unit = "group";
+              if(slots.unit.hasOwnProperty("value")){
 
-              updatedIntent.slots.unit.value = unit;
+              }else{
+                // default
+                unit = "group";
+                updatedIntent.slots.unit.value = unit;
+              }
+
               this.emit(':delegate', updatedIntent);
             }else{
               const speechOutput = 'The space is not registered..';
@@ -330,14 +454,47 @@ module.exports = {
           var uSpaceId = this.attributes[key];
 
 
-          powerCTRL.handlePower(gatewayObject, uSpaceId, unit, unitId, constants.SL_API_POWER_ON, powerLevel, (function(error, resultObject){
-            const speechOutput = 'set the ' + unitId + ' ' + unit + ' power level ' + powerLevel;
+          if(global.TEST == "MQTT"){
+            // MQTT request
+            var messageObject = {};
+            const intent = "SetPowerLevel";
+            const userId = this.event.session.user.userId;
+
+            var contentObject = {};
+            contentObject.gatewayObject = gatewayObject;
+            contentObject.uSpaceId = uSpaceId;
+            contentObject.unit = unit;
+            contentObject.unitId = unitId;
+            contentObject.powerLevel = powerLevel;
+
+            messageObject.intent = intent;
+            messageObject.userId = userId;
+            messageObject.contentObject = contentObject;
+
+
+            client.publish('systemlight', JSON.stringify(messageObject));
+
+            const speechOutput = 'Set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' power level ' + powerLevel;
 
             this.response.speak(speechOutput);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
             this.emit(':responseReady');
-          }).bind(this));
+          }else{
+            // REST request
+            powerCTRL.handlePower(gatewayObject, uSpaceId, unit, unitId, constants.SL_API_POWER_ON, powerLevel, (function(error, resultObject){
+              const speechOutput = 'set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' power level ' + powerLevel;
+
+              this.response.speak(speechOutput);
+              this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+              this.emit(':responseReady');
+            }).bind(this));
+
+          }
+
+
+
         }
       }else{
         const speechOutput = "First, you must discover your lights!";
@@ -377,9 +534,14 @@ module.exports = {
             var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
 
             if(this.attributes[key]){
-              unit = "group";
+              if(slots.unit.hasOwnProperty("value")){
 
-              updatedIntent.slots.unit.value = unit;
+              }else{
+                // default
+                unit = "group";
+                updatedIntent.slots.unit.value = unit;
+              }
+
               this.emit(':delegate', updatedIntent);
             }else{
               const speechOutput = 'The space is not registered..';
@@ -411,18 +573,47 @@ module.exports = {
           const key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
           var uSpaceId = this.attributes[key];
 
+          if(global.TEST == "MQTT"){
+            // MQTT request
+            var messageObject = {};
+            const intent = "AdjustBrightness";
+            const userId = this.event.session.user.userId;
 
-          brightnessCTRL.adjustBrightness(unit, unitId, command, (function(error, resultObject){
-            const brightness = resultObject.data.brightness;
+            var contentObject = {};
+            contentObject.gatewayObject = gatewayObject;
+            contentObject.uSpaceId = uSpaceId;
+            contentObject.unit = unit;
+            contentObject.unitId = unitId;
+            contentObject.command = command;
 
-            const speechOutput = command + ', set the ' + unitId + ' ' + unit + ' brightness ' + brightness;
-            const reprompt = 'Do you want to Change more?'
+            messageObject.intent = intent;
+            messageObject.userId = userId;
+            messageObject.contentObject = contentObject;
 
-            this.response.speak(speechOutput).listen(reprompt);
+
+            client.publish('systemlight', JSON.stringify(messageObject));
+
+            const speechOutput = command + ', the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' brightness';
+
+            this.response.speak(speechOutput);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
             this.emit(':responseReady');
-          }).bind(this));
+          }else{
+            // REST request
+            brightnessCTRL.adjustBrightness(gatewayObject, unit, unitId, command, (function(error, resultObject){
+              const brightness = resultObject.data.brightness;
+
+              const speechOutput = command + ', set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' brightness ' + brightness;
+              const reprompt = 'Do you want to Change more?'
+
+              this.response.speak(speechOutput).listen(reprompt);
+              this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+              this.emit(':responseReady');
+            }).bind(this));
+          }
+
         }
       }else{
         const speechOutput = "First, you must discover your lights!";
@@ -462,9 +653,14 @@ module.exports = {
             var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
 
             if(this.attributes[key]){
-              unit = "group";
+              if(slots.unit.hasOwnProperty("value")){
 
-              updatedIntent.slots.unit.value = unit;
+              }else{
+                // default
+                unit = "group";
+                updatedIntent.slots.unit.value = unit;
+              }
+
               this.emit(':delegate', updatedIntent);
             }else{
               const speechOutput = 'The space is not registered..';
@@ -497,14 +693,44 @@ module.exports = {
           var uSpaceId = this.attributes[key];
 
 
-          brightnessCTRL.setBrightness(unit, unitId, brightness, (function(error, resultObject){
-            const speechOutput = 'set the ' + unitId + ' ' + unit + ' brightness ' + brightness;
+          if(global.TEST == "MQTT"){
+            // MQTT request
+            var messageObject = {};
+            const intent = "SetBrightness";
+            const userId = this.event.session.user.userId;
+
+            var contentObject = {};
+            contentObject.gatewayObject = gatewayObject;
+            contentObject.uSpaceId = uSpaceId;
+            contentObject.unit = unit;
+            contentObject.unitId = unitId;
+            contentObject.brightness = brightness;
+
+            messageObject.intent = intent;
+            messageObject.userId = userId;
+            messageObject.contentObject = contentObject;
+
+
+            client.publish('systemlight', JSON.stringify(messageObject));
+
+            const speechOutput = command + ', the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' brightness';
 
             this.response.speak(speechOutput);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
             this.emit(':responseReady');
-          }).bind(this));
+          }else{
+            // REST request
+            brightnessCTRL.setBrightness(gatewayObject, uSpaceId, unit, unitId, brightness, (function(error, resultObject){
+              const speechOutput = 'set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' brightness ' + brightness;
+
+              this.response.speak(speechOutput);
+              this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+              this.emit(':responseReady');
+            }).bind(this));
+          }
+
         }
       }else{
         const speechOutput = "First, you must discover your lights!";
@@ -544,9 +770,14 @@ module.exports = {
             var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
 
             if(this.attributes[key]){
-              unit = "group";
+              if(slots.unit.hasOwnProperty("value")){
 
-              updatedIntent.slots.unit.value = unit;
+              }else{
+                // default
+                unit = "group";
+                updatedIntent.slots.unit.value = unit;
+              }
+
               this.emit(':delegate', updatedIntent);
             }else{
               const speechOutput = 'The space is not registered..';
@@ -578,14 +809,45 @@ module.exports = {
           const key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
           var uSpaceId = this.attributes[key];
 
-          colorCTRL.handleColor(unit, unitId, color, (function(error, resultObject){
-            const speechOutput = 'set the ' + unitId + ' ' + unit + ' color ' + color;
+
+          if(global.TEST == "MQTT"){
+            // MQTT request
+            var messageObject = {};
+            const intent = "SetColor";
+            const userId = this.event.session.user.userId;
+
+            var contentObject = {};
+            contentObject.gatewayObject = gatewayObject;
+            contentObject.uSpaceId = uSpaceId;
+            contentObject.unit = unit;
+            contentObject.unitId = unitId;
+            contentObject.color = color;
+
+            messageObject.intent = intent;
+            messageObject.userId = userId;
+            messageObject.contentObject = contentObject;
+
+
+            client.publish('systemlight', JSON.stringify(messageObject));
+
+            const speechOutput = 'Set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' color' + color;
 
             this.response.speak(speechOutput);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
             this.emit(':responseReady');
-          }).bind(this));
+          }else{
+            // REST request
+            colorCTRL.handleColor(gatewayObject, uSpaceId, unit, unitId, color, (function(error, resultObject){
+              const speechOutput = 'set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' color ' + color;
+
+              this.response.speak(speechOutput);
+              this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+              this.emit(':responseReady');
+            }).bind(this));
+          }
+
         }
       }else{
         const speechOutput = "First, you must discover your lights!";
@@ -625,9 +887,14 @@ module.exports = {
             var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
 
             if(this.attributes[key]){
-              unit = "group";
+              if(slots.unit.hasOwnProperty("value")){
 
-              updatedIntent.slots.unit.value = unit;
+              }else{
+                // default
+                unit = "group";
+                updatedIntent.slots.unit.value = unit;
+              }
+
               this.emit(':delegate', updatedIntent);
             }else{
               const speechOutput = 'The space is not registered..';
@@ -661,17 +928,47 @@ module.exports = {
           var uSpaceId = this.attributes[key];
 
 
-          colorTempCTRL.adjustColorTemperature(unit, unitId, command, (function(error, resultObject){
-            const colorTemperature = resultObject.data.colorTemperature;
+          if(global.TEST == "MQTT"){
+            // MQTT request
+            var messageObject = {};
+            const intent = "AdjustColorTemperature";
+            const userId = this.event.session.user.userId;
 
-            const speechOutput = command + ', set the ' + unitId + ' ' + unit + ' color temperature ' + colorTemperature;
-            const reprompt = 'Do you want to Change more?'
+            var contentObject = {};
+            contentObject.gatewayObject = gatewayObject;
+            contentObject.uSpaceId = uSpaceId;
+            contentObject.unit = unit;
+            contentObject.unitId = unitId;
+            contentObject.command = command;
 
-            this.response.speak(speechOutput).listen(reprompt);
+            messageObject.intent = intent;
+            messageObject.userId = userId;
+            messageObject.contentObject = contentObject;
+
+
+            client.publish('systemlight', JSON.stringify(messageObject));
+
+            const speechOutput = command + ', the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' color temperature';
+
+            this.response.speak(speechOutput);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
             this.emit(':responseReady');
-          }).bind(this));
+          }else{
+            // REST request
+            colorTempCTRL.adjustColorTemperature(gatewayObject, unit, unitId, command, (function(error, resultObject){
+              const colorTemperature = resultObject.data.colorTemperature;
+
+              const speechOutput = command + ', set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' color temperature ' + colorTemperature;
+              const reprompt = 'Do you want to Change more?'
+
+              this.response.speak(speechOutput).listen(reprompt);
+              this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+              this.emit(':responseReady');
+            }).bind(this));
+          }
+
         }
       }else{
         const speechOutput = "First, you must discover your lights!";
@@ -711,9 +1008,14 @@ module.exports = {
             var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
 
             if(this.attributes[key]){
-              unit = "group";
+              if(slots.unit.hasOwnProperty("value")){
 
-              updatedIntent.slots.unit.value = unit;
+              }else{
+                // default
+                unit = "group";
+                updatedIntent.slots.unit.value = unit;
+              }
+
               this.emit(':delegate', updatedIntent);
             }else{
               const speechOutput = 'The space is not registered..';
@@ -746,14 +1048,45 @@ module.exports = {
           const key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
           var uSpaceId = this.attributes[key];
 
-          colorTempCTRL.setColorTemperature(unit, unitId, colorTemperature, (function(error, resultObject){
-            const speechOutput = 'set the ' + unitId + ' ' + unit + ' color temperature ' + colorTemperature;
+
+          if(global.TEST == "MQTT"){
+            // MQTT request
+            var messageObject = {};
+            const intent = "SetColorTemperature";
+            const userId = this.event.session.user.userId;
+
+            var contentObject = {};
+            contentObject.gatewayObject = gatewayObject;
+            contentObject.uSpaceId = uSpaceId;
+            contentObject.unit = unit;
+            contentObject.unitId = unitId;
+            contentObject.colorTemperature = colorTemperature;
+
+            messageObject.intent = intent;
+            messageObject.userId = userId;
+            messageObject.contentObject = contentObject;
+
+
+            client.publish('systemlight', JSON.stringify(messageObject));
+
+            const speechOutput = 'Set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' color temperature ' + colorTemperature;
 
             this.response.speak(speechOutput);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
             this.emit(':responseReady');
-          }).bind(this));
+          }else{
+            // REST request
+            colorTempCTRL.setColorTemperature(gatewayObject, uSpaceId, unit, unitId, colorTemperature, (function(error, resultObject){
+              const speechOutput = 'set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' color temperature ' + colorTemperature;
+
+              this.response.speak(speechOutput);
+              this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+              this.emit(':responseReady');
+            }).bind(this));
+          }
+
         }
       }else{
         const speechOutput = "First, you must discover your lights!";

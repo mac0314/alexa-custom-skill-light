@@ -4,12 +4,19 @@ const request = require("request");
 
 
 const constants = require('../../lib/constants');
+const makeGatewayURL = require('../../js/make_gateway_URL');
 
 
-exports.adjustBrightness = function(unit, unitId, command, callback){
+exports.adjustBrightness = function(gatewayObject, unit, unitId, command, callback){
   console.log("adjustBrightness");
 
   var resultObject = {};
+
+  const ip = gatewayObject.ip;
+  const port = gatewayObject.tcp_port;
+  const version = config.sl.gw.version;
+
+  var gatewayURL = makeGatewayURL(ip, port, version);
 
   var brightness = constants.DEFAULT_BRIGHTNESS;
   var preBrightness = constants.DEFAULT_BRIGHTNESS;
@@ -31,7 +38,7 @@ exports.adjustBrightness = function(unit, unitId, command, callback){
   async.waterfall([
     function(callback){
       // Request query
-      var gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId;
+      var requestURL = gatewayURL + "/" + unit + "/" + unitId;
       switch (unit) {
         case constants.UNIT_LIGHT:
           gatewayUrl += "/light";
@@ -43,7 +50,7 @@ exports.adjustBrightness = function(unit, unitId, command, callback){
       }
 
       var data = {
-        url: gatewayUrl,
+        url: requestURL,
         json: true
       }
 
@@ -86,7 +93,7 @@ exports.adjustBrightness = function(unit, unitId, command, callback){
           break;
       }
 
-      const gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
+      var requestURL = gatewayURL + "/" + unit + "/" + unitId + "/light";
 
       var body = {};
       body.onoff = preOnOff;
@@ -100,7 +107,7 @@ exports.adjustBrightness = function(unit, unitId, command, callback){
       }
 
       var data = {
-        url: gatewayUrl,
+        url: requestURL,
         json: true,
         body: JSON.stringify(body)
       }
@@ -124,13 +131,24 @@ exports.adjustBrightness = function(unit, unitId, command, callback){
   });
 };// adjustColorTemperature
 
-exports.setBrightness = function(unit, unitId, brightness, callback){
+exports.setBrightness = function(gatewayObject, uSpaceId, unit, unitId, brightness, callback){
   console.log("setBrightness");
 
   var resultObject = {};
 
+  const ip = gatewayObject.ip;
+  const port = gatewayObject.tcp_port;
+  const version = config.sl.gw.version;
+
   // Request query
-  var gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
+  const gatewayURL = makeGatewayURL(ip, port, version);
+  var requestURL = gatewayURL;
+
+  if(uSpaceId == undefined){
+    requestURL += "/" + unit + "/" + unitId + "/light";
+  }else{
+    requestURL += "/uspace/" + uSpaceId + "/" + unit + "/" + unitId + "/light"
+  }
 
   const onoff = constants.SL_API_POWER_ON;
   const level = constants.DEFAULT_POWER_LEVEL;
@@ -147,7 +165,7 @@ exports.setBrightness = function(unit, unitId, brightness, callback){
   }
 
   var data = {
-    url: gatewayUrl,
+    url: requestURL,
     json: true,
     body: JSON.stringify(body)
   }

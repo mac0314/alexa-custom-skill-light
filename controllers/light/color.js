@@ -5,13 +5,24 @@ const request = require("request");
 const constants = require('../../lib/constants');
 
 
-exports.handleColor = function(unit, unitId, color, callback){
+exports.handleColor = function(gatewayObject, uSpaceId, unit, unitId, color, callback){
   console.log("handleColorControl");
 
   var resultObject = {};
 
   // Request query
-  const gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
+  const ip = gatewayObject.ip;
+  const port = gatewayObject.tcp_port;
+  const version = config.sl.gw.version;
+
+  const gatewayURL = makeGatewayURL(ip, port, version);
+  var requestURL = gatewayURL;
+
+  if(uSpaceId == undefined){
+    requestURL += "/" + unit + "/" + unitId + "/light";
+  }else{
+    requestURL += "/uspace/" + uSpaceId + "/" + unit + "/" + unitId + "/light"
+  }
 
   const onoff = constants.SL_API_POWER_ON;
   const level = constants.DEFAULT_POWER_LEVEL;
@@ -36,7 +47,7 @@ exports.handleColor = function(unit, unitId, color, callback){
     }
 
     var data = {
-      url: gatewayUrl,
+      url: requestURL,
       json: true,
       body: JSON.stringify(body)
     }

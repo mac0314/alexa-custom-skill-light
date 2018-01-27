@@ -115,7 +115,9 @@
           "{command} brightness {unit} number {unitId}",
           "{command} bright {unit} number {unitId}",
           "brightness {command} {unit} number {unitId}",
-          "bright {command} {unit} number {unitId}"
+          "bright {command} {unit} number {unitId}",
+          "Adjust brightness {command} s {uSpaceName} u {unit} n {unitId}",
+          "Adjust brightness v {command} u {unit} n {unitId}"
         ],
         "slots": [
           {
@@ -156,7 +158,9 @@
           "{command} color temperature {unit} number {unitId}",
           "color temp {command} color temperature {unit} number {unitId}",
           "color temper {command} {unit} number {unitId}",
-          "color temperature {command} {unit} number {unitId}"
+          "color temperature {command} {unit} number {unitId}",
+          "Adjust color temperature {command} s {uSpaceName} u {unit} n {unitId}",
+          "Adjust color temperature v {command} u {unit} n {unitId}"
         ],
         "slots": [
           {
@@ -190,7 +194,9 @@
           "{command} power {unit} number {unitId}",
           "{command} power level {unit} number {unitId}",
           "power {command} {unit} number {unitId}",
-          "power level {command} {unit} number {unitId}"
+          "power level {command} {unit} number {unitId}",
+          "Adjust power level {command} s {uSpaceName} u {unit} n {unitId}",
+          "Adjust power level v {command} u {unit} n {unitId}"
         ],
         "slots": [
           {
@@ -564,7 +570,9 @@
           "Set brightness {unitId} {unit}",
           "Set bright {unitId} {unit}",
           "Set brightness {uSpaceName}",
-          "Set bright {uSpaceName}"
+          "Set bright {uSpaceName}",
+          "Set brightness {brightness} s {uSpaceName} u {unit} n {unitId}",
+          "Set brightness v {brightness} u {unit} n {unitId}"
         ],
         "slots": [
           {
@@ -598,7 +606,9 @@
         "samples": [
           "Set color {unit} number {unitId}",
           "Set color {unitId} {unit}",
-          "Set color {uSpaceName}"
+          "Set color {uSpaceName}",
+          "Set color {color} s {uSpaceName} u {unit} n {unitId}",
+          "Set color v {color} u {unit} n {unitId}"
         ],
         "slots": [
           {
@@ -638,7 +648,9 @@
           "Set color temp {unitId} {unit}",
           "Set color temp {uSpaceName}",
           "Set color temper {uSpaceName}",
-          "Set color temperature {uSpaceName}"
+          "Set color temperature {uSpaceName}",
+          "Set color temperature  {colorTemperature} s {uSpaceName} u {unit} n {unitId}",
+          "Set color temperature v {colorTemperature} u {unit} n {unitId}"
         ],
         "slots": [
           {
@@ -671,9 +683,10 @@
         "name": "SetPowerLevel",
         "samples": [
           "Set power level {uSpaceName}",
-          "Set power {uSpaceName}",
           "Set power level {unitId} {unit}",
-          "Set power level {unit} number {unitId}"
+          "Set power level {unit} number {unitId}",
+          "Set power level {powerLevel} s {uSpaceName} u {unit} n {unitId}",
+          "Set power level v {powerLevel} u {unit} n {unitId}"
         ],
         "slots": [
           {
@@ -707,7 +720,8 @@
         "samples": [
           "Light off {unitId} {unit}",
           "Turn off {unit} number {unitId}",
-          "Light off {uSpaceName}"
+          "Light off {uSpaceName}",
+          "Light off s {uSpaceName} u {unit} n {unitId}"
         ],
         "slots": [
           {
@@ -737,7 +751,8 @@
           "light up {unitId} {unit}",
           "light on {unit} number {unitId}",
           "turn on {unit} number {unitId}",
-          "turn on {uSpaceName}"
+          "turn on {uSpaceName}",
+          "turn on s {uSpaceName} u {unit} n {unitId}"
         ],
         "slots": [
           {

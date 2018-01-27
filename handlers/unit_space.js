@@ -25,20 +25,48 @@ module.exports = {
     }else{
       const uSpaceName = this.event.request.intent.slots.uSpaceName.value;
 
-      unitSpaceCTRL.createUnitSpace(gatewayObject, uSpaceName, (function(error, resultObject){
-        var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
-        var value = resultObject.data.uSpaceId;
+      if(global.TEST == "MQTT"){
+        // MQTT request
+        var messageObject = {};
+        const intent = "CreateUnitSpace";
+        const userId = this.event.session.user.userId;
+
+        var contentObject = {};
+        contentObject.gatewayObject = gatewayObject;
+        contentObject.uSpaceName = uSpaceName;
+
+        messageObject.intent = intent;
+        messageObject.userId = userId;
+        messageObject.contentObject = contentObject;
 
 
+        client.publish('systemlight', JSON.stringify(messageObject));
 
-        const speechOutput = 'Create unit space ' + uSpaceName + "!";
+        const speechOutput = 'Create unit space ' + uSpaceName;
 
         this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-        this.attributes[key] = value;
+        this.emit(':responseReady');
+      }else{
+        // REST request
+        unitSpaceCTRL.createUnitSpace(gatewayObject, uSpaceName, (function(error, resultObject){
+          var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
+          var value = resultObject.data.uSpaceId;
 
-        this.emit(':saveState', true);
-      }).bind(this));
+
+
+          const speechOutput = 'Create unit space ' + uSpaceName + "!";
+
+          this.response.speak(speechOutput);
+
+          this.attributes[key] = value;
+
+          this.emit(':saveState', true);
+        }).bind(this));
+      }
+
+
     }
   },// CreateUnitSpace
   'LoadUnitSpaceList': function () {
@@ -54,16 +82,43 @@ module.exports = {
 
       this.emit(':responseReady');
     }else{
-      unitSpaceCTRL.loadUnitSpaceList(gatewayObject, (function(error, resultObject){
-        this.response.speak('Load unitspaces!' + JSON.stringify(resultObject.data.uSpaceList));
 
-        var key = constants.TABLE_USER_UNIT_SPACE_LIST;
-        var value = resultObject.data.uSpaceList;
+      if(global.TEST == "MQTT"){
+        // MQTT request
+        var messageObject = {};
+        const intent = "LoadUnitSpaceList";
+        const userId = this.event.session.user.userId;
 
-        this.attributes[key] = value;
+        var contentObject = {};
+        contentObject.gatewayObject = gatewayObject;
 
-        this.emit(':saveState', true);
-      }).bind(this));
+        messageObject.intent = intent;
+        messageObject.userId = userId;
+        messageObject.contentObject = contentObject;
+
+
+        client.publish('systemlight', JSON.stringify(messageObject));
+
+        const speechOutput = 'Load unitspaces! ';
+
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+        this.emit(':responseReady');
+      }else{
+        // REST request
+        unitSpaceCTRL.loadUnitSpaceList(gatewayObject, (function(error, resultObject){
+          this.response.speak('Load unitspaces!' + JSON.stringify(resultObject.data.uSpaceList));
+
+          var key = constants.TABLE_USER_UNIT_SPACE_LIST;
+          var value = resultObject.data.uSpaceList;
+
+          this.attributes[key] = value;
+
+          this.emit(':saveState', true);
+        }).bind(this));
+      }
+
     }
   },// LoadUnitSpaceList
   'RemoveUnitSpace': function () {
@@ -85,23 +140,52 @@ module.exports = {
 
       var uSpaceId = this.attributes[key];
 
-      unitSpaceCTRL.removeUnitSpace(uSpaceId, (function(error, resultObject){
 
-        var key = constants.TABLE_USER_UNIT_SPACE_LIST;
-        var unitSpaceList = this.attributes[key];
+      if(global.TEST == "MQTT"){
+        // MQTT request
+        var messageObject = {};
+        const intent = "RemoveUnitSpace";
+        const userId = this.event.session.user.userId;
 
-        console.log(key, unitSpaceList);
+        var contentObject = {};
+        contentObject.gatewayObject = gatewayObject;
+        contentObject.uSpaceId = uSpaceId;
 
-        var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
-        var uSpaceId = this.attributes[key];
+        messageObject.intent = intent;
+        messageObject.userId = userId;
+        messageObject.contentObject = contentObject;
 
-        console.log(key, uSpaceId);
 
-        delete this.attributes[key];
+        client.publish('systemlight', JSON.stringify(messageObject));
 
-        this.response.speak(`Remove unit space ${uSpaceId}!`);
-        this.emit(':saveState', true);
-      }).bind(this));
+        const speechOutput = 'Remove unit space, ' + uSpaceName;
+
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+        this.emit(':responseReady');
+      }else{
+        // REST request
+        unitSpaceCTRL.removeUnitSpace(gatewayObject, uSpaceId, (function(error, resultObject){
+
+          var key = constants.TABLE_USER_UNIT_SPACE_LIST;
+          var unitSpaceList = this.attributes[key];
+
+          console.log(key, unitSpaceList);
+
+          var key = constants.TABLE_USER_UNIT_SPACE_PREFIX + uSpaceName;
+          var uSpaceId = this.attributes[key];
+
+          console.log(key, uSpaceId);
+
+          delete this.attributes[key];
+
+          this.response.speak(`Remove unit space ${uSpaceId}!`);
+          this.emit(':saveState', true);
+        }).bind(this));
+      }
+
+
     }
   },// RemoveUnitSpace
   'AddLightToUnitSpace': function () {
@@ -135,19 +219,48 @@ module.exports = {
 
       var uSpaceId = this.attributes[key];
 
-      unitSpaceCTRL.loadLightListFromUnitSpace(gatewayObject, uSpaceId, (function(error, resultObject){
-        var deviceList = resultObject.data.deviceList;
 
-        var listName = "";
+      if(global.TEST == "MQTT"){
+        // MQTT request
+        var messageObject = {};
+        const intent = "LoadLightListFromUnitSpace";
+        const userId = this.event.session.user.userId;
 
-        // temp data
-        for(var i=0; i<deviceList.length; i++){
-          listName += " Light " + deviceList[i].did;
-        }
+        var contentObject = {};
+        contentObject.gatewayObject = gatewayObject;
+        contentObject.uSpaceId = uSpaceId;
 
-        this.response.speak(`Load light from unit space ${uSpaceName}! Light List : ${listName}`);
+        messageObject.intent = intent;
+        messageObject.userId = userId;
+        messageObject.contentObject = contentObject;
+
+
+        client.publish('systemlight', JSON.stringify(messageObject));
+
+        const speechOutput = 'Load light from unit space!';
+
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
-      }).bind(this));
+      }else{
+        // REST request
+        unitSpaceCTRL.loadLightListFromUnitSpace(gatewayObject, uSpaceId, (function(error, resultObject){
+          var deviceList = resultObject.data.deviceList;
+
+          var listName = "";
+
+          // temp data
+          for(var i=0; i<deviceList.length; i++){
+            listName += " Light " + deviceList[i].did;
+          }
+
+          this.response.speak(`Load light from unit space ${uSpaceName}! Light List : ${listName}`);
+          this.emit(':responseReady');
+        }).bind(this));
+      }
+
+
     }
   },// LoadLightListFromUnitSpace
   'LoadGroupLightListFromUnitSpace': function () {
@@ -170,19 +283,48 @@ module.exports = {
 
       var uSpaceId = this.attributes[key];
 
-      unitSpaceCTRL.loadGroupLightListFromUnitSpace(gatewayObject, groupId, uSpaceId, (function(error, resultObject){
-        var deviceList = resultObject.data.deviceList;
 
-        var listName = "";
+      if(global.TEST == "MQTT"){
+        // MQTT request
+        var messageObject = {};
+        const intent = "LoadGroupLightListFromUnitSpace";
+        const userId = this.event.session.user.userId;
 
-        // temp data
-        for(var i=0; i<deviceList.length; i++){
-          listName += " Light " + deviceList[i].did;
-        }
+        var contentObject = {};
+        contentObject.gatewayObject = gatewayObject;
+        contentObject.uSpaceId = uSpaceId;
+        contentObject.groupId = groupId;
 
-        this.response.speak(`Load light from unit space ${uSpaceId}! Light list : ${listName}`);
+        messageObject.intent = intent;
+        messageObject.userId = userId;
+        messageObject.contentObject = contentObject;
+
+
+        client.publish('systemlight', JSON.stringify(messageObject));
+
+        const speechOutput = 'turn on the ' + uSpaceName + ' ' + unitId + ' ' + unit;
+
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
-      }).bind(this));
+      }else{
+        // REST request
+        unitSpaceCTRL.loadGroupLightListFromUnitSpace(gatewayObject, groupId, uSpaceId, (function(error, resultObject){
+          var deviceList = resultObject.data.deviceList;
+
+          var listName = "";
+
+          // temp data
+          for(var i=0; i<deviceList.length; i++){
+            listName += " Light " + deviceList[i].did;
+          }
+
+          this.response.speak(`Load light from unit space ${uSpaceId}! Light list : ${listName}`);
+          this.emit(':responseReady');
+        }).bind(this));
+      }
+
     }
   },// LoadGroupLightListFromUnitSpace
   'RemoveLightFromUnitSpace': function () {
@@ -205,12 +347,42 @@ module.exports = {
 
       var uSpaceId = this.attributes[key];
 
-      unitSpaceCTRL.removeLightFromUnitSpace(lightId, uSpaceId, (function(error, resultObject){
+
+      if(global.TEST == "MQTT"){
+        // MQTT request
+        var messageObject = {};
+        const intent = "RemoveLightFromUnitSpace";
+        const userId = this.event.session.user.userId;
+
+        var contentObject = {};
+        contentObject.gatewayObject = gatewayObject;
+        contentObject.uSpaceId = uSpaceId;
+        contentObject.lightId = lightId;
+
+        messageObject.intent = intent;
+        messageObject.userId = userId;
+        messageObject.contentObject = contentObject;
 
 
-        this.response.speak(`Remove light ${lightId} from unit space ${uSpaceId}!`);
+        client.publish('systemlight', JSON.stringify(messageObject));
+
+        const speechOutput = 'Remove light ' + lightId + ' from unit space ' + uSpaceName;
+
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
-      }).bind(this));
+      }else{
+        // REST request
+        unitSpaceCTRL.removeLightFromUnitSpace(lightId, uSpaceId, (function(error, resultObject){
+
+
+          this.response.speak(`Remove light ${lightId} from unit space ${uSpaceId}!`);
+          this.emit(':responseReady');
+        }).bind(this));
+      }
+
+
     }
   },// RemoveLightFromUnitSpace
   'RemoveGroupFromUnitSpace': function () {
@@ -233,12 +405,41 @@ module.exports = {
 
       var uSpaceId = this.attributes[key];
 
-      unitSpaceCTRL.removeGroupFromUnitSpace(gatewayObject, groupId, uSpaceId, (function(error, resultObject){
+      if(global.TEST == "MQTT"){
+        // MQTT request
+        var messageObject = {};
+        const intent = "RemoveGroupFromUnitSpace";
+        const userId = this.event.session.user.userId;
+
+        var contentObject = {};
+        contentObject.gatewayObject = gatewayObject;
+        contentObject.uSpaceId = uSpaceId;
+        contentObject.groupId = groupId;
+
+        messageObject.intent = intent;
+        messageObject.userId = userId;
+        messageObject.contentObject = contentObject;
 
 
-        this.response.speak(`Remove group from unit space ${uSpaceId}!`);
+        client.publish('systemlight', JSON.stringify(messageObject));
+
+        const speechOutput = 'Remove group from unit space ' + uSpaceName;
+
+        this.response.speak(speechOutput);
+        this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
         this.emit(':responseReady');
-      }).bind(this));
+      }else{
+        // REST request
+        unitSpaceCTRL.removeGroupFromUnitSpace(gatewayObject, groupId, uSpaceId, (function(error, resultObject){
+
+
+          this.response.speak(`Remove group from unit space ${uSpaceId}!`);
+          this.emit(':responseReady');
+        }).bind(this));
+      }
+
+
     }
   }// RemoveGroupFromUnitSpace
 };// UnitSpaceHandler

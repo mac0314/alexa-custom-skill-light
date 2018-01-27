@@ -6,10 +6,16 @@ const request = require("request");
 const constants = require('../../lib/constants');
 
 
-exports.adjustColorTemperature = function(unit, unitId, command, callback){
+exports.adjustColorTemperature = function(gatewayObject, unit, unitId, command, callback){
   console.log("adjustColorTemperature");
 
   var resultObject = {};
+
+  const ip = gatewayObject.ip;
+  const port = gatewayObject.tcp_port;
+  const version = config.sl.gw.version;
+
+  const gatewayURL = makeGatewayURL(ip, port, version);
 
   var colorTemperature = constants.DEFAULT_COLOR_TEMPERATURE;
   var preColorTemperature = constants.DEFAULT_COLOR_TEMPERATURE;
@@ -32,7 +38,7 @@ exports.adjustColorTemperature = function(unit, unitId, command, callback){
   async.waterfall([
     function(callback){
       // Request query
-      var gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId;
+      var requestURL = gatewayURL + "/" + unit + "/" + unitId;
       switch (unit) {
         case constants.UNIT_LIGHT:
           gatewayUrl += "/light";
@@ -44,7 +50,7 @@ exports.adjustColorTemperature = function(unit, unitId, command, callback){
       }
 
       var data = {
-        url: gatewayUrl,
+        url: requestURL,
         json: true
       }
 
@@ -87,7 +93,7 @@ exports.adjustColorTemperature = function(unit, unitId, command, callback){
           break;
       }
 
-      const gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
+      var requestURL = gatewayURL + "/" + unit + "/" + unitId + "/light";
 
       var body = {};
       body.onoff = preOnOff;
@@ -101,7 +107,7 @@ exports.adjustColorTemperature = function(unit, unitId, command, callback){
       }
 
       var data = {
-        url: gatewayUrl,
+        url: requestURL,
         json: true,
         body: JSON.stringify(body)
       }
@@ -129,13 +135,20 @@ exports.adjustColorTemperature = function(unit, unitId, command, callback){
 
 
 
-exports.setColorTemperature = function(unit, unitId, colorTemperature, callback){
+exports.setColorTemperature = function(gatewayObject, uSpaceId, unit, unitId, colorTemperature, callback){
   console.log("setColorTemperature");
 
   var resultObject = {};
 
   // Request query
-  const gatewayUrl = global.BASE_URL + "/" + unit + "/" + unitId + "/light";
+  const gatewayURL = makeGatewayURL(ip, port, version);
+  var requestURL = gatewayURL;
+
+  if(uSpaceId == undefined){
+    requestURL += "/" + unit + "/" + unitId + "/light";
+  }else{
+    requestURL += "/uspace/" + uSpaceId + "/" + unit + "/" + unitId + "/light"
+  }
 
   const onoff = constants.SL_API_POWER_ON;
   const level = constants.DEFAULT_POWER_LEVEL;
@@ -154,7 +167,7 @@ exports.setColorTemperature = function(unit, unitId, colorTemperature, callback)
   }
 
   var data = {
-    url: gatewayUrl,
+    url: requestURL,
     json: true,
     body: JSON.stringify(body)
   }
