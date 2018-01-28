@@ -2,6 +2,13 @@
 /***********
  modules
 ********* */
+const Alexa = require("alexa-sdk");
+
+// utility methods for creating Image and TextField objects
+const makePlainText = Alexa.utils.TextUtils.makePlainText;
+const makeImage = Alexa.utils.ImageUtils.makeImage;
+
+
 const config = require("config.json")("./config/config.json");
 
 
@@ -29,19 +36,31 @@ module.exports = {
   'CreateLight': function () {
     console.log("CreateLight");
 
+    // Echo Show Display
+    const builder = new Alexa.templateBuilders.BodyTemplate1Builder();
+
     var key = constants.TABLE_USER_GATEWAY;
     const gatewayObject = this.attributes[key];
 
     if(gatewayObject === undefined){
       const speechOutput = "First, you must discover your gateway!";
-      this.response.speak(speechOutput);
+      const reprompt = "Tell me, if you want to discover gateway.";
+
+      const template = builder.setTitle(global.APP_NAME)
+                          .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                          .setTextContent(makePlainText(speechOutput))
+                          .build();
+
+      this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.response.renderTemplate(template);
 
       this.emit(':responseReady');
     }else{
       const lightId = this.event.request.intent.slots.lightId.value;
 
-      if(global.TEST == "MQTT"){
+      if(global.PROTOCOL == "MQTT"){
         // MQTT request
         var messageObject = {};
         const intent = "CreateLight";
@@ -58,18 +77,34 @@ module.exports = {
         client.publish(requestTopic, JSON.stringify(messageObject));
 
         const speechOutput = 'Create Light!';
+        const reprompt = "Tell me, if you want to control your light.";
 
-        this.response.speak(speechOutput);
+        const template = builder.setTitle(global.APP_NAME)
+                            .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                            .setTextContent(makePlainText(speechOutput))
+                            .build();
+
+        this.response.speak(speechOutput).listen(reprompt);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+        this.response.renderTemplate(template);
 
         this.emit(':responseReady');
       }else{
         // REST request
         lightCTRL.createLight(gatewayObject, lightId, (function(error, resultObject){
           const speechOutput = "Create Light!";
+          const reprompt = "Tell me, if you want to control your light.";
 
-          this.response.speak(speechOutput);
+          const template = builder.setTitle(global.APP_NAME)
+                              .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                              .setTextContent(makePlainText(speechOutput))
+                              .build();
+
+          this.response.speak(speechOutput).listen(reprompt);
           this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.response.renderTemplate(template);
 
           this.emit(':responseReady');
         }).bind(this));
@@ -80,13 +115,25 @@ module.exports = {
   'LoadLight': function () {
     console.log("LoadLight");
 
+    // Echo Show Display
+    const builder = new Alexa.templateBuilders.BodyTemplate1Builder();
+
     var key = constants.TABLE_USER_GATEWAY;
     const gatewayObject = this.attributes[key];
 
     if(gatewayObject === undefined){
       const speechOutput = "First, you must discover your gateway!";
-      this.response.speak(speechOutput);
+      const reprompt = "Tell me, if you want to discover gateway.";
+
+      const template = builder.setTitle(global.APP_NAME)
+                          .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                          .setTextContent(makePlainText(speechOutput))
+                          .build();
+
+      this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.response.renderTemplate(template);
 
       this.emit(':responseReady');
     }else{
@@ -97,7 +144,7 @@ module.exports = {
         const lightId = this.event.request.intent.slots.lightId.value;
 
 
-        if(global.TEST == "MQTT"){
+        if(global.PROTOCOL == "MQTT"){
           // MQTT request
           var messageObject = {};
           const intent = "LoadLight";
@@ -124,9 +171,17 @@ module.exports = {
               var dataObject = messageObject.contentObject.data;
 
               const speechOutput = "Load Light! " + JSON.stringify(dataObject);
+              const reprompt = "If you want to control the light, tell me.";
 
-              this.response.speak(speechOutput);
+              const template = builder.setTitle(global.APP_NAME)
+                                  .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                                  .setTextContent(makePlainText(speechOutput))
+                                  .build();
+
+              this.response.speak(speechOutput).listen(reprompt);
               this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+              this.response.renderTemplate(template);
 
               this.emit(':responseReady');
             }
@@ -135,9 +190,17 @@ module.exports = {
           // REST request
           lightCTRL.loadLight(gatewayObject, lightId, (function(error, resultObject){
             const speechOutput = "Load Light! " + JSON.stringify(resultObject.data);
+            const reprompt = "If you want to control the light, tell me.";
 
-            this.response.speak(speechOutput);
+            const template = builder.setTitle(global.APP_NAME)
+                                .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                                .setTextContent(makePlainText(speechOutput))
+                                .build();
+
+            this.response.speak(speechOutput).listen(reprompt);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+            this.response.renderTemplate(template);
 
             this.emit(':responseReady');
           }).bind(this));
@@ -145,8 +208,17 @@ module.exports = {
 
       }else{
         const speechOutput = "First, you must discover your lights!";
-        this.response.speak(speechOutput);
+        const reprompt = "If you want to discover your lights, tell me.";
+
+        const template = builder.setTitle(global.APP_NAME)
+                            .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                            .setTextContent(makePlainText(speechOutput))
+                            .build();
+
+        this.response.speak(speechOutput).listen(reprompt);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+        this.response.renderTemplate(template);
 
         this.emit(':responseReady');
       }
@@ -155,13 +227,25 @@ module.exports = {
   'RemoveLight': function () {
     console.log("RemoveLight");
 
+    // Echo Show Display
+    const builder = new Alexa.templateBuilders.BodyTemplate1Builder();
+
     var key = constants.TABLE_USER_GATEWAY;
     const gatewayObject = this.attributes[key];
 
     if(gatewayObject === undefined){
       const speechOutput = "First, you must discover your gateway!";
-      this.response.speak(speechOutput);
+      const reprompt = "If you want to discover gateway, please tell me.";
+
+      const template = builder.setTitle(global.APP_NAME)
+                          .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                          .setTextContent(makePlainText(speechOutput))
+                          .build();
+
+      this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.response.renderTemplate(template);
 
       this.emit(':responseReady');
     }else{
@@ -172,7 +256,7 @@ module.exports = {
         const lightId = this.event.request.intent.slots.lightId.value;
 
 
-        if(global.TEST == "MQTT"){
+        if(global.PROTOCOL == "MQTT"){
           // MQTT request
           var messageObject = {};
           const intent = "RemoveLight";
@@ -188,18 +272,35 @@ module.exports = {
 
           client.publish(requestTopic, JSON.stringify(messageObject));
 
-          const speechOutput = 'Remove Light!';
+          const speechOutput = "Remove Light!";
+          const reprompt = "If you want to control your light, please tell me.";
 
-          this.response.speak(speechOutput);
+          const template = builder.setTitle(global.APP_NAME)
+                              .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                              .setTextContent(makePlainText(speechOutput))
+                              .build();
+
+          this.response.speak(speechOutput).listen(reprompt);
           this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.response.renderTemplate(template);
 
           this.emit(':responseReady');
         }else{
           // REST request
           lightCTRL.removeLight(gatewayObject, lightId, (function(error, resultObject){
             const speechOutput = "remove Light!";
-            this.response.speak(speechOutput);
+            const reprompt = "If you want to control your light, please tell me.";
+
+            const template = builder.setTitle(global.APP_NAME)
+                                .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                                .setTextContent(makePlainText(speechOutput))
+                                .build();
+
+            this.response.speak(speechOutput).listen(reprompt);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+            this.response.renderTemplate(template);
 
             this.emit(':responseReady');
           }).bind(this));
@@ -207,8 +308,17 @@ module.exports = {
 
       }else{
         const speechOutput = "First, you must discover your lights!";
-        this.response.speak(speechOutput);
+        const reprompt = "If you want to discover your lights, tell me.";
+
+        const template = builder.setTitle(global.APP_NAME)
+                            .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                            .setTextContent(makePlainText(speechOutput))
+                            .build();
+
+        this.response.speak(speechOutput).listen(reprompt);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+        this.response.renderTemplate(template);
 
         this.emit(':responseReady');
       }
@@ -217,18 +327,30 @@ module.exports = {
   'LoadLightList': function () {
     console.log("LoadLightList");
 
+    // Echo Show Display
+    const builder = new Alexa.templateBuilders.BodyTemplate1Builder();
+
     var key = constants.TABLE_USER_GATEWAY;
     const gatewayObject = this.attributes[key];
 
     if(gatewayObject === undefined){
       const speechOutput = "First, you must discover your gateway!";
-      this.response.speak(speechOutput);
+      const reprompt = "If you want to discover gateway, please tell me.";
+
+      const template = builder.setTitle(global.APP_NAME)
+                          .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                          .setTextContent(makePlainText(speechOutput))
+                          .build();
+
+      this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.response.renderTemplate(template);
 
       this.emit(':responseReady');
     }else{
 
-      if(global.TEST == "MQTT"){
+      if(global.PROTOCOL == "MQTT"){
         // MQTT request
         var messageObject = {};
         const intent = "LoadLightList";
@@ -256,17 +378,27 @@ module.exports = {
             const response = dataObject.response;
             const lightList = dataObject.lightList;
 
+            const speechOutput = response.speechOutput;
+            const reprompt = response.reprompt;
+
+            const template = builder.setTitle(global.APP_NAME)
+                                .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                                .setTextContent(makePlainText(speechOutput))
+                                .build();
+
             switch (response.type) {
               case constants.RESPONSE_SPEAK:
-                this.response.speak(response.speechOutput);
+                this.response.speak(speechOutput);
                 break;
               case constants.RESPONSE_SPEAK_AND_LISTEN:
-                this.response.speak(response.speechOutput).listen(response.reprompt);
+                this.response.speak(speechOutput).listen(reprompt);
                 break;
               default:
                 break;
             }
             this.response.cardRenderer(global.APP_NAME, response.speechOutput, constants.BACKGROUND_IMAGE);
+
+            this.response.renderTemplate(template);
 
             key = constants.TABLE_USER_LIGHT_FLAG;
             if(lightList.length === 0){
@@ -287,17 +419,28 @@ module.exports = {
           const response = resultObject.data.response;
           const lightList = resultObject.data.lightList;
 
+          const speechOutput = response.speechOutput;
+          const reprompt = response.reprompt;
+
+
+          const template = builder.setTitle(global.APP_NAME)
+                              .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                              .setTextContent(makePlainText(speechOutput))
+                              .build();
+
           switch (response.type) {
             case constants.RESPONSE_SPEAK:
-              this.response.speak(response.speechOutput);
+              this.response.speak(speechOutput);
               break;
             case constants.RESPONSE_SPEAK_AND_LISTEN:
-              this.response.speak(response.speechOutput).listen(response.reprompt);
+              this.response.speak(speechOutput).listen(reprompt);
               break;
             default:
               break;
           }
           this.response.cardRenderer(global.APP_NAME, response.speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.response.renderTemplate(template);
 
           key = constants.TABLE_USER_LIGHT_FLAG;
           if(lightList.length === 0){

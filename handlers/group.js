@@ -2,6 +2,13 @@
 /***********
  modules
 ********* */
+const Alexa = require("alexa-sdk");
+
+// utility methods for creating Image and TextField objects
+const makePlainText = Alexa.utils.TextUtils.makePlainText;
+const makeImage = Alexa.utils.ImageUtils.makeImage;
+
+
 const config = require("config.json")("./config/config.json");
 
 const groupCTRL = require('../controllers/group/index');
@@ -27,20 +34,32 @@ module.exports = {
   'CreateGroup': function () {
     console.log("CreateGroup");
 
+    // Echo Show Display
+    const builder = new Alexa.templateBuilders.BodyTemplate1Builder();
+
     var key = constants.TABLE_USER_GATEWAY;
     const gatewayObject = this.attributes[key];
 
     if(gatewayObject === undefined){
       const speechOutput = "First, you must discover your gateway!";
-      this.response.speak(speechOutput);
+      const reprompt = "Tell me, if you want to discover gateway.";
+
+      const template = builder.setTitle(global.APP_NAME)
+                          .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                          .setTextContent(makePlainText(speechOutput))
+                          .build();
+
+      this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.response.renderTemplate(template);
 
       this.emit(':responseReady');
     }else{
       const groupId = this.event.request.intent.slots.groupId.value;
 
 
-      if(global.TEST == "MQTT"){
+      if(global.PROTOCOL == "MQTT"){
         // MQTT request
         var messageObject = {};
         const intent = "CreateGroup";
@@ -58,9 +77,17 @@ module.exports = {
         client.publish(requestTopic, JSON.stringify(messageObject));
 
         const speechOutput = 'Create group ' + groupId;
+        const reprompt = "Tell me, if you want to control your light.";
 
-        this.response.speak(speechOutput);
+        const template = builder.setTitle(global.APP_NAME)
+                            .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                            .setTextContent(makePlainText(speechOutput))
+                            .build();
+
+        this.response.speak(speechOutput).listen(reprompt);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+        this.response.renderTemplate(template);
 
         this.emit(':responseReady');
       }else{
@@ -72,8 +99,17 @@ module.exports = {
           this.attributes[key] = value;
 
           const speechOutput = 'Create group ' + groupId + "!";
+          const reprompt = "Tell me, if you want to control your light.";
 
-          this.response.speak(speechOutput);
+          const template = builder.setTitle(global.APP_NAME)
+                              .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                              .setTextContent(makePlainText(speechOutput))
+                              .build();
+
+          this.response.speak(speechOutput).listen(reprompt);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.response.renderTemplate(template);
 
           this.emit(':saveState', true);
         }).bind(this));
@@ -85,17 +121,29 @@ module.exports = {
   'LoadGroupList': function () {
     console.log("LoadGroupList");
 
+    // Echo Show Display
+    const builder = new Alexa.templateBuilders.BodyTemplate1Builder();
+
     var key = constants.TABLE_USER_GATEWAY;
     const gatewayObject = this.attributes[key];
 
     if(gatewayObject === undefined){
       const speechOutput = "First, you must discover your gateway!";
-      this.response.speak(speechOutput);
+      const reprompt = "Tell me, if you want to discover gateway.";
+
+      const template = builder.setTitle(global.APP_NAME)
+                          .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                          .setTextContent(makePlainText(speechOutput))
+                          .build();
+
+      this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.response.renderTemplate(template);
 
       this.emit(':responseReady');
     }else{
-      if(global.TEST == "MQTT"){
+      if(global.PROTOCOL == "MQTT"){
         // MQTT request
         var messageObject = {};
         const intent = "LoadGroupList";
@@ -128,7 +176,18 @@ module.exports = {
               listName += ", Group " + groupList[i].gdid;
             }
 
-            this.response.speak("Load group list" + listName);
+            const speechOutput = "Load group list" + listName;
+            const reprompt = "Tell me, if you want to control your light.";
+
+            const template = builder.setTitle(global.APP_NAME)
+                                .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                                .setTextContent(makePlainText(speechOutput))
+                                .build();
+
+            this.response.speak(speechOutput).listen(reprompt);
+            this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+            this.response.renderTemplate(template);
 
             key = constants.TABLE_USER_GROUP_LIST;
             var value = groupList;
@@ -151,7 +210,18 @@ module.exports = {
             listName += ", Group " + groupList[i].gdid;
           }
 
-          this.response.speak("Load group list" + listName);
+          const speechOutput = "Load group list" + listName;
+          const reprompt = "Tell me, if you want to control your light.";
+
+          const template = builder.setTitle(global.APP_NAME)
+                              .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                              .setTextContent(makePlainText(speechOutput))
+                              .build();
+
+          this.response.speak(speechOutput).listen(reprompt);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.response.renderTemplate(template);
 
           key = constants.TABLE_USER_GROUP_LIST;
           var value = groupList;
@@ -166,20 +236,32 @@ module.exports = {
   'RemoveGroup': function () {
     console.log("RemoveGroup");
 
+    // Echo Show Display
+    const builder = new Alexa.templateBuilders.BodyTemplate1Builder();
+
     var key = constants.TABLE_USER_GATEWAY;
     const gatewayObject = this.attributes[key];
 
     if(gatewayObject === undefined){
       const speechOutput = "First, you must discover your gateway!";
-      this.response.speak(speechOutput);
+      const reprompt = "Tell me, if you want to discover gateway.";
+
+      const template = builder.setTitle(global.APP_NAME)
+                          .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                          .setTextContent(makePlainText(speechOutput))
+                          .build();
+
+      this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.response.renderTemplate(template);
 
       this.emit(':responseReady');
     }else{
       const groupId = this.event.request.intent.slots.groupId.value;
 
 
-      if(global.TEST == "MQTT"){
+      if(global.PROTOCOL == "MQTT"){
         // MQTT request
         var messageObject = {};
         const intent = "RemoveGroup";
@@ -196,10 +278,18 @@ module.exports = {
 
         client.publish(requestTopic, JSON.stringify(messageObject));
 
-        const speechOutput = 'turn on the ' + uSpaceName + ' ' + unitId + ' ' + unit;
+        const speechOutput = 'Remove the ' + uSpaceName + ' ' + unitId + ' ' + unit;
+        const reprompt = "Tell me, if you want to control your light.";
 
-        this.response.speak(speechOutput);
+        const template = builder.setTitle(global.APP_NAME)
+                            .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                            .setTextContent(makePlainText(speechOutput))
+                            .build();
+
+        this.response.speak(speechOutput).listen(reprompt);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+        this.response.renderTemplate(template);
 
         this.emit(':responseReady');
       }else{
@@ -226,13 +316,25 @@ module.exports = {
             }
           }
 
+          const speechOutput = "Remove group " + groupId;
+          const reprompt = "Tell me, if you want to control your light.";
+
+          const template = builder.setTitle(global.APP_NAME)
+                              .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                              .setTextContent(makePlainText(speechOutput))
+                              .build();
+
+          this.response.speak(speechOutput).listen(reprompt);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.response.renderTemplate(template);
+
 
           var key = constants.TABLE_USER_GROUP_LIST;
           var groupList = this.attributes[key];
 
           delete this.attributes[key];
 
-          this.response.speak("Remove group " + groupId);
           this.emit(':saveState', true);
         }).bind(this));
       }
@@ -242,13 +344,25 @@ module.exports = {
   'AddLightToGroup': function () {
     console.log("AddLightToGroup");
 
+    // Echo Show Display
+    const builder = new Alexa.templateBuilders.BodyTemplate1Builder();
+
     var key = constants.TABLE_USER_GATEWAY;
     const gatewayObject = this.attributes[key];
 
     if(gatewayObject === undefined){
       const speechOutput = "First, you must discover your gateway!";
-      this.response.speak(speechOutput);
+      const reprompt = "Tell me, if you want to discover gateway.";
+
+      const template = builder.setTitle(global.APP_NAME)
+                          .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                          .setTextContent(makePlainText(speechOutput))
+                          .build();
+
+      this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.response.renderTemplate(template);
 
       this.emit(':responseReady');
     }else{
@@ -269,7 +383,7 @@ module.exports = {
       }
 
 
-      if(global.TEST == "MQTT"){
+      if(global.PROTOCOL == "MQTT"){
         // MQTT request
         var messageObject = {};
         const intent = "AddLightToGroup";
@@ -288,9 +402,17 @@ module.exports = {
         client.publish(requestTopic, JSON.stringify(messageObject));
 
         const speechOutput = 'Add light ' + lightId + ' to group ' + groupId;
+        const reprompt = "Tell me, if you want to control your light.";
 
-        this.response.speak(speechOutput);
+        const template = builder.setTitle(global.APP_NAME)
+                            .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                            .setTextContent(makePlainText(speechOutput))
+                            .build();
+
+        this.response.speak(speechOutput).listen(reprompt);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+        this.response.renderTemplate(template);
 
         this.emit(':responseReady');
       }else{
@@ -298,8 +420,18 @@ module.exports = {
         groupCTRL.addLightToGroup(gatewayObject, deviceObject, groupId, (function(error, resultObject){
 
           const speechOutput = 'Add light ' + lightId + ' to group ' + groupId;
+          const reprompt = "Tell me, if you want to control your light.";
 
-          this.response.speak(speechOutput);
+          const template = builder.setTitle(global.APP_NAME)
+                              .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                              .setTextContent(makePlainText(speechOutput))
+                              .build();
+
+          this.response.speak(speechOutput).listen(reprompt);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.response.renderTemplate(template);
+
           this.emit(':saveState', true);
         }).bind(this));
       }
@@ -308,13 +440,25 @@ module.exports = {
   'LoadLightListFromGroup': function () {
     console.log("LoadLightListFromGroup");
 
+    // Echo Show Display
+    const builder = new Alexa.templateBuilders.BodyTemplate1Builder();
+
     var key = constants.TABLE_USER_GATEWAY;
     const gatewayObject = this.attributes[key];
 
     if(gatewayObject === undefined){
       const speechOutput = "First, you must discover your gateway!";
-      this.response.speak(speechOutput);
+      const reprompt = "Tell me, if you want to discover gateway.";
+
+      const template = builder.setTitle(global.APP_NAME)
+                          .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                          .setTextContent(makePlainText(speechOutput))
+                          .build();
+
+      this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.response.renderTemplate(template);
 
       this.emit(':responseReady');
     }else{
@@ -322,7 +466,7 @@ module.exports = {
       const groupId = slots.groupId.value;
 
 
-      if(global.TEST == "MQTT"){
+      if(global.PROTOCOL == "MQTT"){
         // MQTT request
         var messageObject = {};
         const intent = "LoadLightListFromGroup";
@@ -356,7 +500,19 @@ module.exports = {
               listName += " Light " + deviceList[i].did;
             }
 
-            this.response.speak("Load light from group " + groupId + "! " + "device list : " + listName);
+            const speechOutput = "Load light from group " + groupId + "! " + "device list : " + listName;
+            const reprompt = "Tell me, if you want to discover gateway.";
+
+            const template = builder.setTitle(global.APP_NAME)
+                                .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                                .setTextContent(makePlainText(speechOutput))
+                                .build();
+
+            this.response.speak(speechOutput).listen(reprompt);
+            this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+            this.response.renderTemplate(template);
+
             this.emit(':responseReady');
           }
         }).bind(this));
@@ -372,7 +528,19 @@ module.exports = {
             listName += " Light " + deviceList[i].did;
           }
 
-          this.response.speak("Load light from group " + groupId + "!" + "device list : " + listName);
+          const speechOutput = "Load light from group " + groupId + "!" + "device list : " + listName;
+          const reprompt = "Tell me, if you want to discover gateway.";
+
+          const template = builder.setTitle(global.APP_NAME)
+                              .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                              .setTextContent(makePlainText(speechOutput))
+                              .build();
+
+          this.response.speak(speechOutput).listen(reprompt);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.response.renderTemplate(template);
+
           this.emit(':responseReady');
         }).bind(this));
       }
@@ -381,13 +549,25 @@ module.exports = {
   'RemoveLightFromGroup': function () {
     console.log("RemoveLightFromGroup");
 
+    // Echo Show Display
+    const builder = new Alexa.templateBuilders.BodyTemplate1Builder();
+
     var key = constants.TABLE_USER_GATEWAY;
     const gatewayObject = this.attributes[key];
 
     if(gatewayObject === undefined){
       const speechOutput = "First, you must discover your gateway!";
-      this.response.speak(speechOutput);
+      const reprompt = "Tell me, if you want to discover gateway.";
+
+      const template = builder.setTitle(global.APP_NAME)
+                          .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                          .setTextContent(makePlainText(speechOutput))
+                          .build();
+
+      this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+      this.response.renderTemplate(template);
 
       this.emit(':responseReady');
     }else{
@@ -407,7 +587,7 @@ module.exports = {
         }
       }
 
-      if(global.TEST == "MQTT"){
+      if(global.PROTOCOL == "MQTT"){
         // MQTT request
         var messageObject = {};
         const intent = "RemoveLightFromGroup";
@@ -427,18 +607,36 @@ module.exports = {
         client.publish(requestTopic, JSON.stringify(messageObject));
 
         const speechOutput = 'Remove light ' + lightId + ' to group ' + groupId;
+        const reprompt = "Tell me, if you want to control your light.";
 
-        this.response.speak(speechOutput);
+        const template = builder.setTitle(global.APP_NAME)
+                            .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                            .setTextContent(makePlainText(speechOutput))
+                            .build();
+
+        this.response.speak(speechOutput).listen(reprompt);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+        this.response.renderTemplate(template);
 
         this.emit(':responseReady');
       }else{
         // REST request
         groupCTRL.removeLightFromGroup(gatewayObject, deviceObject, groupId, (function(error, resultObject){
 
+          const speechOutput = "Remove light " + lightId + " to group " + groupId + "!";
+          const reprompt = "Tell me, if you want to control your light.";
 
+          const template = builder.setTitle(global.APP_NAME)
+                              .setBackgroundImage(makeImage(constants.BACKGROUND_IMAGE, constants.ECHO_SHOW_DISPLAY_WIDTH, constants.ECHO_SHOW_DISPLAY_HEIGHT))
+                              .setTextContent(makePlainText(speechOutput))
+                              .build();
 
-          this.response.speak("Remove light " + lightId + " to group " + groupId + "!");
+          this.response.speak(speechOutput).listen(reprompt);
+          this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
+
+          this.response.renderTemplate(template);
+
           this.emit(':saveState', true);
         }).bind(this));
       }
