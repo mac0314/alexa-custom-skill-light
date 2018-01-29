@@ -240,9 +240,7 @@ exports.removeGroupFromUnitSpace = function(gatewayObject, groupId, uSpaceId, ca
 
   var data = {
     url: requestURL,
-    headers: {
-      'content-type': 'application/json'
-    }
+    json: true
   }
 
   request.delete(data, function(error, httpResponse, body){

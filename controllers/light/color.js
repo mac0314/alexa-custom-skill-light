@@ -31,8 +31,9 @@ exports.handleColor = function(gatewayObject, uSpaceId, unit, unitId, color, cal
   const level = constants.DEFAULT_POWER_LEVEL;
 
   var body = {};
-  body.onoff = onoff;
-  body.level = level;
+  // TODO modify gateway
+  //body.onoff = onoff;
+  //body.level = level;
 
 
   // color

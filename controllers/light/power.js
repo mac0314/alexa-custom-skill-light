@@ -94,15 +94,10 @@ exports.adjustPowerLevel = function(gatewayObject, unit, unitId, command, callba
 
 
       var body = {};
-      body.onoff = preOnOff;
 
       // TODO modify gateway
-      if(powerLevel == constants.DEFAULT_POWER_LEVEL || onoff == "off"){
-      }else{
-        body.level = powerLevel;
-      }
-
-
+      //body.onoff = preOnOff;
+      body.level = Number(powerLevel);
 
       if(unit == constants.UNIT_GROUP){
         body.onlevel = constants.DEFAULT_POWER_LEVEL;
@@ -153,8 +148,13 @@ exports.handlePower = function(gatewayObject, uSpaceId, unit, unitId, onoff, pow
   }
 
   var body = {};
-  body.onoff = onoff;
-  body.level = powerLevel;
+
+  // TODO modify gateway
+ if(powerLevel == constants.DEFAULT_POWER_LEVEL || onoff == "off"){
+   body.onoff = onoff;
+ }else{
+   body.level = Number(powerLevel);
+ }
 
   if(unit == constants.UNIT_GROUP){
     body.onlevel = constants.DEFAULT_POWER_LEVEL;

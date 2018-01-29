@@ -97,11 +97,13 @@ exports.adjustBrightness = function(gatewayObject, unit, unitId, command, callba
       var requestURL = gatewayURL + "/" + unit + "/" + unitId + "/light";
 
       var body = {};
-      body.onoff = preOnOff;
-      body.level = prePowerLevel;
+      // TODO modify gateway
+      //body.onoff = preOnOff;
+      //body.level = prePowerLevel;
 
-      // color
-      body.brightness = brightness;
+      // brightness
+      body.level = Number(brightness);
+      //body.brightness = brightness;
 
       if(unit == constants.UNIT_GROUP){
         body.onlevel = constants.DEFAULT_POWER_LEVEL;
@@ -156,11 +158,12 @@ exports.setBrightness = function(gatewayObject, uSpaceId, unit, unitId, brightne
 
   var body = {};
   // TODO modify gateway
-  body.onoff = onoff;
-  body.level = level;
+  //body.onoff = onoff;
+  //body.level = level;
 
   // brightness
-  body.brightness = brightness;
+  body.level = Number(brightness);
+  //body.brightness = brightness;
 
   if(unit == constants.UNIT_GROUP){
     body.onlevel = constants.DEFAULT_POWER_LEVEL;

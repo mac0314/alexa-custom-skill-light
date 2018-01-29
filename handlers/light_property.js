@@ -1127,7 +1127,7 @@ module.exports = {
 
             client.publish(requestTopic, JSON.stringify(messageObject));
 
-            const speechOutput = 'Set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' color' + color;
+            const speechOutput = 'Set the ' + uSpaceName + ' ' + unitId + ' ' + unit + ' color ' + color;
             const reprompt = "Tell me, if you want to control your light.";
 
             const template = builder.setTitle(global.APP_NAME)
