@@ -7,7 +7,7 @@
     "product_code": "03EF0103ABCDEFGH123456ABCDEFGH12345678",
     "serial_number": "1609123456",
     "iblid": "0004000000000000000000",
-    "ip": "192.168.0.2",
-    "tcp_port": 8080
+    "ip": "http://13.124.195.114",
+    "tcp_port": 3000
   }
 }

@@ -90,7 +90,7 @@ exports.adjustPowerLevel = function(gatewayObject, unit, unitId, command, callba
           break;
       }
 
-      var requestURL = gatewayURL + "/" + unit + "/" + unitId + "/light";
+      var requestURL = gatewayURL + "/" + unit + "/" + unitId + "/status";
 
 
       var body = {};
@@ -142,7 +142,11 @@ exports.handlePower = function(gatewayObject, uSpaceId, unit, unitId, onoff, pow
   var requestURL = gatewayURL;
 
   if(uSpaceId == undefined){
-    requestURL += "/" + unit + "/" + unitId + "/light";
+    if(unit == "device"){
+      requestURL += "/" + unit + "/" + unitId + "/light";
+    }else{
+      requestURL += "/" + unit + "/" + unitId + "/status";
+    }
   }else{
     requestURL += "/uspace/" + uSpaceId + "/" + unit + "/" + unitId + "/light"
   }
