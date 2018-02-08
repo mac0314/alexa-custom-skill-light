@@ -84,7 +84,9 @@ module.exports = {
         this.response.speak(speechOutput).listen(reprompt);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-        this.response.renderTemplate(template);
+        if(global.DISPLAY_MODE){
+          this.response.renderTemplate(template);
+        }
 
         this.emit(':responseReady');
       }else{
@@ -107,7 +109,9 @@ module.exports = {
 
           this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-          this.response.renderTemplate(template);
+          if(global.DISPLAY_MODE){
+            this.response.renderTemplate(template);
+          }
 
           this.attributes[key] = value;
 
@@ -183,7 +187,9 @@ module.exports = {
 
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-            this.response.renderTemplate(template);
+            if(global.DISPLAY_MODE){
+              this.response.renderTemplate(template);
+            }
 
             var key = constants.TABLE_USER_UNIT_SPACE_LIST;
             var value = uSpaceList;
@@ -217,7 +223,9 @@ module.exports = {
           this.response.speak(speechOutput).listen(reprompt);
           this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-          this.response.renderTemplate(template);
+          if(global.DISPLAY_MODE){
+            this.response.renderTemplate(template);
+          }
 
           var key = constants.TABLE_USER_UNIT_SPACE_LIST;
           var value = resultObject.data.uSpaceList;
@@ -251,7 +259,9 @@ module.exports = {
       this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-      this.response.renderTemplate(template);
+      if(global.DISPLAY_MODE){
+        this.response.renderTemplate(template);
+      }
 
       this.emit(':responseReady');
     }else{
@@ -291,7 +301,9 @@ module.exports = {
         this.response.speak(speechOutput);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-        this.response.renderTemplate(template);
+        if(global.DISPLAY_MODE){
+          this.response.renderTemplate(template);
+        }
 
         this.emit(':responseReady');
       }else{
@@ -322,7 +334,9 @@ module.exports = {
           this.response.speak(speechOutput).listen(reprompt);
           this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-          this.response.renderTemplate(template);
+          if(global.DISPLAY_MODE){
+            this.response.renderTemplate(template);
+          }
 
           this.emit(':saveState', true);
         }).bind(this));
@@ -363,7 +377,9 @@ module.exports = {
       this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-      this.response.renderTemplate(template);
+      if(global.DISPLAY_MODE){
+        this.response.renderTemplate(template);
+      }
 
       this.emit(':responseReady');
     }else{
@@ -420,7 +436,9 @@ module.exports = {
             this.response.speak(speechOutput).listen(reprompt);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-            this.response.renderTemplate(template);
+            if(global.DISPLAY_MODE){
+              this.response.renderTemplate(template);
+            }
 
             this.emit(':responseReady');
           }
@@ -448,7 +466,9 @@ module.exports = {
           this.response.speak(speechOutput).listen(reprompt);
           this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-          this.response.renderTemplate(template);
+          if(global.DISPLAY_MODE){
+            this.response.renderTemplate(template);
+          }
 
           this.emit(':responseReady');
         }).bind(this));
@@ -478,7 +498,9 @@ module.exports = {
       this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-      this.response.renderTemplate(template);
+      if(global.DISPLAY_MODE){
+        this.response.renderTemplate(template);
+      }
 
       this.emit(':responseReady');
     }else{
@@ -538,7 +560,9 @@ module.exports = {
             this.response.speak(speechOutput).listen(reprompt);
             this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-            this.response.renderTemplate(template);
+            if(global.DISPLAY_MODE){
+              this.response.renderTemplate(template);
+            }
 
             this.emit(':responseReady');
           }
@@ -567,7 +591,9 @@ module.exports = {
           this.response.speak(speechOutput).listen(reprompt);
           this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-          this.response.renderTemplate(template);
+          if(global.DISPLAY_MODE){
+            this.response.renderTemplate(template);
+          }
 
           this.emit(':responseReady');
         }).bind(this));
@@ -596,7 +622,9 @@ module.exports = {
       this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-      this.response.renderTemplate(template);
+      if(global.DISPLAY_MODE){
+        this.response.renderTemplate(template);
+      }
 
       this.emit(':responseReady');
     }else{
@@ -637,7 +665,9 @@ module.exports = {
         this.response.speak(speechOutput).listen(reprompt);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-        this.response.renderTemplate(template);
+        if(global.DISPLAY_MODE){
+          this.response.renderTemplate(template);
+        }
 
         this.emit(':responseReady');
       }else{
@@ -656,7 +686,9 @@ module.exports = {
           this.response.speak(speechOutput).listen(reprompt);
           this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-          this.response.renderTemplate(template);
+          if(global.DISPLAY_MODE){
+            this.response.renderTemplate(template);
+          }
 
           this.emit(':responseReady');
         }).bind(this));
@@ -686,7 +718,9 @@ module.exports = {
       this.response.speak(speechOutput).listen(reprompt);
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-      this.response.renderTemplate(template);
+      if(global.DISPLAY_MODE){
+        this.response.renderTemplate(template);
+      }
 
       this.emit(':responseReady');
     }else{
@@ -721,7 +755,9 @@ module.exports = {
         this.response.speak(speechOutput).listen(reprompt);
         this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-        this.response.renderTemplate(template);
+        if(global.DISPLAY_MODE){
+          this.response.renderTemplate(template);
+        }
 
         this.emit(':responseReady');
       }else{
@@ -735,7 +771,9 @@ module.exports = {
           this.response.speak(speechOutput).listen(reprompt);
           this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-          this.response.renderTemplate(template);
+          if(global.DISPLAY_MODE){
+            this.response.renderTemplate(template);
+          }
 
           this.emit(':responseReady');
         }).bind(this));

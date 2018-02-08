@@ -47,7 +47,9 @@ module.exports = {
       }
       this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-      this.response.renderTemplate(template);
+      if(global.DISPLAY_MODE){
+        this.response.renderTemplate(template);
+      }
 
       var key = constants.TABLE_USER_GATEWAY_FLAG;
 

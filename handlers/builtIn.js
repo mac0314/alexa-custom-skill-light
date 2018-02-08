@@ -28,7 +28,9 @@ module.exports = {
     this.response.speak(speechOutput).listen(reprompt);
     this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-    this.response.renderTemplate(template);
+    if(global.DISPLAY_MODE){
+      this.response.renderTemplate(template);
+    }
 
     this.emit(':responseReady');
   },// AMAZON.HelpIntent
@@ -48,7 +50,9 @@ module.exports = {
     this.response.speak(speechOutput);
     this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-    this.response.renderTemplate(template);
+    if(global.DISPLAY_MODE){
+      this.response.renderTemplate(template);
+    }
 
 
     this.response.speak(speechOutput);
@@ -71,7 +75,9 @@ module.exports = {
     this.response.speak(speechOutput);
     this.response.cardRenderer(global.APP_NAME, speechOutput, constants.BACKGROUND_IMAGE);
 
-    this.response.renderTemplate(template);
+    if(global.DISPLAY_MODE){
+      this.response.renderTemplate(template);
+    }
 
 
     this.response.speak(speechOutput);

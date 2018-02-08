@@ -29,9 +29,10 @@ const tableName = config.aws.dynamoDB.table.name;
 
 // TEMP Gateway IP URL
 global.BASE_URL = makeGatewayURL(config.sl.gw.ip, config.sl.gw.port, config.sl.gw.version);
-
-//global.PROTOCOL = "MQTT";
-global.PROTOCOL = "REST";
+// true, false
+global.DISPLAY_MODE = config.alexa.skill.setting.displayMode;
+// "MQTT", "REST"
+global.PROTOCOL = config.alexa.skill.setting.protocol;
 
 // entry
 exports.handler = function(event, context, callback) {

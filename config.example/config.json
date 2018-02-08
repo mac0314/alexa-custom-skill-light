@@ -18,7 +18,13 @@
   },
   "alexa": {
     "appId":"amzn1.ask.skill",
-    "appName":"System light 2.0"
+    "appName":"System light 2.0",
+    "skill": {
+      "setting":{
+        "protocol":"REST",
+        "displayMode":true
+      }
+    }
   },
   "sl": {
     "gw": {
