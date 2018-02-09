@@ -526,7 +526,7 @@ module.exports = {
               listName += " Light " + deviceList[i].did;
             }
 
-            const speechOutput = "Load light from group " + groupId + "! " + "device list : " + listName;
+            const speechOutput = "Load light from group " + groupId + "! " + " Device list : " + listName;
             const reprompt = "Tell me, if you want to discover gateway.";
 
             const template = builder.setTitle(global.APP_NAME)
@@ -548,6 +548,8 @@ module.exports = {
       }else{
         // REST request
         groupCTRL.loadLightListFromGroup(gatewayObject, groupId, (function(error, resultObject){
+          var dataObject = resultObject.data;
+
           var deviceList = dataObject.deviceList;
 
           var listName = "";
@@ -556,7 +558,7 @@ module.exports = {
             listName += " Light " + deviceList[i].did;
           }
 
-          const speechOutput = "Load light from group " + groupId + "!" + "device list : " + listName;
+          const speechOutput = "Load light from group " + groupId + "!" + " Device list : " + listName;
           const reprompt = "Tell me, if you want to discover gateway.";
 
           const template = builder.setTitle(global.APP_NAME)

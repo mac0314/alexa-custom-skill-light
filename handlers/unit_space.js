@@ -175,7 +175,7 @@ module.exports = {
               listName += ", " + uSpaceList[i].uspace_id;
             }
 
-            const speechOutput = "Load unitspaces list, " + listName + "!";
+            const speechOutput = "Load unitspaces list" + listName + "!";
             const reprompt = "If you want to control the unitspaces, tell me.";
 
             const template = builder.setTitle(global.APP_NAME)
@@ -212,7 +212,7 @@ module.exports = {
             listName += ", " + uSpaceList[i].uspace_id;
           }
 
-          const speechOutput = "Load unitspaces list, " + listName + "!";
+          const speechOutput = "Load unitspaces list" + listName + "!";
           const reprompt = "If you want to control the unitspaces, tell me.";
 
           const template = builder.setTitle(global.APP_NAME)
